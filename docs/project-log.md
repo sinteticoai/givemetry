@@ -80,3 +80,52 @@
 - next_steps: Consider using benchmark data in sales/marketing materials
 - open_questions: None
 - related_files: docs/main/prd.md, docs/research/initial docs/university-advancement-dashboard.jsx
+
+## SESSION 2026-01-25 16:30
+
+### CONTEXT
+- trigger: User ran `/speckit.specify`, `/speckit.clarify`, `/speckit.plan` for GiveMetry MVP
+- scope: specs/001-givemetry-mvp/, CLAUDE.md
+- prior_state: No feature specs existed; only docs/main/ architecture and PRD
+
+### CHANGES
+- specs/001-givemetry-mvp/spec.md: create - Full feature specification (403 lines) with 11 user stories, 34 functional requirements, 13 success criteria, 11 entities
+- specs/001-givemetry-mvp/checklists/requirements.md: create - Validation checklist for spec quality
+- specs/001-givemetry-mvp/plan.md: create - Implementation plan with technical context, constitution check, project structure, 6 implementation phases
+- specs/001-givemetry-mvp/research.md: create - Technical research (12 sections): CSV parsing, date detection, lapse risk model, priority scoring, NL query, brief generation, PDF generation, file storage, background jobs, health scoring, anomaly detection, session management
+- specs/001-givemetry-mvp/data-model.md: create - Complete data model (11 entities) with ERD, field definitions, relationships, RLS policies, state transitions, retention rules
+- specs/001-givemetry-mvp/contracts/auth.ts: create - tRPC router contract for authentication (8 procedures)
+- specs/001-givemetry-mvp/contracts/upload.ts: create - tRPC router contract for CSV upload (7 procedures)
+- specs/001-givemetry-mvp/contracts/constituent.ts: create - tRPC router contract for donors/prospects (4 procedures)
+- specs/001-givemetry-mvp/contracts/analysis.ts: create - tRPC router contract for health scores, predictions, portfolio metrics (7 procedures)
+- specs/001-givemetry-mvp/contracts/ai.ts: create - tRPC router contract for briefs, NL queries, recommendations (11 procedures)
+- specs/001-givemetry-mvp/contracts/report.ts: create - tRPC router contract for executive reports (7 procedures)
+- specs/001-givemetry-mvp/quickstart.md: create - Development environment setup guide
+- CLAUDE.md: edit - Added tech stack context via update-agent-context.sh script
+
+### DECISIONS
+- Data retention: Indefinite with admin-controlled deletion | alternatives_considered: 90-day, 7-year, configurable per-org
+- Constituent uniqueness: CRM ID column required as unique identifier | alternatives_considered: email, name+email+address composite, user-mapped column
+- Prediction recalculation: On each new data upload only | alternatives_considered: daily scheduled, on-demand, weekly batch
+- Session timeout: 24-hour max with 30-minute idle timeout | alternatives_considered: 8-hour no idle, 7-day with 1-hour idle, 30-day remember me
+- AI unavailability handling: Show cached/stale data with warning | alternatives_considered: block features with error, queue requests, fail silently
+- CSV parsing: Papa Parse with streaming | alternatives_considered: csv-parse, fast-csv, d3-dsv
+- Lapse risk model: Rule-based for MVP (explainable) | alternatives_considered: ML model
+- NL query parsing: Claude function calling | alternatives_considered: custom parser, fine-tuned model
+- PDF generation: @react-pdf/renderer | alternatives_considered: Puppeteer, pdfkit, jsPDF
+- Background jobs: DB-backed queue + Railway workers | alternatives_considered: BullMQ + Redis
+
+### DEPENDENCIES
+- none added (dependencies listed are for implementation phase)
+
+### STATE
+- working: Complete feature specification with plan artifacts ready for task generation
+- broken: None
+- blocked: None
+
+### CONTINUITY
+- next_steps: Run `/speckit.tasks` to generate implementation task list
+- next_steps: Set up development environment per quickstart.md
+- next_steps: Begin Phase A: Foundation (Auth + Multi-tenancy)
+- open_questions: Email template design still open from prior session
+- related_files: specs/001-givemetry-mvp/spec.md, specs/001-givemetry-mvp/plan.md, specs/001-givemetry-mvp/data-model.md, specs/001-givemetry-mvp/contracts/*.ts, docs/main/architecture.md, docs/main/prd.md
