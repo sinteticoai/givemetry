@@ -1,9 +1,10 @@
 # GiveMetry Product Requirements Document
 
-**Version:** 1.0
+**Version:** 1.1
 **Created:** 2026-01-25
+**Updated:** 2026-01-25
 **Status:** Draft
-**Input:** Project Brief v1.0
+**Input:** Project Brief v1.0, Architecture v2.0
 
 ---
 
@@ -307,7 +308,7 @@ As an **institution administrator**, I want to set up our organization with appr
 
 3. **Given** a gift officer logs in, **When** they view data, **Then** they see only their assigned portfolio and cannot access other officers' prospects or organization-wide admin settings.
 
-4. **Given** we use SSO, **When** IT configures SAML/OIDC, **Then** users can authenticate through institutional identity provider.
+4. **Given** we use email/password authentication, **When** a user logs in, **Then** credentials are securely validated and session is established with appropriate role permissions.
 
 ---
 
@@ -351,9 +352,9 @@ As an **institution administrator**, I want to set up our organization with appr
 - **FR-117**: System MUST allow users to provide feedback on predictions for model improvement
 
 **Multi-Tenancy & Access Control**
-- **FR-118**: System MUST isolate all data by organization with no cross-tenant visibility
+- **FR-118**: System MUST isolate all data by organization with no cross-tenant visibility (via row-level security)
 - **FR-119**: System MUST support role-based access control (Admin, Manager, Gift Officer, Viewer)
-- **FR-120**: System MUST support SSO via SAML 2.0 and OIDC
+- **FR-120**: System MUST support email/password authentication with secure password hashing
 - **FR-121**: System MUST maintain audit logs of user actions and data access
 
 ### Key Entities (Phase 1)
@@ -517,22 +518,26 @@ As a **Major Gift Officer**, I want GiveMetry to automatically prepare me for up
 - **FR-204**: System MUST handle sync errors gracefully with retry logic and admin notification
 - **FR-205**: System MUST map fields between GiveMetry schema and CRM-specific schemas
 
+**Authentication (SSO)**
+- **FR-206**: System MUST support SSO via SAML 2.0 and OIDC for enterprise customers
+- **FR-207**: System MUST support per-tenant SSO configuration (institutional identity providers)
+
 **Workflow Delivery**
-- **FR-206**: System MUST deliver priority recommendations via email, Slack, and Microsoft Teams
-- **FR-207**: System MUST support configurable delivery schedules per user
-- **FR-208**: System MUST integrate with calendar systems to identify upcoming donor meetings
-- **FR-209**: System MUST auto-generate meeting prep materials for scheduled donor interactions
+- **FR-208**: System MUST deliver priority recommendations via email, Slack, and Microsoft Teams
+- **FR-209**: System MUST support configurable delivery schedules per user
+- **FR-210**: System MUST integrate with calendar systems to identify upcoming donor meetings
+- **FR-211**: System MUST auto-generate meeting prep materials for scheduled donor interactions
 
 **Outcome Tracking**
-- **FR-210**: System MUST track recommendation → action → outcome chains
-- **FR-211**: System MUST attribute meetings and gifts to originating recommendations
-- **FR-212**: System MUST calculate and display ROI metrics including influenced revenue
-- **FR-213**: System MUST support configurable attribution windows (default 90 days)
+- **FR-212**: System MUST track recommendation → action → outcome chains
+- **FR-213**: System MUST attribute meetings and gifts to originating recommendations
+- **FR-214**: System MUST calculate and display ROI metrics including influenced revenue
+- **FR-215**: System MUST support configurable attribution windows (default 90 days)
 
 **Continuous Monitoring**
-- **FR-214**: System MUST continuously recalculate scores as new data syncs
-- **FR-215**: System MUST track health score trends over time
-- **FR-216**: System MUST alert managers when portfolio health degrades below thresholds
+- **FR-216**: System MUST continuously recalculate scores as new data syncs
+- **FR-217**: System MUST track health score trends over time
+- **FR-218**: System MUST alert managers when portfolio health degrades below thresholds
 
 ---
 
@@ -735,36 +740,43 @@ As a **CDO (Chief Development Officer)** of a large university, I want to manage
 ┌─────────────────────────────────────────────────────────────────┐
 │                        PRODUCTION                                │
 │                    Railway (master branch)                       │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────────┐ │
-│  │   Web App   │  │   API       │  │   Background Workers    │ │
-│  │  (Next.js)  │  │  (Node.js)  │  │  (Analysis, AI, Sync)   │ │
-│  └─────────────┘  └─────────────┘  └─────────────────────────┘ │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │              Next.js Application (App Router)            │   │
+│  │   - Server-rendered pages + API routes + tRPC           │   │
+│  │   - NextAuth.js (Credentials auth, SSO in Phase 2)      │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                           │                                      │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │         Railway Workers (database-backed jobs)           │   │
+│  │   - CSV processing, scoring, report generation          │   │
+│  │   - No Redis/BullMQ for MVP (add if scale demands)      │   │
+│  └─────────────────────────────────────────────────────────┘   │
 │                           │                                      │
 │                    ┌──────┴──────┐                              │
 │                    │  PostgreSQL │                              │
-│                    │  (Railway)  │                              │
+│                    │  + pgvector │                              │
 │                    └─────────────┘                              │
 └─────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────┐
 │                        STAGING                                   │
 │                    VPS (dev branch)                              │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────────┐ │
-│  │   Web App   │  │   API       │  │   Background Workers    │ │
-│  └─────────────┘  └─────────────┘  └─────────────────────────┘ │
+│  ┌─────────────┐  ┌─────────────────────────────────────────┐  │
+│  │   Web App   │  │   Workers (optional for local dev)      │  │
+│  └─────────────┘  └─────────────────────────────────────────┘  │
 │                           │                                      │
 │                    ┌──────┴──────┐                              │
 │                    │  PostgreSQL │  ◄── Shared with local dev   │
-│                    │   (VPS)     │                              │
+│                    │  + pgvector │                              │
 │                    └─────────────┘                              │
 └─────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────┐
 │                     LOCAL DEVELOPMENT                            │
 │                   MacBook (dev branch)                           │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────────┐ │
-│  │   Web App   │  │   API       │  │   Workers (optional)    │ │
-│  └─────────────┘  └─────────────┘  └─────────────────────────┘ │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │   Next.js dev server (hot reload)                        │   │
+│  └─────────────────────────────────────────────────────────┘   │
 │                           │                                      │
 │                    ┌──────┴──────┐                              │
 │                    │  PostgreSQL │  ◄── VPS database (remote)   │
@@ -775,33 +787,39 @@ As a **CDO (Chief Development Officer)** of a large university, I want to manage
 
 ## Multi-Tenancy Architecture
 
-**Strategy:** Schema-per-tenant with shared infrastructure
+**Strategy:** Row-level isolation (RLS) with shared tables
 
 ```
 ┌─────────────────────────────────────────────────┐
 │              PostgreSQL Database                 │
-│  ┌───────────────┐  ┌───────────────┐           │
-│  │ tenant_001    │  │ tenant_002    │   ...     │
-│  │ (Schema)      │  │ (Schema)      │           │
-│  │ - constituents│  │ - constituents│           │
-│  │ - gifts       │  │ - gifts       │           │
-│  │ - predictions │  │ - predictions │           │
-│  └───────────────┘  └───────────────┘           │
 │                                                  │
 │  ┌───────────────────────────────────────────┐  │
-│  │ public (Schema) - Shared                   │  │
-│  │ - organizations                            │  │
-│  │ - users                                    │  │
-│  │ - benchmarks (anonymized aggregates)       │  │
+│  │            Shared Tables                   │  │
+│  │  All tables include organization_id        │  │
+│  │                                            │  │
+│  │  - constituents (org_id, ...)             │  │
+│  │  - gifts (org_id, ...)                    │  │
+│  │  - predictions (org_id, ...)              │  │
+│  │  - contacts (org_id, ...)                 │  │
+│  │  - alerts (org_id, ...)                   │  │
+│  │                                            │  │
+│  │  RLS Policy: WHERE org_id = current_org() │  │
+│  └───────────────────────────────────────────┘  │
+│                                                  │
+│  ┌───────────────────────────────────────────┐  │
+│  │ Isolation enforced at two layers:          │  │
+│  │ 1. Application: Prisma middleware          │  │
+│  │ 2. Database: PostgreSQL RLS policies       │  │
 │  └───────────────────────────────────────────┘  │
 └─────────────────────────────────────────────────┘
 ```
 
 **Benefits:**
-- Complete data isolation between tenants
-- Easy backup/restore per tenant
-- Supports tenant-specific customizations if needed
-- Scales well for hundreds of tenants
+- FERPA, HECVAT, SOC 2 compliant (logical isolation)
+- Single migration runs once (not per-tenant)
+- Simpler backup/restore and connection pooling
+- Proven pattern; scales well for 500+ tenants
+- Defense-in-depth with RLS as database-level safeguard
 
 ## AI/LLM Integration
 
@@ -837,7 +855,9 @@ As a **CDO (Chief Development Officer)** of a large university, I want to manage
 
 ```
 Phase 1 (CSV Upload):
-CSV File → Parser → Validator → Schema Mapper → PostgreSQL → Analysis Engine → Predictions
+CSV File → Parser → Validator → Field Mapper → PostgreSQL (RLS) → Analysis Engine → Predictions
+                                                      ↓
+                                    Railway Worker (async for large files)
 
 Phase 2 (CRM Sync):
 CRM API ←→ Sync Service → Change Detection → PostgreSQL → Real-time Analysis → Delivery Service
@@ -849,6 +869,20 @@ Multiple Units → Aggregation Service → Forecasting Models → Executive Dash
                          ↓
               Anonymization → Benchmarking Aggregates
 ```
+
+## Key Architecture Decisions
+
+The following decisions were made during architecture review (see `architecture.md` for full ADRs):
+
+| Decision | Choice | Rationale |
+|----------|--------|-----------|
+| ORM | Prisma 7 | Team familiarity, reuse tenant middleware |
+| Multi-tenancy | Row-level isolation (RLS) | Simpler ops, FERPA/SOC 2 compliant |
+| Phase 1 Auth | Credentials first | Add SSO in Phase 2 when customers require |
+| Background Jobs | Database-backed + Railway workers | Less infrastructure for MVP |
+| Payments | Invoice/ACH (no Stripe) | Enterprise PO workflow |
+| API Layer | tRPC | End-to-end type safety |
+| UI Components | shadcn/ui + Tailwind | Copy-paste components, customizable |
 
 ---
 
@@ -867,7 +901,7 @@ Multiple Units → Aggregation Service → Forecasting Models → Executive Dash
 - **NFR-006**: SOC 2 Type II certification within 12 months of launch
 - **NFR-007**: HECVAT (Higher Education Community Vendor Assessment Toolkit) documentation complete at launch
 - **NFR-008**: All data encrypted at rest (AES-256) and in transit (TLS 1.3)
-- **NFR-009**: SSO support via SAML 2.0 and OIDC
+- **NFR-009**: SSO support via SAML 2.0 and OIDC (Phase 2)
 - **NFR-010**: FERPA-compliant data handling (no student PII exposure)
 - **NFR-011**: Audit logs retained for 7 years
 - **NFR-012**: Annual penetration testing with remediation within 30 days
@@ -940,6 +974,7 @@ Multiple Units → Aggregation Service → Forecasting Models → Executive Dash
 | Version | Date | Author | Changes |
 |---------|------|--------|---------|
 | 1.0 | 2026-01-25 | John (PM Agent) | Initial PRD based on project brief v1.0 |
+| 1.1 | 2026-01-25 | Winston (Architect) | Aligned with architecture v2.0: RLS multi-tenancy, SSO moved to Phase 2, simplified infrastructure |
 
 ---
 

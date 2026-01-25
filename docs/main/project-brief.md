@@ -1,8 +1,9 @@
 # GiveMetry Project Brief
 
-**Version:** 1.0
+**Version:** 1.1
 **Date:** 2026-01-25
-**Status:** Ready for PRD Development
+**Updated:** 2026-01-25
+**Status:** Aligned with Architecture v2.0
 
 ---
 
@@ -269,7 +270,7 @@ FOCUS    │     ║  Intelligence Layer   ║     │
 | **Director of Advancement Services** | "We reduce your reporting burden and work with your existing CRM — no migration, no risk." |
 | **Director of Prospect Research** | "Explainable AI that improves portfolio quality — auditable, measurable, governance-ready." |
 | **Major Gift Officer** | "Know who to call today without digging through the CRM or checking five systems." |
-| **CIO** | "Low-risk overlay with enterprise security posture (SOC 2, SSO, FERPA-ready) and minimal IT burden." |
+| **CIO** | "Low-risk overlay with enterprise security posture (SOC 2, FERPA-ready, SSO roadmap) and minimal IT burden." |
 
 ### 5.3 Value Propositions
 
@@ -301,7 +302,7 @@ FOCUS    │     ║  Intelligence Layer   ║     │
 | **Director of Advancement Services** | **PRIMARY BUYER**, champion | $15K-$50K discretionary | Integration credibility, time savings, admin control |
 | **Director of Prospect Research** | Evaluator, influencer | $5K-$15K for tools | Explainable AI, methodology transparency, reduced noise |
 | **Major Gift Officer** | End user, adoption gate | None; influences via adoption | Weekly priorities, less admin, fits existing workflow |
-| **CIO / IT Security** | Veto power | Can block any deal | SOC 2, HECVAT, SSO, clean architecture |
+| **CIO / IT Security** | Veto power | Can block any deal | SOC 2, HECVAT, clean architecture (SSO Phase 2) |
 
 ### 6.2 Persona Deep Dive: Director of Advancement Services (Primary Buyer)
 
@@ -353,7 +354,7 @@ FOCUS    │     ║  Intelligence Layer   ║     │
 | "Our data isn't clean enough" | "The diagnostic shows exactly what's fixable and what's not." |
 | "Staff won't use another tool" | "MGOs get 5 names per week, not another dashboard to check." |
 | "What's the ROI?" | "We measure meetings → asks → gifts. You'll see results in 60-90 days." |
-| "IT won't approve another tool" | "We provide HECVAT, SOC 2, and SSO on day one. Happy to present to IT directly." |
+| "IT won't approve another tool" | "We provide HECVAT and SOC 2 documentation on day one, with SSO available in Phase 2. Happy to present to IT directly." |
 | "We're in a campaign" | "This is a campaign tool — prioritization and pipeline visibility when you need it most." |
 
 ---
@@ -565,6 +566,7 @@ FOCUS    │     ║  Intelligence Layer   ║     │
 | Version | Date | Author | Changes |
 |---------|------|--------|---------|
 | 1.0 | 2026-01-25 | Mary (Business Analyst) | Initial comprehensive project brief |
+| 1.1 | 2026-01-25 | Winston (Architect) | Aligned SSO messaging with architecture v2.0 (SSO deferred to Phase 2) |
 
 ---
 
