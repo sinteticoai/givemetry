@@ -1,6 +1,6 @@
 # GiveMetry Product Requirements Document
 
-**Version:** 1.1
+**Version:** 1.2
 **Created:** 2026-01-25
 **Updated:** 2026-01-25
 **Status:** Draft
@@ -308,7 +308,11 @@ As an **institution administrator**, I want to set up our organization with appr
 
 3. **Given** a gift officer logs in, **When** they view data, **Then** they see only their assigned portfolio and cannot access other officers' prospects or organization-wide admin settings.
 
-4. **Given** we use email/password authentication, **When** a user logs in, **Then** credentials are securely validated and session is established with appropriate role permissions.
+4. **Given** we use email/password authentication, **When** a user registers, **Then** they receive an email verification link and cannot access the system until verified.
+
+5. **Given** a user forgets their password, **When** they request a reset, **Then** they receive a secure reset link (1-hour expiry) and can set a new password.
+
+6. **Given** a user is verified and logs in, **When** credentials are validated, **Then** a JWT session is established with appropriate role permissions.
 
 ---
 
@@ -354,8 +358,11 @@ As an **institution administrator**, I want to set up our organization with appr
 **Multi-Tenancy & Access Control**
 - **FR-118**: System MUST isolate all data by organization with no cross-tenant visibility (via row-level security)
 - **FR-119**: System MUST support role-based access control (Admin, Manager, Gift Officer, Viewer)
-- **FR-120**: System MUST support email/password authentication with secure password hashing
-- **FR-121**: System MUST maintain audit logs of user actions and data access
+- **FR-120**: System MUST support email/password authentication with secure password hashing (bcrypt)
+- **FR-121**: System MUST require email verification before account activation (24-hour token expiry)
+- **FR-122**: System MUST support password reset via secure email link (1-hour token expiry)
+- **FR-123**: System MUST send transactional emails via Resend (verification, password reset)
+- **FR-124**: System MUST maintain audit logs of user actions and data access
 
 ### Key Entities (Phase 1)
 
@@ -743,7 +750,8 @@ As a **CDO (Chief Development Officer)** of a large university, I want to manage
 │  ┌─────────────────────────────────────────────────────────┐   │
 │  │              Next.js Application (App Router)            │   │
 │  │   - Server-rendered pages + API routes + tRPC           │   │
-│  │   - NextAuth.js (Credentials auth, SSO in Phase 2)      │   │
+│  │   - NextAuth v5 (Credentials auth, SSO in Phase 2)      │   │
+│  │   - Resend (transactional email: verification, reset)   │   │
 │  └─────────────────────────────────────────────────────────┘   │
 │                           │                                      │
 │  ┌─────────────────────────────────────────────────────────┐   │
@@ -878,7 +886,8 @@ The following decisions were made during architecture review (see `architecture.
 |----------|--------|-----------|
 | ORM | Prisma 7 | Team familiarity, reuse tenant middleware |
 | Multi-tenancy | Row-level isolation (RLS) | Simpler ops, FERPA/SOC 2 compliant |
-| Phase 1 Auth | Credentials first | Add SSO in Phase 2 when customers require |
+| Phase 1 Auth | NextAuth v5 + Credentials | Email verification, password reset, SSO-ready for Phase 2 |
+| Transactional Email | Resend | Simple API, good deliverability, React templates |
 | Background Jobs | Database-backed + Railway workers | Less infrastructure for MVP |
 | Payments | Invoice/ACH (no Stripe) | Enterprise PO workflow |
 | API Layer | tRPC | End-to-end type safety |
@@ -975,6 +984,7 @@ The following decisions were made during architecture review (see `architecture.
 |---------|------|--------|---------|
 | 1.0 | 2026-01-25 | John (PM Agent) | Initial PRD based on project brief v1.0 |
 | 1.1 | 2026-01-25 | Winston (Architect) | Aligned with architecture v2.0: RLS multi-tenancy, SSO moved to Phase 2, simplified infrastructure |
+| 1.2 | 2026-01-25 | Winston (Architect) | Enhanced auth: email verification, password reset, Resend, NextAuth v5 |
 
 ---
 

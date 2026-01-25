@@ -63,7 +63,8 @@ This document defines the complete technical architecture for GiveMetry, an AI-p
 ┌─────────────────────────────────────────────────────────────────┐
 │                         API LAYER                                │
 │  Next.js API Routes + tRPC (type-safe RPC)                      │
-│  Zod (validation) + NextAuth.js (Credentials provider)          │
+│  Zod (validation) + NextAuth v5 (Credentials provider)          │
+│  Resend (transactional email)                                   │
 └─────────────────────────────────────────────────────────────────┘
                               │
                               ▼
@@ -103,6 +104,50 @@ This document defines the complete technical architecture for GiveMetry, an AI-p
 | **Railway Workers** | Native to deployment platform, no Redis for MVP | BullMQ (add later if needed) |
 | **Claude API** | Best-in-class for explanations, reliable | GPT-4, local LLM |
 | **shadcn/ui** | Copy-paste components, Tailwind-native, customizable | Radix, Chakra, MUI |
+| **NextAuth v5** | First-class App Router support, JWT sessions, extensible callbacks | Clerk (cost), Auth0 (complexity) |
+| **Resend** | Simple API, React email templates, good deliverability | SendGrid, Postmark |
+| **Lucide React** | shadcn/ui default icons, tree-shakeable | Heroicons, Phosphor |
+
+### Frontend Conventions
+
+| Convention | Choice | Notes |
+|------------|--------|-------|
+| **Icon library** | Lucide React | shadcn/ui default, tree-shakeable, consistent iconography |
+| **Layout pattern** | Sidebar (desktop) / Bottom nav (mobile) | Collapsible left vertical nav, state persisted in Zustand |
+| **Theming** | Dark/light mode toggle | CSS variables (shadcn pattern), preference stored in localStorage |
+| **Component library** | shadcn/ui | Radix primitives + Tailwind styling, copy-paste ownership |
+
+#### Desktop Layout Structure
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│  Logo / Brand                                        [User] │
+├────────────┬─────────────────────────────────────────────────┤
+│            │                                                 │
+│  Sidebar   │              Main Content Area                  │
+│  (240px)   │                                                 │
+│            │  ┌─────────────────────────────────────────┐   │
+│  Dashboard │  │  Page Header + Breadcrumbs              │   │
+│  Donors    │  ├─────────────────────────────────────────┤   │
+│  Alerts    │  │                                         │   │
+│  Reports   │  │  Content                                │   │
+│  Uploads   │  │                                         │   │
+│  Settings  │  │                                         │   │
+│            │  └─────────────────────────────────────────┘   │
+│  [Collapse]│                                                 │
+└────────────┴─────────────────────────────────────────────────┘
+```
+
+#### Theme Implementation
+
+```typescript
+// Tailwind config: darkMode: 'class'
+// Toggle adds/removes 'dark' class on <html>
+
+// Theme persistence
+const theme = localStorage.getItem('theme') || 'system';
+// 'light' | 'dark' | 'system' (respects OS preference)
+```
 
 ---
 
@@ -700,6 +745,30 @@ model AuditLog {
 
   @@index([organizationId, createdAt])
 }
+
+// ============================================
+// AUTH TOKENS (email verification, password reset)
+// ============================================
+
+model VerificationToken {
+  identifier String   // User's email
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_token")
+}
+
+model PasswordResetToken {
+  id        String   @id @default(uuid())
+  email     String
+  token     String   @unique
+  expires   DateTime
+  createdAt DateTime @default(now())
+
+  @@index([email])
+  @@map("password_reset_token")
+}
 ```
 
 ### Vector Storage (pgvector)
@@ -1056,40 +1125,224 @@ const csvQueue = new Queue('csv-processing', { connection: redis });
 
 ## Authentication Architecture
 
-### NextAuth + Credentials (MVP)
+### Overview
+
+GiveMetry uses a production-grade authentication system with:
+
+- **Email/password authentication** with secure password hashing
+- **Email verification** with time-limited tokens
+- **Password reset** via secure email links
+- **Multi-tenant isolation** — users belong to specific organizations
+- **JWT sessions** — stateless, httpOnly cookies
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                        Auth Flow Overview                        │
+├─────────────────────────────────────────────────────────────────┤
+│  Login Page    │  Signup Flow   │  Reset Password  │  Verify    │
+└───────┬────────┴────────┬───────┴────────┬─────────┴─────┬──────┘
+        │                 │                │               │
+        ▼                 ▼                ▼               ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                      API Routes (/api/auth/*)                    │
+├─────────────────────────────────────────────────────────────────┤
+│  NextAuth      │  signup/    │  forgot-     │  verify-    │     │
+│  [...nextauth] │  route.ts   │  password/   │  email/     │     │
+└───────┬────────┴──────┬──────┴──────┬───────┴──────┬──────┴─────┘
+        │               │             │              │
+        ▼               ▼             ▼              ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                         Resend (Email)                           │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Authentication Flows
+
+#### 1. Signup Flow
+
+```
+User visits /signup
+         │
+         ▼
+┌────────────────────────┐
+│ Enter: name, email,    │
+│ password, org name     │
+└──────────┬─────────────┘
+           │
+           ▼
+    POST /api/auth/signup
+           │
+           ▼
+┌────────────────────────────────────────────┐
+│  Transaction:                              │
+│  1. Hash password (bcrypt, 10 rounds)      │
+│  2. Create Organization (tenant)           │
+│  3. Create User (linked to org)            │
+│  4. Create VerificationToken (24h expiry)  │
+│  5. Send verification email via Resend     │
+└────────────────────────────────────────────┘
+           │
+           ▼
+    Redirect to /check-email
+```
+
+#### 2. Email Verification Flow
+
+```
+User receives email
+         │
+         ▼
+Clicks: /verify-email?token=xxx
+         │
+         ▼
+   GET /api/auth/verify-email
+         │
+         ├─── Token not found ──► Error: "Invalid link"
+         │
+         ├─── Token expired ────► Error: "Link expired"
+         │
+         ▼
+┌────────────────────────────┐
+│  1. Set User.emailVerified │
+│  2. Delete token           │
+└────────────────────────────┘
+         │
+         ▼
+   Redirect to /login with success
+```
+
+#### 3. Login Flow
+
+```
+User visits /login
+         │
+         ▼
+┌────────────────────────┐
+│ Enter: email, password │
+└──────────┬─────────────┘
+           │
+           ▼
+    POST /api/auth/signin (NextAuth)
+           │
+           ▼
+┌─────────────────────────────────────┐
+│  Credentials Provider:              │
+│  1. Find user by email              │
+│  2. bcrypt.compare(password, hash)  │
+│  3. Check emailVerified             │
+│  4. Return user object or null      │
+└─────────────────────────────────────┘
+           │
+           ▼
+┌─────────────────────────────────────┐
+│  JWT Callback:                      │
+│  1. Set userId, role, orgId         │
+│  2. Update lastLoginAt              │
+└─────────────────────────────────────┘
+           │
+           ▼
+    JWT stored in httpOnly cookie
+           │
+           ▼
+    Redirect to /dashboard
+```
+
+#### 4. Password Reset Flow
+
+```
+User visits /forgot-password
+         │
+         ▼
+┌───────────────────┐
+│ Enter: email      │
+└─────────┬─────────┘
+          │
+          ▼
+   POST /api/auth/forgot-password
+          │
+          ├─── Email not found ──► Return success anyway
+          │                        (prevent enumeration)
+          ▼
+┌────────────────────────────────────┐
+│  1. Delete existing tokens (email) │
+│  2. Generate token (32 bytes hex)  │
+│  3. Store with 1-hour expiry       │
+│  4. Send reset email via Resend    │
+└────────────────────────────────────┘
+          │
+          ▼
+   Show: "Check your email"
+          │
+          ▼
+User clicks: /reset-password?token=xxx
+          │
+          ▼
+┌────────────────────────────────┐
+│ Enter: new password (2x)       │
+└─────────────┬──────────────────┘
+              │
+              ▼
+   POST /api/auth/reset-password
+              │
+              ▼
+┌────────────────────────────────────────┐
+│  Transaction:                          │
+│  1. Validate token exists & not expired│
+│  2. Hash new password (bcrypt)         │
+│  3. Update User.passwordHash           │
+│  4. Delete token                       │
+└────────────────────────────────────────┘
+              │
+              ▼
+   Redirect to /login with success
+```
+
+### Security Design Decisions
+
+| Decision | Implementation | Rationale |
+|----------|----------------|-----------|
+| **Password hashing** | bcrypt, cost factor 10 | Memory-hard, ~100ms latency, automatic salting |
+| **Token generation** | 32-byte crypto.randomBytes hex | 256 bits entropy, URL-safe |
+| **Email verification expiry** | 24 hours | Users may not check email immediately |
+| **Password reset expiry** | 1 hour | Security-sensitive, shorter window |
+| **Session strategy** | JWT in httpOnly cookie | Prevents XSS theft, stateless |
+| **Session lifetime** | 7 days, refresh daily | Balance security vs UX |
+| **Email enumeration** | Always return success | Prevents discovery of valid emails |
+| **Token use** | One-time, delete after use | Prevents replay attacks |
+
+### NextAuth v5 Configuration
 
 ```typescript
-// lib/auth.ts
-import NextAuth, { NextAuthOptions } from 'next-auth';
-import CredentialsProvider from 'next-auth/providers/credentials';
+// lib/auth/config.ts
+import NextAuth from 'next-auth';
+import Credentials from 'next-auth/providers/credentials';
 import { prisma } from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
 
-export const authOptions: NextAuthOptions = {
+export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [
-    CredentialsProvider({
-      name: 'credentials',
+    Credentials({
       credentials: {
-        email: { label: 'Email', type: 'email' },
-        password: { label: 'Password', type: 'password' },
+        email: { type: 'email' },
+        password: { type: 'password' },
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
-          return null;
-        }
-
         const user = await prisma.user.findUnique({
-          where: { email: credentials.email },
+          where: { email: credentials.email as string },
           include: { organization: true },
         });
 
-        if (!user || !user.passwordHash) {
-          return null;
-        }
+        if (!user?.passwordHash) return null;
 
-        const isValid = await bcrypt.compare(credentials.password, user.passwordHash);
-        if (!isValid) {
-          return null;
+        const valid = await bcrypt.compare(
+          credentials.password as string,
+          user.passwordHash
+        );
+        if (!valid) return null;
+
+        // Require email verification
+        if (!user.emailVerified) {
+          throw new Error('Please verify your email first');
         }
 
         // Update last login
@@ -1104,14 +1357,12 @@ export const authOptions: NextAuthOptions = {
           name: user.name,
           role: user.role,
           organizationId: user.organizationId,
-          organizationName: user.organization.name,
         };
       },
     }),
-    // SSO providers added in Phase 2:
-    // SAMLProvider({ ... }),
-    // AzureADProvider({ ... }),
+    // SSO providers added in Phase 2
   ],
+
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
@@ -1122,22 +1373,133 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
     async session({ session, token }) {
-      if (session.user) {
-        session.user.id = token.id as string;
-        session.user.role = token.role as string;
-        session.user.organizationId = token.organizationId as string;
-      }
+      session.user.id = token.id as string;
+      session.user.role = token.role as string;
+      session.user.organizationId = token.organizationId as string;
       return session;
     },
   },
+
   pages: {
     signIn: '/login',
+    error: '/login',
   },
+
   session: {
     strategy: 'jwt',
-    maxAge: 30 * 24 * 60 * 60, // 30 days
+    maxAge: 7 * 24 * 60 * 60,  // 7 days
+    updateAge: 24 * 60 * 60,   // Refresh daily
   },
-};
+});
+```
+
+### Email Service (Resend)
+
+```typescript
+// lib/email/send.ts
+import { Resend } from 'resend';
+
+const resend = new Resend(process.env.RESEND_API_KEY);
+
+export async function sendVerificationEmail(email: string, token: string) {
+  const verifyUrl = `${process.env.NEXTAUTH_URL}/verify-email?token=${token}`;
+
+  await resend.emails.send({
+    from: process.env.RESEND_FROM_EMAIL!,
+    to: email,
+    subject: 'Verify your GiveMetry account',
+    html: `
+      <h1>Welcome to GiveMetry!</h1>
+      <p>Click below to verify your email address:</p>
+      <a href="${verifyUrl}" style="...">Verify Email</a>
+      <p>This link expires in 24 hours.</p>
+    `,
+  });
+}
+
+export async function sendPasswordResetEmail(email: string, token: string) {
+  const resetUrl = `${process.env.NEXTAUTH_URL}/reset-password?token=${token}`;
+
+  await resend.emails.send({
+    from: process.env.RESEND_FROM_EMAIL!,
+    to: email,
+    subject: 'Reset your GiveMetry password',
+    html: `
+      <h1>Password Reset Request</h1>
+      <p>Click below to reset your password:</p>
+      <a href="${resetUrl}" style="...">Reset Password</a>
+      <p>This link expires in 1 hour.</p>
+      <p>If you didn't request this, ignore this email.</p>
+    `,
+  });
+}
+```
+
+### Token Generation Utilities
+
+```typescript
+// lib/auth/tokens.ts
+import crypto from 'crypto';
+import { prisma } from '@/lib/prisma';
+
+const VERIFICATION_EXPIRY = 24 * 60 * 60 * 1000; // 24 hours
+const RESET_EXPIRY = 60 * 60 * 1000;             // 1 hour
+
+export async function generateVerificationToken(email: string) {
+  const token = crypto.randomBytes(32).toString('hex');
+  const expires = new Date(Date.now() + VERIFICATION_EXPIRY);
+
+  // Delete any existing tokens for this email
+  await prisma.verificationToken.deleteMany({
+    where: { identifier: email },
+  });
+
+  await prisma.verificationToken.create({
+    data: { identifier: email, token, expires },
+  });
+
+  return token;
+}
+
+export async function generatePasswordResetToken(email: string) {
+  const token = crypto.randomBytes(32).toString('hex');
+  const expires = new Date(Date.now() + RESET_EXPIRY);
+
+  // Delete any existing tokens for this email
+  await prisma.passwordResetToken.deleteMany({
+    where: { email },
+  });
+
+  await prisma.passwordResetToken.create({
+    data: { email, token, expires },
+  });
+
+  return token;
+}
+```
+
+### Auth API Routes
+
+```
+app/api/auth/
+├── [...nextauth]/route.ts     # NextAuth handlers
+├── signup/route.ts            # User registration
+├── verify-email/route.ts      # Email verification
+├── resend-verification/route.ts
+├── forgot-password/route.ts   # Request reset
+└── reset-password/route.ts    # Execute reset
+```
+
+### Auth Pages
+
+```
+app/(auth)/
+├── login/page.tsx
+├── signup/page.tsx
+├── verify-email/page.tsx
+├── check-email/page.tsx
+├── forgot-password/page.tsx
+└── reset-password/page.tsx
 ```
 
 ### Phase 2: Adding SSO
@@ -1145,14 +1507,11 @@ export const authOptions: NextAuthOptions = {
 The architecture supports SSO without refactoring:
 
 ```typescript
-// Phase 2: Add to providers array
+// Phase 2: Add OIDC/SAML providers
 import { OIDCProvider } from 'next-auth/providers/oidc';
 
 // Per-tenant SSO config stored in organization.settings
-const org = await getOrganization(email.split('@')[1]);
-if (org?.settings?.sso) {
-  // Dynamically configure SSO provider
-}
+// Dynamic provider configuration based on email domain
 ```
 
 ---
@@ -1357,6 +1716,10 @@ NEXTAUTH_SECRET=your-secret-here
 ANTHROPIC_API_KEY=sk-ant-...
 OPENAI_API_KEY=sk-...
 
+# Email (Resend)
+RESEND_API_KEY=re_xxxxxxxxxxxxx
+RESEND_FROM_EMAIL=noreply@givemetry.com
+
 # File Storage (optional, can use local for dev)
 S3_BUCKET=givemetry-uploads
 S3_REGION=us-east-1
@@ -1447,7 +1810,28 @@ AWS_SECRET_ACCESS_KEY=...
 - Must clearly communicate "SSO available Q2" to prospects who ask
 - Structure code to support per-tenant SSO config from start
 
-### ADR-005: Skip Stripe for Enterprise Payment Model
+### ADR-005: Full Auth Flow with Email Verification
+
+**Status:** Accepted (v2.0)
+
+**Context:** Need production-grade auth for enterprise SaaS.
+
+**Decision:** Adopt reference auth architecture with email verification, password reset, and Resend.
+
+**Rationale:**
+- Proven pattern from Converza production system
+- Email verification is professional requirement for SaaS
+- Password reset is essential user expectation
+- Resend is simple, cost-effective, good deliverability
+- NextAuth v5 has better App Router support
+- Security patterns (token expiry, one-time use, enumeration prevention) are industry standard
+
+**Consequences:**
+- Additional API routes and pages for auth flows
+- Resend dependency and API key required
+- Email deliverability to monitor
+
+### ADR-006: Skip Stripe for Enterprise Payment Model
 
 **Status:** Accepted (v2.0)
 
