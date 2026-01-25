@@ -102,3 +102,54 @@ Session history for LLM context continuity.
   - docs/project-brief.md (primary strategic document)
   - docs/research/research-outputs/ (all 12 research documents)
   - docs/initial docs/ (original vision for reference)
+
+---
+
+## SESSION 2026-01-25 18:30
+
+### CONTEXT
+- trigger: User invoked /pm command, requested *create-prd using project brief
+- scope: PRD creation for all 3 product phases with technical architecture
+- prior_state: Project brief complete; no PRD existed
+
+### CHANGES
+- `docs/main/prd.md`: created - 650+ line comprehensive PRD covering Phase 1/2/3
+- `docs/main/project-info.md`: updated - file map corrected (docs/main/ structure), phase descriptions enhanced
+
+### PRD STRUCTURE
+- 21 user stories total: Phase 1 (11), Phase 2 (5), Phase 3 (5)
+- Each story: priority, independent test, acceptance scenarios
+- Technical architecture: Railway prod, VPS staging, PostgreSQL multi-tenant (schema-per-tenant)
+- AI integration: Claude API for briefs/NL query, internal ML for predictions
+- NFRs: SOC 2, HECVAT, 99.9% SLA, security requirements
+
+### DECISIONS
+- Phase 1 scope expansion: Added predictive analytics (lapse risk, prioritization) to Phase 1 instead of Phase 3 | alternatives_considered: keeping predictions in Phase 3 (user pushed back - predictions are the core differentiator)
+- Phase 1 wow features: AI donor briefs, natural language query, next-best-action, one-click executive reports, anomaly alerts | alternatives_considered: basic dashboard-only MVP
+- Multi-tenancy: Schema-per-tenant vs row-level security | chose schema-per-tenant for cleaner isolation and compliance
+- P1 story prioritization: Data ingestion + health dashboard + lapse prediction + prioritization + donor briefs + NL query are all P1 | portfolio balance and executive reports are P2
+
+### DEPENDENCIES
+- added: none (PRD phase, no code yet)
+- removed: none
+
+### STATE
+- working: Comprehensive PRD complete at docs/main/prd.md
+- broken: none
+- blocked: none
+
+### CONTINUITY
+- next_steps:
+  1. Review PRD for gaps or corrections
+  2. Shard PRD into implementation epics (*shard-prd)
+  3. Begin technical architecture deep-dive (database schema, API design)
+  4. Commit documentation changes to git
+- open_questions:
+  - Tech stack selection: Next.js vs other frontend frameworks
+  - AI model hosting: Claude API vs self-hosted for predictions
+  - CRM integration approach: OAuth flow specifics for Blackbaud/Salesforce
+  - Benchmarking data: How to bootstrap peer comparison before multiple customers
+- related_files:
+  - docs/main/prd.md (primary requirements document)
+  - docs/main/project-brief.md (strategic foundation)
+  - .specify/templates/spec-template.md (feature spec template for sharding)

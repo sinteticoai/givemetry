@@ -10,9 +10,9 @@ GiveMetry is an AI-powered analytics platform for university advancement offices
 
 | Phase | Name | Description |
 |-------|------|-------------|
-| 1 | Advancement Health Assessment | One-time diagnostic: CSV upload → AI analysis → peer benchmarking → actionable report |
-| 2 | MGO Copilot | Daily workflow tool for gift officers with prioritized tasks, donor briefs, outreach drafts |
-| 3 | Advancement Intelligence Platform | Full platform: campaign forecasting, portfolio optimization, predictive modeling |
+| 1 | Advancement Health Assessment + Predictive Insights | CSV upload → AI analysis → lapse prediction → prioritization → donor briefs → NL query |
+| 2 | MGO Copilot | CRM sync → daily priority delivery → outcome tracking → meeting prep automation |
+| 3 | Advancement Intelligence Platform | Campaign forecasting → portfolio optimization → churn intervention → cross-institution benchmarking |
 
 ## Target Market
 
@@ -25,14 +25,16 @@ GiveMetry is an AI-powered analytics platform for university advancement offices
 ```
 /opt/apps/givemetry/
 ├── docs/
-│   ├── project-info.md              # This file - architecture/structure reference
-│   ├── project-log.md               # Session activity log
-│   ├── project-brief.md             # Comprehensive strategic brief (PRD-ready)
-│   ├── initial docs/                # Original vision documents
-│   │   ├── GiveMetry_Vision.md
-│   │   ├── competitive-research-2026-01-15 (1).md
-│   │   └── product-brief-advancement-health-assessment-2026-01-15.md
+│   ├── main/
+│   │   ├── project-info.md          # This file - architecture/structure reference
+│   │   ├── project-log.md           # Session activity log
+│   │   ├── project-brief.md         # Comprehensive strategic brief
+│   │   └── prd.md                   # Product Requirements Document (all 3 phases)
 │   └── research/
+│       ├── initial docs/            # Original vision documents
+│       │   ├── GiveMetry_Vision.md
+│       │   ├── competitive-research-2026-01-15 (1).md
+│       │   └── product-brief-advancement-health-assessment-2026-01-15.md
 │       ├── research-prompts/        # Deep research prompt templates
 │       │   ├── README.md
 │       │   ├── 01-competitive-landscape.md
