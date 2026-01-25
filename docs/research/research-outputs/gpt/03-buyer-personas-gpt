@@ -1,0 +1,404 @@
+# Advancement Technology Buyer Personas (Universities)
+**Use case:** AI-powered analytics + decisioning **overlay** for university advancement (integrates with existing CRM; no rip/replace).  
+**Primary segment:** Research universities (R1/R2/RCU), but personas generalize across most 4-year institutions.
+
+---
+
+## 0) How to read this doc
+Advancement tech deals are decided by:
+- **Economic buyer (can say YES):** VP Advancement / CDO
+- **Champion buyer (drives the process):** Advancement Services leader
+- **Methodology validator (influences trust):** Prospect Research / Prospect Development leader
+- **Adoption gate (makes it work or fail):** Major Gift Officers + frontline managers
+- **Veto power (can say NO):** CIO / Enterprise Apps / Security
+
+If you don’t win **security** and **adoption**, you don’t have a business.
+
+---
+
+## 1) Persona 1 — VP for Advancement / Chief Development Officer (CDO)
+### Snapshot
+- **Role in deal:** Economic buyer + political sponsor
+- **Primary job:** Raise money and protect institutional reputation while keeping the fundraising engine productive.
+- **What they actually care about:** pipeline health, major gift velocity, forecast reliability, campaign progress, donor retention.
+
+### Typical background
+- Career fundraiser (major gifts/campaigns), often moved up through leadership.
+- Board-facing, president-facing, donor-facing.
+
+### Responsibilities
+- Set fundraising strategy, targets, and accountability.
+- Align stakeholders: deans, president, trustees, volunteer leadership.
+- Own staffing, fundraising performance, and risk management.
+
+### Success metrics (KPIs)
+- Dollars raised (by campaign/year), pledge vs cash, participation/retention
+- Pipeline coverage, major gift stage movement, proposal volume, visit metrics
+- Forecast accuracy and executive reporting credibility
+
+### Top pain points
+- Forecasts don’t match reality; reporting is slow and contested.
+- Gift officer portfolios are bloated, stale, and political.
+- Data exists but isn’t trusted or usable in weekly decisions.
+- Too many tools; too little lift.
+
+### Technology sophistication
+- Medium. Cares about outcomes + risk; delegates the technical details.
+
+### Budget authority & thresholds
+- High influence on approvals; often needs:
+  - IT/security buy-in (non-negotiable)
+  - procurement/legal involvement above certain thresholds
+  - occasionally CFO/president sign-off for large multi-year commitments
+
+### Trusted information sources
+- Peer VPs/CDOs, CASE networks, consultants/search firms, board conversations
+- “What did [peer institution] do?” is decisive.
+
+### What makes them say yes
+- Clear, measurable lift: portfolio quality, meeting volume, proposal velocity, dollars raised.
+- Peer references from institutions they respect.
+- Low disruption: complements the CRM, doesn’t force process chaos.
+- Strong security posture so they don’t get burned.
+
+### What kills deals
+- “AI hype” without evidence.
+- Implementation that looks like a multi-quarter IT project.
+- Weak references / unknown vendor risk.
+- Fear of political fallout (“another tool MGOs won’t use”).
+
+### How to sell to them (message)
+> “We improve pipeline health and gift officer productivity without replacing your CRM—measurable in 60–90 days.”
+
+---
+
+## 2) Persona 2 — AVP / Director of Advancement Services (Primary Champion Buyer)
+### Snapshot
+- **Role in deal:** Champion + requirements owner + often budget holder
+- **Primary job:** Keep the advancement engine operational: CRM, data, reporting, governance, gift processing, service reliability.
+
+### Typical background
+- Advancement ops leader; may have started in CRM admin, reporting, or gift processing.
+- Deep institutional knowledge; often the “everything breaks here” role.
+
+### Responsibilities (common)
+- CRM ownership (admin, workflows, integrations)
+- Data governance and integrity
+- Reporting/analytics for leadership and frontline
+- Gift processing/records coordination (varies by institution)
+- Business process standards + adoption enforcement
+
+### Success metrics (KPIs)
+- CRM adoption, data accuracy/completeness, reporting SLAs
+- Governance compliance (portfolio rules, move management hygiene)
+- Internal stakeholder satisfaction (VP, MGOs, finance, IT)
+
+### Top pain points
+- Endless ad-hoc reporting requests.
+- Manual stitching of data across CRM + screening + spreadsheets.
+- Data definitions are contested (“what counts as a proposal/visit?”).
+- Vendor integrations oversold; IT blocks late.
+- Understaffed team doing mission-critical work.
+
+### Technology sophistication
+- High. Cares about:
+  - integration reality (APIs, exports, ETL)
+  - data model clarity
+  - governance controls + auditability
+  - admin UX and maintainability
+
+### Budget authority & thresholds
+- Often controls line items for systems/reporting tools or can assemble budget across buckets.
+- Can often approve smaller tools; escalates bigger deals to VP/CDO + procurement.
+
+### Trusted information sources
+- Peer advancement services leaders, CASE district communities, vendor reference calls.
+- Practical playbooks and “what actually worked” stories.
+
+### What makes them say yes
+- Integration + implementation plan that is credible and low-lift.
+- Security readiness (SSO, least privilege, audit logs, data retention).
+- Clear pilot success criteria and quick time-to-value.
+- Product reduces their operational burden (not adds to it).
+
+### What kills deals
+- “We’ll integrate later” vagueness.
+- Requirements explosion and customization chaos.
+- Tool that depends on perfect data hygiene to be useful.
+- Anything that triggers a long IT project.
+
+### How to sell to them (message)
+> “We automate reporting + portfolio governance so you stop being a manual data concierge.”
+
+**Evidence anchor:** Advancement services leadership commonly includes CRM ownership, data analytics/reporting, and gift processing/data integrity responsibilities (see sources at end).
+
+---
+
+## 3) Persona 3 — Director of Prospect Research / Prospect Development
+### Snapshot
+- **Role in deal:** Methodology validator + key influencer; sometimes budget holder for screening/research tools
+- **Primary job:** Improve prospect identification, qualification, prioritization, and portfolio quality.
+
+### Typical background
+- Prospect research and analytics; often active in APRA community.
+- Values methodology, transparency, and data discipline.
+
+### Responsibilities
+- Lead prospect research + often prospect management/portfolio governance
+- Provide actionable insight for MGOs and leadership
+- Maintain screening tools and research workflows
+- Define and defend scoring/qualification rules
+
+### Success metrics (KPIs)
+- Qualified prospects delivered, hit rate, time-to-qualification
+- Portfolio health indicators (stale prospects, capacity distribution)
+- Research throughput and decision support quality
+
+### Top pain points
+- Signal overload; too much noise from tools that don’t connect to outcomes.
+- Scores that are black-box or unexplainable.
+- Poor CRM hygiene sabotages modeling and trust.
+- Political battles over assignment and prospect ownership.
+
+### Technology sophistication
+- High and skeptical. They will test your claims.
+
+### Budget authority & thresholds
+- Medium. Often influences purchases; sometimes owns screening tool budget.
+
+### Trusted information sources
+- APRA peers, benchmarking, conference sessions, methodology documentation.
+- “How are other prospect shops doing this?” matters a lot.
+
+### What makes them say yes
+- Explainable scoring and clear data lineage (“why this prospect?”).
+- Evidence that recommendations improve portfolio outcomes (meetings, proposals, gifts).
+- Controls to manage false positives and keep noise low.
+
+### What kills deals
+- “AI magic” without transparency.
+- Unclear data sources or unverifiable signals.
+- High false positives that waste officer time.
+
+### How to sell to them (message)
+> “Explainable recommendations that improve portfolio quality—measured, auditable, and governance-ready.”
+
+**Evidence anchor:** Prospect Development roles frequently combine **prospect research + prospect management** and emphasize actionable insights and portfolio management leadership.
+
+---
+
+## 4) Persona 4 — Director of Annual Giving
+### Snapshot
+- **Role in deal:** Influencer; co-buyer if your platform drives segmentation/retention/participation
+- **Primary job:** Acquire, retain, and upgrade donors at scale through campaigns.
+
+### Typical background
+- Fundraising + marketing ops; multichannel campaign leadership.
+
+### Responsibilities
+- Annual giving strategy, segmentation, campaign execution
+- Donor retention and upgrade programs (often includes mid-level)
+- Performance reporting and attribution (varies by institution)
+
+### Success metrics (KPIs)
+- Participation rate, retention, upgrade rate, donor LTV
+- Campaign ROI, response rates, new donor acquisition
+
+### Top pain points
+- Segmentation is slow or weak.
+- Attribution and reporting are messy or delayed.
+- Personalization at scale feels impossible.
+- Data access depends on Advancement Services queue.
+
+### Technology sophistication
+- Medium. Wants tools that ship quickly and activate easily.
+
+### Budget authority & thresholds
+- Medium. May have discretionary budget for campaign tooling; larger buys go through services + VP.
+
+### Trusted information sources
+- CASE annual giving communities, peer directors, vendor comparisons.
+
+### What makes them say yes
+- Demonstrated lift in retention/response.
+- Faster segmentation and actionable recommendations.
+- Clean attribution that doesn’t require new operational burden.
+
+### What kills deals
+- Tool that only reports, but doesn’t activate.
+- Long implementation timelines.
+- Anything that increases campaign ops complexity.
+
+### How to sell to them (message)
+> “Better segmentation and next-best-actions that lift participation and retention—without waiting weeks for data pulls.”
+
+**Evidence anchor:** Annual giving director roles routinely emphasize donor acquisition/retention/upgrade and data-driven strategy.
+
+---
+
+## 5) Persona 5 — Major Gift Officer (MGO) (End User / Adoption Gate)
+### Snapshot
+- **Role in deal:** Adoption gate (their usage determines realized ROI and renewals)
+- **Primary job:** Build relationships, secure visits, advance prospects, close major gifts.
+
+### Typical background
+- Relationship-driven fundraiser; varies from very senior to mid-career.
+
+### Responsibilities
+- Portfolio management (moves, strategy, stewardship)
+- Visits, proposals, solicitations, follow-ups
+- CRM updates (often disliked)
+
+### Success metrics (KPIs)
+- Visits/meaningful contacts
+- Proposals submitted and closed
+- Dollars raised and portfolio movement
+
+### Top pain points
+- Too many prospects; unclear priorities.
+- Deadwood portfolios; bad assignments.
+- Admin burden stealing donor time.
+- Too many tools and alerts.
+
+### Technology sophistication
+- Low–medium. Will ignore tools that add steps.
+
+### Budget authority & thresholds
+- Low direct authority, but high influence via adoption and leadership feedback.
+
+### Trusted information sources
+- Other MGOs and frontline managers.
+- Anything that demonstrably saves time and improves outcomes.
+
+### What makes them say yes
+- Clear weekly priorities (“who to contact and why”).
+- Reduced admin work (auto-summaries, meeting prep, next steps).
+- Low noise; high precision; fits into existing workflow.
+
+### What kills deals
+- Alert spam, black-box scoring, “surveillance” feel.
+- Extra logins or duplicate data entry.
+- Recommendations that don’t match lived donor reality.
+
+### How to sell to them (message)
+> “We reduce portfolio noise and tell you who matters this week—so you spend more time with donors, not dashboards.”
+
+---
+
+## 6) Persona 6 — CIO / Director of Enterprise Applications (IT Stakeholder / Veto Power)
+### Snapshot
+- **Role in deal:** Veto power (security + integration gate)
+- **Primary job:** Reduce institutional risk, manage vendor sprawl, ensure secure integrations.
+
+### Typical background
+- Enterprise systems leadership, security governance, vendor management.
+
+### Responsibilities
+- Security assessments (vendor questionnaires), SSO/identity standards
+- Data access approvals, audit requirements
+- Integration architecture oversight
+- Contract governance with procurement/legal
+
+### Success metrics (KPIs)
+- Compliance posture, incident avoidance
+- Reliable integrations and uptime
+- Vendor risk and cost control
+
+### Top pain points
+- Shadow IT and unmanaged SaaS proliferation
+- Vendors failing security review late in cycle
+- Unclear data handling and retention policies
+- High operational burden on IT teams
+
+### Technology sophistication
+- High. Risk-first.
+
+### Budget authority & thresholds
+- Medium; can stop deals regardless of advancement enthusiasm.
+
+### Trusted information sources
+- EDUCAUSE practices, internal security frameworks, peer CIO networks.
+
+### What makes them say yes
+- Clear security artifacts and controls:
+  - SOC2-style controls (or equivalent)
+  - SSO/SAML
+  - least privilege, encryption, audit logs
+  - data retention and deletion policies
+- Clear data-flow diagrams and integration plan
+- Low operational burden; clean offboarding
+
+### What kills deals
+- Weak security posture or “we’re working on it”
+- Vague architecture and data flows
+- Nonstandard identity/auth, no audit trail
+
+### How to sell to them (message)
+> “We’re a low-risk overlay with standard higher-ed security posture and minimal IT burden.”
+
+---
+
+## 7) Quick cross-persona comparison (who cares about what)
+
+| Persona | Primary value lens | Biggest fear | What wins them |
+|---|---|---|---|
+| VP/CDO | outcomes + credibility | reputation risk + wasted spend | measurable lift + peer refs |
+| Adv Services | operational efficiency | integration failure + burden | fast time-to-value + admin control |
+| Prospect Dev | methodology + trust | black box + noise | explainable, auditable recommendations |
+| Annual Giving | campaign lift | slow activation | segmentation + attribution + speed |
+| MGO | time + relevance | extra work + alert spam | precise priorities + less admin |
+| IT/CIO | security + governance | breach + unmanaged data | security artifacts + clean architecture |
+
+---
+
+## 8) Standard “tell me you understand my world” questions (for discovery)
+Use these to validate and sharpen each persona profile quickly.
+
+**VP/CDO**
+- What would you need to see in 90 days to justify renewal?
+- What reporting is embarrassing today?
+
+**Advancement Services**
+- Where does reporting break (definitions, data quality, or delivery)?
+- Which integrations are non-negotiable and why?
+
+**Prospect Development**
+- Which signals do you trust today, and which are mostly noise?
+- What model transparency is required for you to recommend this?
+
+**Annual Giving**
+- What’s your #1 lever: acquisition, retention, or upgrade?
+- What segmentation do you want but can’t execute due to data constraints?
+
+**MGO**
+- What’s the last tool you ignored and why?
+- What weekly recommendation would actually change your behavior?
+
+**IT**
+- What security artifacts do you require before pilot approval?
+- What’s your fastest path for low-risk SaaS approval?
+
+---
+
+## 9) Source links used to ground role responsibilities (examples)
+These are concrete role descriptions you can cite when writing GTM or persona docs:
+
+### Advancement Services (CRM, data integrity, reporting, gift processing)
+- https://www.higheredjobs.com/admin/details.cfm?JobCode=179289461  
+- https://uportland.peopleadmin.com/postings/4623  
+
+### Prospect Development (prospect research + prospect management + portfolio oversight)
+- https://listings.jobs.gmu.edu/jobs/00789992-d31a-4e52-85a2-8420b45b41ed  
+- https://www.higheredjobs.com/admin/details.cfm?JobCode=179225454  
+- https://www.epip.org/director_of_prospect_development_hu  
+- https://spartantalent.uncg.edu/postings/32811  
+- https://teams-titles.hr.ufl.edu/teams-title/dir-prospect-strategy-research/  
+
+### Annual Giving (participation/retention/segmentation strategy)
+- https://jobs.elon.edu/jobs/021ad633-e52f-42d4-9848-83fb86602ebf  
+- https://teams-titles.hr.ufl.edu/teams-title/director-annual-giving/  
+- https://www.uvmfoundation.org/s/1690/images/gid2/editor_documents/foundation/careers/2023/final-executive_director_annual_giving_2023.pdf  
+
+### Chief Development Officer / Advancement leadership framing
+- https://www.easternct.edu/human-resources/_documents/cdo-search-profile.pdf  
+- https://www.academicimpressions.com/chief-advancement-officers-what-do-you-wish-youd-known-when-you-started/

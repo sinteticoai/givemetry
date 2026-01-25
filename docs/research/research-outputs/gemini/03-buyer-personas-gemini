@@ -1,0 +1,134 @@
+# Research Report: Advancement Technology Buyer Intelligence
+**Date:** January 25, 2026
+**To:** Product Strategy Team
+**Subject:** Buyer Personas, Decision Dynamics, and Go-to-Market Strategy
+
+---
+
+## 1. Executive Summary
+
+Selling into university advancement is a **consensus sale** characterized by high risk aversion but high loyalty once trust is established. The market is currently bifurcated: **Frontline Fundraisers** are desperate for efficiency and "AI agents," while **Advancement Services** (Operations) are defensive about data integrity and security.
+
+**The "Shadow IT" Dynamic:** Advancement offices often operate independently from university Central IT for daily operations (managing their own CRM admins), but they are strictly bound by Central IT’s security protocols (HECVAT). Your sales cycle will die without early engagement of the "Technical Validator" in Advancement Services.
+
+---
+
+## 2. Organizational Structure & Reporting
+
+The typical advancement office is a "two-sided" organization. Your product is likely **purchased by Operations** but **used by the Frontline**.
+
+### The "Three Pillars" Structure
+1.  **Frontline Fundraising (The "Revenue" Center)**
+    * **VP of Advancement (CDO):** Reports to University President.
+    * **AVP of Development:** Manages the gift officers.
+    * **Major Gift Officers (MGOs):** The end users.
+2.  **Advancement Services (The "Cost" Center)**
+    * **AVP of Advancement Services:** The operational gatekeeper.
+    * **Director of Prospect Research:** The primary evaluator for analytics tools.
+    * **Director of Data/Records:** The integration validator.
+3.  **Alumni Engagement**
+    * Focuses on "warmth" and events; usually a secondary stakeholder for analytics.
+
+**Data Ownership:** Data/Analytics typically sits under **Advancement Services**. This means the people who *need* the insights (MGOs) are not the ones who *control* the data (Services). Bridging this gap is your primary value proposition.
+
+---
+
+## 3. Buyer Persona Profiles
+
+### A. The Economic Buyer: VP of Advancement (CDO)
+* **Typical Background:** 20+ years in frontline fundraising; former Major Gift Officer. Non-technical, relationship-driven.
+* **Success Metrics:** Total dollars raised (The "Campaign Goal"); Alumni participation rates; Staff retention.
+* **Pain Points:** "I have 20 gift officers costing me $3M/year in salary. I don't know if they are visiting the right people, and 30% of them will quit this year."
+* **Buying Style:** Relies heavily on **peer validation** (e.g., "What is [Rival University] using?").
+* **Spending Limit:** ~$25k–$50k discretionary; above this often requires Trustee/President notification.
+
+### B. The Technical Buyer: AVP of Advancement Services
+* **Typical Background:** Data operations, finance, or database administration. Highly risk-averse.
+* **Success Metrics:** Database health, clean audits, system uptime, report accuracy.
+* **Pain Points:** "Don't sell me a tool that dumps 'dirty data' into my clean CRM. If the integration breaks, I get blamed, not the vendor."
+* **Buying Style:** Feature-focused. Will demand API documentation, SOC 2 reports, and reference calls with other data managers.
+
+### C. The Evaluator: Director of Prospect Research
+* **Typical Background:** Library science, data analysis, or wealth screening. Analytical, detail-oriented, overworked.
+* **Success Metrics:** Number of verified prospects found; accuracy of wealth capacity ratings; portfolio saturation.
+* **Pain Points:** **Reactive Work.** "Gift officers drop requests on my desk 24 hours before a trip. I spend all my time putting out fires instead of finding new prospects."
+* **Buying Style:** Eager for efficiency. Wants to know if the tool will save them hours of manual Google searching/LinkedIn verification.
+
+### D. The IT Stakeholder: University CIO / CISO
+* **Role:** The Veto Power. They do not care about fundraising features; they care about **risk**.
+* **Success Metrics:** Zero data breaches; FERPA compliance.
+* **Pain Points:** "Another cloud vendor holding donor PII (Personally Identifiable Information)."
+* **Requirement:** Completion of the **HECVAT** (Higher Education Community Vendor Assessment Toolkit).
+
+---
+
+## 4. Buying Process Flowchart
+
+The sales cycle in higher education is **seasonal** and **slow (6–9 months average)**.
+
+| Stage | Timeline | Stakeholder Action | Key Hurdle |
+| :--- | :--- | :--- | :--- |
+| **1. Discovery** | Month 1 | **Director of Research** finds tool via Apra/peer; requests demo. | Must prove it solves "Reactive Work" problem. |
+| **2. Technical Vet** | Month 2 | **AVP Services** reviews CRM integration. | "Does it write back to Raiser's Edge automatically?" |
+| **3. Security** | Month 3–4 | **CISO** reviews HECVAT (Higher Ed Cloud Vendor Assessment Toolkit). | **The "Valley of Death."** Deal stalls here without SOC 2. |
+| **4. Budgeting** | Month 5 | **VP Advancement** approves line item. | "Is this 'use it or lose it' money or next FY budget?" |
+| **5. Procurement** | Month 6 | **Purchasing Dept** reviews contract/legal. | Data ownership clauses (University must own the data). |
+
+**Strategic Timing:**
+* **Best time to demo:** February – April (Budget planning season).
+* **Best time to close:** May – June (Fiscal Year End "flush" funds).
+* **Dead Zone:** October – December (Year-End Giving sprint; no one will take a meeting).
+
+---
+
+## 5. Decision Criteria Matrix
+
+Buyers weight these factors differently. Score your product against this matrix.
+
+| Criteria | Weight | What They Look For |
+| :--- | :--- | :--- |
+| **1. CRM Integration** | **Critical** | Native integration with Blackbaud (RE NXT) or Salesforce. CSV uploads are a "non-starter" for modern shops. |
+| **2. Data Security** | **Critical** | **HECVAT** ready. Compliance with FERPA (student data) and potentially HIPAA (if healthcare data is mixed). |
+| **3. Actionability** | High | Does it provide *insights* (who to call) or just *information* (net worth)? They prefer the former. |
+| **4. Price Model** | Medium | Unlimited user licenses preferred over "per seat" (to encourage MGO adoption). |
+| **5. Peer Proof** | Medium | "Who else like us is using this?" They want reference calls with similar institutions (e.g., small liberal arts colleges trust other small liberal arts colleges). |
+
+---
+
+## 6. Conference & Community Calendar
+
+Target **Operations** and **Research** events to find the buyers, not just general fundraising galas.
+
+| Event | Date / Location | Audience | Strategy |
+| :--- | :--- | :--- | :--- |
+| **Apra Prospect Development** | **August (Annual)** | **Prospect Researchers** (Evaluators) | **Must Attend.** This is the "Super Bowl" for prospect research tools. Sponsor a session on AI. |
+| **aasp Summit** | **September (Annual)** | **Advancement Services** (Technical Buyers) | Exhibit here. Focus on the *Ops* benefits (integration, clean data). |
+| **CASE Drive** | **Spring (Annual)** | **Data Analysts / VPs** | High-level thought leadership. Good for brand awareness. |
+| **Salesforce Education Summit** | **Spring (Annual)** | **Tech-Forward Universities** | Essential if you are a Salesforce ISV partner. |
+
+---
+
+## 7. Pricing Expectations & Sensitivity
+
+* **The "Credit Card" Tier:** **<$10,000/year.**
+    * Can be approved by a Director or AVP on a procurement card (P-Card).
+    * *Strategy:* Good for a "Pilot" or "Lite" version to get foot in the door.
+* **The "VP Authority" Tier:** **$10,000 – $24,999/year.**
+    * Often the discretionary limit for a VP without triggering a formal RFP (Request for Proposal).
+    * *Strategy:* **Target Price Point.** Price your core offering at **$18k–$22k** to speed up sales cycles.
+* **The "RFP" Tier:** **$50,000+/year.**
+    * Requires formal bid process, committee review, and 9-12 month cycle.
+    * *Strategy:* Avoid for initial market entry unless targeting massive R1 universities.
+
+---
+
+## 8. Key Quotes & Insights
+
+> **On Pain Points:**
+> *"We have plenty of data. We have wealth screenings from three years ago we haven't touched. I don't need more data; I need to know which 5 people my gift officer should call tomorrow."* — Director of Research, Private University
+
+> **On Integration:**
+> *"If I have to manually export a CSV from your tool and import it into Raiser's Edge every Friday, I'm not buying it. We are too understaffed for manual ETL."* — AVP Advancement Services
+
+> **On AI Fears:**
+> *"My VPs are excited about AI, but my General Counsel is terrified. If you can show me how you handle data privacy and that you aren't training your public model on our donor data, you win."* — University CIO

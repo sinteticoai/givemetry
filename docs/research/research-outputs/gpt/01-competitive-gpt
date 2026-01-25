@@ -1,0 +1,281 @@
+# AI-Driven Advancement Technology Competitive Landscape (2024–2026)
+*Purpose:* Competitive intelligence for an **AI analytics + decision layer** that integrates with existing advancement CRMs (Blackbaud, Salesforce) rather than replacing them.
+
+---
+
+## 1) Executive Summary: Competitive Dynamics
+
+### The advancement tech stack (reality, not vendor marketing)
+Most institutions run a layered stack:
+
+- **System of record (CRM):** Blackbaud Raiser's Edge NXT; Salesforce Nonprofit Cloud  
+- **Intelligence/data layer:** wealth + propensity + signals (Windfall, iWave, DonorSearch)  
+- **Gift officer workflow layer:** cadences, alerts, “next best actions” (EverTrue Signal, Gravyty Raise)  
+- **Engagement channels:** video, giving pages, alumni platforms (ThankView, Fundraise Up, Classy, Graduway)  
+- **Stewardship packaging:** proposals/impact reports at scale (Ovrture)  
+- **Rollups bundling modules:** Bonterra; EverTrue suite expansion
+
+### What “AI” mostly is in this market today
+Most “AI” is one of:
+1) **GenAI productivity** (drafting, summarizing, personalization), or  
+2) **Predictive scoring** packaged with 3rd-party data.
+
+Few offerings operate as a true **cross-system decision layer** with measurable lift.
+
+### High-level competitive pressure
+- **Incumbents** will frame AI as a platform feature (“chat/summaries everywhere”).
+- **Point solutions** win by solving one job well (screening, video, conversion).
+- **Workflow overlays** (EverTrue/Gravyty) win by changing frontline behavior.
+- Your best wedge: **CRM-agnostic intelligence + decisioning + closed-loop measurement** with governance.
+
+---
+
+## 2) Direct Competitor Profiles (Structured)
+
+> Note: Many vendors are **quote-based**. Where pricing is listed via 3rd parties (Capterra/G2), treat as directional.
+
+### 2.1 Gravyty (Raise / Advance / Graduway; plus Ivy.ai + Ocelot)
+- **Core offering / positioning:** AI-powered engagement & fundraising suite for higher ed (donor outreach + digital fundraising + alumni community + AI assistants).
+- **Target market:** Higher ed; broad institutional adoption claims.
+- **Pricing:** Quote-based (suite).
+- **Key AI/ML:** AI-assisted outreach/prioritization; AI assistant capability via acquisitions.
+- **Strengths:** deep higher-ed focus; broad surface area across lifecycle.
+- **Vulnerabilities:** suite sprawl; may feel like another platform vs neutral “intelligence layer.”
+- **Recent moves:** consolidation into suite; ongoing positioning around AI.
+
+---
+
+### 2.2 EverTrue (Signal) + ThankView + acquired DonorSearch
+- **Core offering / positioning:** Donor Experience Platform; **Signal** as AI-enhanced donor intelligence + outreach/cadences; ThankView adds video channel; DonorSearch adds prospect research/scoring.
+- **Target market:** advancement teams (higher ed heavy), major gifts + annual.
+- **Pricing:** Quote-based.
+- **Key AI/ML:** “AI-enhanced” prioritization, summaries, segmentation; embedded video via Signal Video.
+- **Funding/ownership:** recapitalized by Rubicon Technology Partners; platform strategy includes ThankView and DonorSearch.
+- **Strengths:** gift officer workflow focus (cadence/accountability); bundles intelligence + engagement.
+- **Vulnerabilities:** overlay workflow adoption friction; less “neutral layer.”
+
+---
+
+### 2.3 DonorSearch (Prospect Research; “DonorSearch AI”) — now aligned under EverTrue/Rubicon
+- **Core offering / positioning:** prospect research + screening + predictive modeling to prioritize donors.
+- **Target market:** nonprofits broadly; used in higher ed.
+- **Pricing:** demo/quote-based.
+- **Key AI/ML:** predictive modeling + prospect scoring/prioritization.
+- **Strengths:** established category; data depth; trusted by research teams.
+- **Vulnerabilities:** “just another score” unless tied to workflow + outcomes.
+
+---
+
+### 2.4 iWave (by Kindsight)
+- **Core offering / positioning:** donor prospect research + wealth screening + predictive analytics.
+- **Target market:** nonprofits + advancement teams; prospect research lane.
+- **Pricing:** 3rd-party listed tiers (directional): Starter ~$4,150/yr; Pro ~$5,350/yr; higher tiers quote-based.
+- **Key AI/ML:** predictive analytics and alerts.
+- **Strengths:** clear use case; pricing anchors; part of broader suite.
+- **Vulnerabilities:** research/screening-centric; less daily decisioning.
+
+---
+
+### 2.5 Windfall (Consumer Wealth Data / Wealth Screening)
+- **Core offering / positioning:** household net worth + wealth signals; emphasizes proprietary algorithms + SOC2 posture.
+- **Target market:** nonprofits/universities needing wealth data.
+- **Pricing:** custom/quote-based.
+- **Key AI/ML:** model-driven net worth/propensity estimates; analytics reporting.
+- **Strengths:** modern data product; strong data positioning.
+- **Vulnerabilities:** commoditization + accuracy scrutiny; must connect to measurable fundraising outcomes.
+
+---
+
+### 2.6 Bloomerang (Donor retention / CRM)
+- **Core offering / positioning:** donor management + retention for nonprofits (more “all-in-one CRM” than overlay intelligence).
+- **Target market:** SMB/mid-market nonprofits (less enterprise university advancement).
+- **Pricing:** published from ~$99/month.
+- **Strengths:** easy buying motion; clear retention pitch.
+- **Vulnerabilities:** not the high-end university advancement specialist; replaces CRM vs overlays it.
+
+---
+
+### 2.7 Ovrture (Stewardship packaging / reports)
+- **Core offering / positioning:** personalized donor stewardship reports + donor websites at scale.
+- **Target market:** major gifts stewardship teams (education/healthcare/culture).
+- **Pricing:** annual license; depends on team size + report volume (not simple seat pricing).
+- **Key AI/ML:** not strongly “AI-first”; value is workflow + personalization + analytics.
+- **Strengths:** tangible donor-facing output; easy ROI narrative.
+- **Vulnerabilities:** narrow lane; doesn’t solve prospecting/decisioning.
+
+---
+
+### 2.8 ThankView (Video Donor Engagement) — integrated into EverTrue “Signal Video”
+- **Core offering / positioning:** personalized video outreach channel.
+- **Target market:** advancement teams seeking higher response engagement.
+- **Pricing:** typically quote-based.
+- **Strengths:** differentiated engagement modality; can boost response rates.
+- **Vulnerabilities:** channel tool, not intelligence layer; easily bundled.
+
+---
+
+### 2.9 Fundraise Up (Donation optimization)
+- **Core offering / positioning:** donation forms + conversion optimization; markets “AI” lift.
+- **Target market:** nonprofits broadly; complements CRMs downstream.
+- **Pricing:** ~4% platform fee + processing; no subscription.
+- **Funding:** major growth investment (publicly reported).
+- **Strengths:** clear “raise more” conversion story; aligned pricing.
+- **Vulnerabilities:** sits at giving-form layer, not frontline advancement decisioning.
+
+---
+
+### 2.10 Classy (GoFundMe-owned)
+- **Core offering / positioning:** digital fundraising campaigns platform.
+- **Target market:** nonprofits; digital fundraising emphasis.
+- **Ownership:** acquired by GoFundMe.
+- **Strengths:** distribution + brand in digital fundraising.
+- **Vulnerabilities:** not major-gift workflow; upstream intelligence is your lane.
+
+---
+
+### 2.11 Bonterra (Rollup suite: EveryAction, Network for Good, etc.)
+- **Core offering / positioning:** broad “social good software” suite built via rollup.
+- **Target market:** nonprofits; campaign/digital/engagement breadth.
+- **Pricing:** enterprise/module pricing.
+- **Strengths:** breadth; cross-sell.
+- **Vulnerabilities:** integration debt + uneven modules; “not built for higher-ed advancement” perception risk.
+
+---
+
+## 3) Incumbent CRM AI Capabilities (2024–2026)
+
+### 3.1 Blackbaud (Raiser’s Edge NXT)
+- Direction: embedded “Blackbaud AI” including chat/assistant experiences and workflow enhancements.
+- **Implication:** embedded chat/summaries are not your differentiation. Your differentiation must be:
+  - cross-system + multi-source fusion, and/or
+  - materially better decisioning + outcome measurement.
+
+### 3.2 Salesforce (Nonprofit Cloud + Einstein / agentic direction)
+- Salesforce positions Einstein features for summaries, content generation, and workflow acceleration in nonprofit contexts.
+- Broader platform trend: agentic functionality across apps.
+- **Implication:** you win if:
+  - time-to-value is fast (minimal implementation),
+  - you prove lift with real outcomes (meetings/asks/closed gifts), not “nice summaries.”
+
+### 3.3 Are incumbents acquiring AI startups?
+- More visible dynamic in this niche is **private equity/platform consolidation** (EverTrue/Bonterra paths) rather than CRM incumbents buying every AI point solution.
+
+---
+
+## 4) Adjacent Ecosystem Map (Categories)
+
+Use these categories to define integration roadmap and competitive boundaries:
+
+- **Wealth screening / propensity data:** iWave, Windfall, DonorSearch (plus other category peers)
+- **Prospect research workflow:** iWave, DonorSearch
+- **Gift officer workflow overlays:** EverTrue Signal, Gravyty Raise
+- **Digital giving / conversion:** Fundraise Up, Classy, Gravyty Advance
+- **Video engagement:** ThankView
+- **Stewardship reporting:** Ovrture
+- **Matching gifts:** (common integration category; e.g., Double the Donation)
+- **Alumni communities:** Graduway (Gravyty) and other alumni engagement platforms
+
+---
+
+## 5) AI Adoption in Nonprofit / Advancement (2024–2026)
+
+### What’s consistent across surveys
+- AI usage is high, but **strategic adoption is shallow**.
+- Most common uses: **writing/personalization**, less analysis/decisioning.
+- Barriers: governance/policy gaps, trust, data quality, integration effort.
+
+### Representative data points
+- CASE/GiveCampus survey reports a large share of advancement teams using AI (heavy skew toward content use cases).
+- Other sector surveys show majority experimentation but limited governance maturity.
+
+---
+
+## 6) Feature Comparison Matrix (Practical)
+
+| Vendor | Primary JTBD | AI claim type | Integration posture | Pricing posture |
+|---|---|---|---|---|
+| Gravyty | engagement + fundraising suite | AI outreach + assistants | integrates across stack | quote-based |
+| EverTrue Signal | gift officer cadence + prioritization | “AI-enhanced” scoring/summaries | sits alongside CRM | quote-based |
+| DonorSearch | prospect research + scoring | predictive modeling | CRM integrations | quote-based |
+| iWave | wealth/prospect research | predictive analytics | CRM integration (tiered) | ~$4k+/yr (directional) |
+| Windfall | wealth data | model-driven net worth | data sync focus | custom |
+| Ovrture | stewardship reports | personalization + analytics | imports from CRM | annual license |
+| Fundraise Up | donation conversion | “AI” optimization claims | downstream CRM | 4% platform fee |
+| Classy | digital fundraising | not primarily AI | downstream CRM | varies |
+| Bloomerang | SMB CRM/retention | varies | all-in-one CRM | from $99/mo |
+| Bonterra | suite rollup | varies | module suite | enterprise |
+
+---
+
+## 7) Market Positioning Map (AI sophistication vs Advancement specialization)
+igh advancement specialization
+^
+| EverTrue Signal Gravyty Raise/Advance
+| Ovrture
+|
+| iWave / DonorSearch (Your wedge: neutral decision layer)
+|
+| Bloomerang Fundraise Up Classy Bonterra
++--------------------------------------------------> AI sophistication
+Low AI / workflow High AI / agentic + predictive
+
+
+---
+
+## 8) Whitespace / Gaps (Where you can win)
+
+1) **CRM-agnostic decision layer for gift officers**
+   - Not another “score.” A system that turns multi-source signals into **next best actions**.
+
+2) **Closed-loop measurement & attribution**
+   - Prove lift: meetings booked, asks made, dollars raised, velocity improved.
+   - Tie actions → outcomes with auditability.
+
+3) **Governance-first AI**
+   - Permissions, audit logs, PII controls, policy templates, human-in-the-loop defaults.
+
+4) **Signal fusion beyond wealth**
+   - Wealth ≠ intent. Fuse engagement + affinity + relationships + career moves + pipeline stage.
+
+5) **Implementation-light integration**
+   - If adoption requires 6 months, you lose to embedded CRM AI and existing overlays.
+
+---
+
+## 9) Sources (URLs for Verification)
+
+> Paste these into a research workspace; validate recency for any 2025–2026 claims.
+
+- Gravyty: https://gravyty.com/
+- EverTrue Signal: https://www.evertrue.com/signal/
+- EverTrue Signal Video: https://www.evertrue.com/blog/introducing-signal-video-personalized-donor-outreach-made-easy/
+- DonorSearch: https://www.donorsearch.net/
+- iWave / Kindsight: https://kindsight.io/iwave/
+- Windfall Wealth Screening: https://www.windfall.com/platform/wealth-screening
+- Bloomerang Pricing: https://bloomerang.co/pricing/
+- Ovrture: https://ovrture.com/
+- Ovrture FAQ / pricing basis: https://ovrture.com/donor-engagement-software-faq/
+- Fundraise Up Pricing: https://fundraiseup.com/pricing/
+- GoFundMe acquisition of Classy: https://www.businesswire.com/news/home/20220517006221/en/GoFundMe-Completes-Acquisition-of-Classy
+
+AI adoption / surveys:
+- CASE + GiveCampus AI in Advancement (Mar 2024 PDF): https://www.case.org/system/files/media/inline/CASE%20Insights%20AI%20in%20Advancement%20with%20GiveCampus%20March%202024.pdf
+- Washburn & McGoldrick Advancement Moving Forward (Jun 2024 PDF): https://www.wash-mcg.com/wp-content/uploads/Washburn-McGoldrick-Advancement-Moving-Forward-Report-June-2024.pdf
+
+Incumbent AI context:
+- Salesforce Nonprofit Cloud help: https://help.salesforce.com/s/articleView?id=sfdo.nonprofit_cloud.htm&type=5
+
+---
+
+## 10) Notes / Next Actions
+
+- Build an internal “competitive claims tracker”:
+  - **AI features claimed**
+  - **Evidence (docs, screenshots, release notes)**
+  - **Pricing evidence**
+  - **Integration requirements**
+- Pick 1–2 primary segments (based on your market sizing brief) and re-score competitors by:
+  - time-to-value,
+  - data access constraints,
+  - governance fit,
+  - measurable lift potential.

@@ -1,0 +1,338 @@
+# Research Brief 01 — Advancement Technology Market Sizing (U.S.) (2024–2026)
+**Date:** 2026-01-25  
+**Product context:** AI-powered **analytics + decisioning layer** for advancement offices that **integrates with existing CRMs** (Blackbaud/Salesforce/Ellucian) rather than replacing them.
+
+---
+
+## 0) Definitions and sizing approach
+
+### Unit of analysis
+- **Customer = institution-level advancement org** (university advancement office) or **foundation entity** (hospital foundation / health system philanthropy org), depending on segment.
+- Revenue model assumed: **annual contract value (ACV)** per institution, optionally + services.
+
+### TAM / SAM / SOM
+- **TAM (Total Addressable Market):** all U.S. orgs that could plausibly buy an advancement intelligence layer.
+- **SAM (Serviceable Available Market):** your realistic first product fit segment (beachhead).
+- **SOM (Serviceable Obtainable Market):** what you can capture in ~3–5 years given sales cycles and capacity.
+
+---
+
+## 1) Higher Education Market
+
+### 1.1 How many degree-granting institutions exist in the U.S.?
+Anchor sources:
+- NCES fast facts / indicator pages for U.S. postsecondary institution counts and breakdowns.
+  - NCES “Condition of Education” (postsecondary institutions): https://nces.ed.gov/programs/coe/indicator/csa/postsecondary-institutions
+
+Practical operational breakdown (used for early market segmentation):
+- **~2,267 four-year institutions**
+- **~1,275 two-year institutions**
+(Source: NCES indicator page above)
+
+> Note: NCES also reports broader counts (e.g., Title IV degree-granting) depending on the table and year. Use the NCES indicator page as the canonical reference for your model and keep the year consistent across all inputs.
+
+---
+
+### 1.2 Carnegie Classification breakdown (research tiers = strongest beachhead)
+A 2025 Carnegie update (reported via Higher Ed Dive) lists:
+- **R1: 187**
+- **R2: 139**
+- **RCU (Research Colleges & Universities): 215**  
+Total **research-ish pool ≈ 541** institutions.
+Source: https://www.highereddive.com/news/colleges-with-r1-status-carnegie-classifications-2025/740012/
+
+---
+
+### 1.3 How many have formal advancement/development offices?
+No clean public dataset gives “formal advancement office” prevalence across all U.S. institutions. Pragmatic assumption:
+- **Nearly all 4-year institutions** have some advancement function (even if small).
+- **Many 2-year institutions** have limited advancement capacity or rely on district/system foundations.
+
+Use discovery + buyer qualification to convert “institutions” → “qualified advancement orgs.”
+
+---
+
+### 1.4 Typical advancement office budget (proxy)
+You need a measurable, sector-accepted proxy. A strong one is **fundraising expenditure** benchmarks from CASE.
+
+CASE research brief provides median fundraising expenditure and cost per dollar raised by tier (VSE participants):
+- **Research/doctoral:** median fundraising expenditure **$11.42M**, cost per dollar raised **$0.12**
+- **Master’s:** median fundraising expenditure **$1.70M**, cost per dollar **$0.21**
+- **Baccalaureate:** median fundraising expenditure **$1.42M**, cost per dollar **$0.23**  
+Source (CASE PDF): https://www.case.org/system/files/media/file/CASE%20VSE%202019%20Res.%20Brief%20%234--Advance.%20Invest.%20and%20Fndrsng--screen.pdf
+
+This is not “technology budget,” but it anchors what these orgs can plausibly spend without fantasy pricing.
+
+---
+
+### 1.5 Typical technology spend within advancement budgets
+Hard public benchmarks specific to **advancement** tech spend are scarce. Broad nonprofit tech benchmarks often cite **<3% of budgets spent on tech** (directional, not advancement-specific).  
+One reference example: https://www.philanthropy.com/article/nonprofits-spend-less-than-3-of-their-budgets-on-tech-heres-how-they-can-change-that/
+
+For modeling, treat advancement tech/data spend as a fraction of fundraising expenditure (see Section 5).
+
+---
+
+### 1.6 Average number of gift officers by tier (staffing proxy)
+Older CASE AIMS examples show large staff variance by tier (directional, not current-year accurate):
+- Example baccalaureate fundraising staff median: **~12**
+- Example public doctoral fundraising staff median: **~56**
+Source (CASE AIMS PDF): https://www.case.org/system/files/media/file/AIMS_March2012.pdf
+
+Use staffing to quantify ROI: your product must multiply scarce staff time, not add friction.
+
+---
+
+## 2) Healthcare Philanthropy Market (adjacent expansion)
+
+### 2.1 How many hospital foundations exist in the U.S.?
+There isn’t a clean public count for “hospital foundations.” Use hospital count + an adoption range.
+
+- **Total U.S. hospitals: 6,120** (AHA fast facts; based on AHA Annual Survey)  
+Source (AHA PDF): https://www.aha.org/system/files/media/file/2024/01/fast-facts-on-us-hospitals-2024-20240112.pdf
+
+**Working range assumption:** 70–85% have a foundation/philanthropy vehicle → **~4,300 to ~5,200** potential endpoints.  
+This must be refined using health system consolidation data (many hospitals roll up into one foundation).
+
+---
+
+### 2.2 Size distribution (annual fundraising performance tiers)
+AHP “high performers” thresholds indicate stark differences by org type:
+- **Community hospitals:** top 25% raise **>$8.4M**
+- **Academic medical centers:** top 25% raise **>$80.0M**
+- **Healthcare systems:** top 25% raise **>$50.3M**  
+Source: https://www.ahp.org/resources-and-tools/report-on-giving-benchmarking/highperformers
+
+Academic medicine cost structure (useful for pricing sanity):
+- AAMC reports **median cost per dollar raised ~ $0.14** (gift year survey results)  
+Source: https://www.aamc.org/data-reports/faculty-institutions/data/2024-fundraising-data
+
+---
+
+### 2.3 How healthcare differs from higher ed (for product + compliance)
+Key differences you must plan for:
+- **Donor types:** “grateful patients” + clinical affinity vs alumni/parents
+- **Regulatory:** HIPAA / PHI constraints (data access, permissions, audit trails)
+- **Campaign structures:** major gifts + grateful patient programs, often tied to service lines and capital projects
+
+Healthcare is high-value but higher complexity. Treat as Phase 2 unless you already have domain-expert depth and compliance design.
+
+---
+
+## 3) General Nonprofit Market (context)
+Candid reports ~**1.9M registered nonprofits** in the U.S. (broad sector context).  
+Source: https://candid.org/impact-insights/us-social-sector/money/
+
+For this product, the general nonprofit universe is not a coherent initial market. Focus on institution-like orgs (universities, health systems) where:
+- CRMs exist,
+- data exists,
+- budgets exist,
+- and outcomes are measurable.
+
+---
+
+## 4) Technology spend data and category sizing (model-based)
+
+### 4.1 Higher ed giving volume (top-down anchor)
+CASE VSE reports:
+- **FY2024 total giving to higher ed: $61.5B**  
+Source example coverage: https://www.higheredjobs.com/Articles/articleDisplay.cfm?ID=4348
+
+(Prefer linking directly to CASE VSE press release if available in your research environment; the above is a public summary reference.)
+
+---
+
+## 5) TAM / SAM / SOM model (explicit assumptions)
+
+### 5.1 Convert giving → fundraising expense (proxy)
+Use cost-per-dollar raised. CASE shows medians like:
+- Research/doctoral: ~$0.12 per $1 raised
+- Master’s: ~$0.21
+- Baccalaureate: ~$0.23  
+Source: CASE PDF (Section 1.4)
+
+To avoid overfitting, use a blended range for the sector.
+
+**Given:** Higher ed giving = **$61.5B**
+
+Compute expense scenarios:
+- **Conservative:** expense = 61.5B × 0.12 = **$7.38B**
+- **Mid:** expense = 61.5B × 0.15 = **$9.23B**
+- **Aggressive:** expense = 61.5B × 0.21 = **$12.92B**
+
+---
+
+### 5.2 Estimate advancement tech/data pool as % of fundraising expense
+Because advancement-specific tech ratios aren’t cleanly published, model a band:
+
+| Scenario | Fundraising expense (proxy) | Tech % of expense | Implied annual advancement tech pool |
+|---|---:|---:|---:|
+| Conservative | $7.38B | 2% | **$147.6M** |
+| Mid | $9.23B | 3% | **$276.8M** |
+| Aggressive | $12.92B | 4% | **$516.6M** |
+
+---
+
+### 5.3 “Intelligence layer” share of advancement tech pool
+Your product is not all advancement tech. It’s mainly:
+- analytics/BI
+- signal fusion + scoring
+- performance measurement
+- decisioning / next-best-action
+
+**Assumption band:** intelligence layer captures **10–25%** of the advancement tech pool.
+
+Implied **Higher Ed Intelligence Layer TAM (annual):**
+- Low end: 10% of $147.6M = **$14.8M**
+- High end: 25% of $516.6M = **$129.2M**
+
+This is a planning band, not gospel.
+
+---
+
+### 5.4 Segment-level bottom-up model (recommended for product decisions)
+
+#### Segment counts (U.S.)
+- **Research-ish (R1+R2+RCU): ~541**  
+  Source: Higher Ed Dive Carnegie counts: https://www.highereddive.com/news/colleges-with-r1-status-carnegie-classifications-2025/740012/
+- **Other 4-year institutions:** ~2,267 − 541 = **~1,726**  
+  Source for 4-year count: NCES indicator page: https://nces.ed.gov/programs/coe/indicator/csa/postsecondary-institutions
+- **2-year institutions:** **~1,275**  
+  Source: NCES indicator page above
+
+#### Plausible ACV bands (pricing sanity)
+Anchor pricing to what these orgs already spend (fundraising expenditure medians; CASE).
+
+| Segment | Count | Fundraising expense (median proxy) | Plausible ACV band (analytics layer) |
+|---|---:|---:|---:|
+| Research-ish (R1/R2/RCU) | 541 | ~$11.42M (doctoral proxy) | **$75k–$250k** |
+| Other 4-year | 1,726 | ~$1.4M–$1.7M | **$20k–$80k** |
+| 2-year | 1,275 | often small | **$5k–$25k** |
+
+CASE source for expenditure medians: https://www.case.org/system/files/media/file/CASE%20VSE%202019%20Res.%20Brief%20%234--Advance.%20Invest.%20and%20Fndrsng--screen.pdf
+
+---
+
+### 5.5 SAM (beachhead)
+**Beachhead SAM = Research-ish (R1/R2/RCU) = ~541 institutions.**
+
+SAM revenue examples:
+- If ACV = $100k → **$54.1M**
+- If ACV = $150k → **$81.2M**
+- If ACV = $200k → **$108.2M**
+
+---
+
+### 5.6 SOM (3–5 year realistic capture)
+Assume 3–5 year SOM = **5–15%** of beachhead due to procurement + implementation + trust-building.
+- 5% of 541 ≈ **27 institutions**
+- 15% of 541 ≈ **81 institutions**
+
+At $150k ACV:
+- 27 × $150k ≈ **$4.05M ARR**
+- 81 × $150k ≈ **$12.15M ARR**
+
+---
+
+## 6) CRM market share in higher ed advancement (what you can safely say)
+Public, reliable market-share figures for *advancement CRMs specifically* are not consistently disclosed in open sources.
+
+What you can say without making up numbers:
+- Blackbaud positions Raiser's Edge NXT as a leading fundraising product and publishes roadmaps/updates.  
+  Example: https://www.blackbaud.com/newsroom/article/blackbaud-announces-hundreds-of-product-updates-and-shares-product-roadmaps-for-social-impact-innovation
+- Salesforce continues pushing nonprofit/education cloud offerings relevant to advancement.  
+  Example: https://www.salesforce.com/education/advancement-software/
+- Ellucian markets CRM for higher-ed advancement use cases.  
+  Example: https://www.ellucian.com/assets/en/ebook/powering-your-fundraising-programs-crm-advance.pdf
+
+Implication: design your GTM as **CRM-agnostic** (overlay layer), not “we’re aligned to the dominant CRM share.”
+
+---
+
+## 7) Segmentation criteria (decision framework)
+
+Score each segment (R1/R2/RCU vs other 4-year vs healthcare) across:
+
+1) **Acuity of pain**  
+   - Data exists but analytics/decisioning is weak  
+   - Pipeline visibility, forecasting, portfolio management, and attribution are painful
+
+2) **Budget authority and willingness to pay**  
+   - Can approve $75k–$250k without a multi-year committee ordeal?
+
+3) **Sales cycle length**  
+   - Procurement + security + integration + champions  
+   - Faster cycles often correlate with smaller orgs, but smaller orgs also have weaker budgets and data
+
+4) **Case study power**  
+   - Wins at R1/R2/AMC are stronger proof for expansion
+
+5) **Implementation risk**  
+   - Data quality, integration complexity, security requirements, stakeholder count
+
+---
+
+## 8) Beachhead recommendation (clear and blunt)
+### Start with: **R1/R2/RCU advancement offices**
+Reason:
+- They have the **data**, **complexity**, and **budget** to justify an intelligence layer.
+- They produce the strongest case studies for expansion.
+- They have staffing constraints where real productivity lift is valuable.
+
+Don’t start with 2-year institutions unless you intentionally build a separate PLG product and price point.
+
+Healthcare is a great Phase 2 (higher ACV potential), but compliance + complexity will slow you down unless you deliberately invest there.
+
+---
+
+## 9) Key uncertainties / data gaps (must be resolved to make this decision-grade)
+
+1) **Advancement tech spend as % of fundraising expense** (advancement-specific) is not cleanly published.
+2) **Formal advancement office prevalence** is not directly measured across all institutions.
+3) **CRM market share in advancement** isn’t reliably published as open data.
+4) **Hospital foundation count** is complicated by health system consolidation; hospital count is clear, foundation count is not.
+
+Recommended resolution:
+- 15–20 discovery calls across R1/R2/RCU (and 5–8 healthcare systems) to capture:
+  - actual advancement tech/data budgets,
+  - integration constraints,
+  - buying process,
+  - and top 3 workflows where AI decisioning would be used daily.
+
+---
+
+## 10) Sources (copy/paste)
+NCES postsecondary institutions (counts, 4-year vs 2-year):
+- https://nces.ed.gov/programs/coe/indicator/csa/postsecondary-institutions
+
+Carnegie 2025 R1/R2/RCU counts (reported):
+- https://www.highereddive.com/news/colleges-with-r1-status-carnegie-classifications-2025/740012/
+
+CASE fundraising expenditure medians + cost per dollar raised (PDF):
+- https://www.case.org/system/files/media/file/CASE%20VSE%202019%20Res.%20Brief%20%234--Advance.%20Invest.%20and%20Fndrsng--screen.pdf
+
+CASE AIMS staffing examples (older; directional):
+- https://www.case.org/system/files/media/file/AIMS_March2012.pdf
+
+Higher ed giving totals (public coverage of CASE VSE FY2024 result):
+- https://www.higheredjobs.com/Articles/articleDisplay.cfm?ID=4348
+
+AHA total U.S. hospitals (PDF):
+- https://www.aha.org/system/files/media/file/2024/01/fast-facts-on-us-hospitals-2024-20240112.pdf
+
+AHP high performer fundraising thresholds:
+- https://www.ahp.org/resources-and-tools/report-on-giving-benchmarking/highperformers
+
+AAMC fundraising cost benchmarks (survey results):
+- https://www.aamc.org/data-reports/faculty-institutions/data/2024-fundraising-data
+
+Candid nonprofit sector context:
+- https://candid.org/impact-insights/us-social-sector/money/
+
+Nonprofit tech spend benchmark (directional):
+- https://www.philanthropy.com/article/nonprofits-spend-less-than-3-of-their-budgets-on-tech-heres-how-they-can-change-that/
+
+Incumbent CRM context (examples):
+- https://www.blackbaud.com/newsroom/article/blackbaud-announces-hundreds-of-product-updates-and-shares-product-roadmaps-for-social-impact-innovation
+- https://www.salesforce.com/education/advancement-software/
+- https://www.ellucian.com/assets/en/ebook/powering-your-fundraising-programs-crm-advance.pdf

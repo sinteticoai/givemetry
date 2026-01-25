@@ -18,25 +18,33 @@ GiveMetry is an AI-powered analytics platform for university advancement offices
 
 - **Primary:** University advancement offices (higher education)
 - **Secondary:** Hospital foundations, large nonprofits
-- **Beachhead TBD:** Pending market sizing research
+- **Beachhead:** R2 + Master's universities with $100M-$1B endowments (400-600 institutions)
 
 ## File Map
 
 ```
 /opt/apps/givemetry/
 ├── docs/
-│   ├── project-info.md          # This file - architecture/structure reference
-│   └── project-log.md           # Session activity log
-├── research-prompts/
-│   ├── README.md                # Execution guide for research prompts
-│   ├── 01-competitive-landscape.md   # Competitor intelligence prompt
-│   ├── 02-market-sizing.md           # TAM/SAM/SOM prompt
-│   └── 03-buyer-personas.md          # Buyer research prompt
-├── research-outputs/
-│   └── .gitkeep                 # Placeholder for research results
-├── GiveMetry_Vision.md          # Executive vision document
-├── competitive-research-2026-01-15 (1).md   # Initial competitive research
-└── product-brief-advancement-health-assessment-2026-01-15.md  # Phase 1 product brief (incomplete)
+│   ├── project-info.md              # This file - architecture/structure reference
+│   ├── project-log.md               # Session activity log
+│   ├── project-brief.md             # Comprehensive strategic brief (PRD-ready)
+│   ├── initial docs/                # Original vision documents
+│   │   ├── GiveMetry_Vision.md
+│   │   ├── competitive-research-2026-01-15 (1).md
+│   │   └── product-brief-advancement-health-assessment-2026-01-15.md
+│   └── research/
+│       ├── research-prompts/        # Deep research prompt templates
+│       │   ├── README.md
+│       │   ├── 01-competitive-landscape.md
+│       │   ├── 02-market-sizing.md
+│       │   └── 03-buyer-personas.md
+│       └── research-outputs/        # Research results (12 documents)
+│           ├── 01-competitive-landscape-output-2026-01-25.md
+│           ├── 02-market-sizing-output-2026-01-25.md
+│           ├── 03-buyer-personas-output-2026-01-25.md
+│           ├── claude/              # Claude Cloud research (3 docs)
+│           ├── gemini/              # Gemini research (3 docs)
+│           └── gpt/                 # ChatGPT research (3 docs)
 ```
 
 ## Key Domain Concepts
@@ -56,9 +64,11 @@ GiveMetry is an AI-powered analytics platform for university advancement offices
 ## Key Metrics (from research)
 
 - 46% of gift officers plan to leave within 2 years
-- Only 5% of nonprofits use AI/cognitive systems
+- 49% use AI but only 9% have policies (governance gap)
+- 80% experimented with AI, <5% use predictive portfolio management
 - 75% of CRM implementation projects fail
 - Blackbaud RE NXT starts at $3,375/month
+- Market size: $4.5-5.5B nonprofit software; $800M-$1.2B intelligence layer SAM
 
 ## External References
 

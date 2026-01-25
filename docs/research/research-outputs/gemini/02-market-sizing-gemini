@@ -1,0 +1,114 @@
+# Research Brief: Advancement Technology Market Sizing
+**Date:** January 25, 2026
+**To:** Product Strategy Team
+**Subject:** TAM/SAM/SOM Analysis & Beachhead Strategy
+
+---
+
+## 1. Executive Summary
+
+The US advancement technology market represents a **$3–$5 billion annual opportunity**, growing at a **CAGR of ~11–16%**. The market is bifurcated between "Systems of Record" (CRMs like Blackbaud/Salesforce) and "Systems of Intelligence" (your product).
+
+* **Total Addressable Market (TAM):** ~12,500 organizations (Higher Ed + Healthcare + Large Nonprofits) spending ~$4.5B/year on advancement tech.
+* **Serviceable Addressable Market (SAM):** ~4,000 institutions (Mid-to-Large Higher Ed & Hospital Foundations) with dedicated major gift teams.
+* **Beachhead Segment (SOM):** **Private Masters/R2 Universities & Community Hospital Foundations**. These orgs have "Enterprise Data" complexity but "SMB Staffing," making AI augmentation a "must-have" rather than a "nice-to-have."
+
+---
+
+## 2. Market Sizing Model (TAM/SAM/SOM)
+
+### TAM: The Broad Landscape
+*Definition: All US organizations with a formal development office.*
+
+| Segment | Est. Count | Rationale |
+| :--- | :--- | :--- |
+| **Higher Education** | ~3,900 | Degree-granting institutions (Associate's through R1). |
+| **Healthcare** | ~3,500 | ~50% of US hospitals (7,000 total) have a separate 501(c)(3) foundation. |
+| **Large Nonprofits** | ~5,000 | 501(c)(3)s with revenue >$10M (approx. top 2% of sector). |
+| **Total Org Count** | **~12,400** | |
+| **Est. Tech Spend** | **$4.5 Billion** | Based on 3-5% of total fundraising revenue allocated to tech/ops. |
+
+### SAM: The "Major Gift" Economy
+*Definition: Institutions with >3 full-time Gift Officers (MGOs) and >$5M annual fundraising.*
+
+| Segment | Est. Count | Annual Tech Spend |
+| :--- | :--- | :--- |
+| **R1/R2 Universities** | ~450 | $500k – $2M+ per institution |
+| **Masters/Bach Colleges** | ~1,200 | $50k – $200k per institution |
+| **Hospital Foundations** | ~1,500 | $30k – $150k per institution |
+| **SAM Total** | **~3,150** | **~$1.2 Billion** |
+
+### SOM: The "Beachhead" (Initial 18 Months)
+*Definition: Organizations with high pain (data overload) but low headcount (under-staffed analytics).*
+
+* **Target:** Private Masters/R2 Universities + Independent Hospital Foundations.
+* **Count:** ~800 Institutions.
+* **Target Revenue:** $50k ARR avg. contract value.
+* **Opportunity:** **$40M ARR** (capturing 20% of the 800 targets).
+
+---
+
+## 3. Segment Deep Dives
+
+### A. Higher Education Market
+* **Total Universe:** ~3,927 degree-granting institutions.
+* **Market Share:**
+    * **Blackbaud (Raiser's Edge/NXT):** ~45-50% (Legacy dominance, slowly eroding).
+    * **Salesforce:** ~30% (Growing rapidly in R1/R2 tiers).
+    * **Slate:** ~10-15% (Admissions tool encroaching on Alumni Relations).
+    * **Ellucian/Other:** ~10% (Legacy ERP-tied systems).
+* **Staffing Benchmarks:**
+    * **R1 University:** 50–200+ Gift Officers.
+    * **Private College:** 5–15 Gift Officers.
+    * **Portfolio Size:** Standard is 100–150 prospects per officer (often widely ignored in practice).
+
+### B. Healthcare Philanthropy Market
+* **Total Universe:** ~7,000 US hospitals; ~3,500 have foundations.
+* **Fundraising Power:** Health giving reached **$60.5B** in 2024 (Growth: +5%).
+* **Key Differentiator:** "Grateful Patient" programs are data-intensive (HIPAA compliant screening of daily patient censuses). They have **more data volume** than universities (daily discharges vs. yearly graduates) but **smaller staff**.
+* **Tech Stack:** Heavy reliance on Raiser's Edge; growing frustration with lack of patient-screening automation.
+
+### C. General Nonprofit Market
+* **Total Universe:** ~1.8M orgs, but most are too small.
+* **Wealth Concentration:** 88% of dollars come from 12% of donors.
+* **Adoption Barrier:** General nonprofits often lack a "clean" CRM. Selling an "intelligence layer" is hard if the underlying data layer (CRM) is messy or non-existent.
+
+---
+
+## 4. Technology Spend & Budget Dynamics
+
+* **Cost to Raise a Dollar (CTRD):**
+    * **Higher Ed:** $0.15 – $0.25
+    * **Healthcare:** $0.20 – $0.30
+* **Tech Budget Allocation:**
+    * Advancement shops typically spend **1–5%** of total funds raised on technology/operations.
+    * **Example:** A university raising $20M/year has a tech/ops budget of ~$200k–$1M.
+* **Buying Authority:**
+    * **R1/Large Health Systems:** CIO + VP of Advancement (Slow, 12-18 month cycle).
+    * **Mid-Market (Target):** VP of Advancement + Director of Ops (Faster, 3-6 month cycle).
+
+---
+
+## 5. Strategic Recommendation
+
+### Beachhead: "The Aspiring Mid-Market"
+**Target:** Private Universities (Endowments $100M–$1B) & Community Health Systems.
+
+**Why?**
+1.  **The "Data-Staff Gap":** They have 20+ years of digital data (like R1s) but only 2-3 analysts (unlike R1s who have 20). They *cannot* process their data without AI.
+2.  **Budget Authority:** The VP of Advancement often has discretionary budget for "consulting/tools" <$50k without full CIO procurement review.
+3.  **Sales Cycle:** 3–6 months (vs. 18 months for R1s).
+
+### Feature Prioritization for Beachhead
+1.  **Automated Portfolio Balancing:** "Who should I drop? Who should I add?" (Solves the 150-prospect capacity limit).
+2.  **Drafting Agents:** "Write a thank you note referencing their specific scholarship fund." (Solves the limited support staff problem).
+3.  **Churn Prediction:** "Who is about to stop giving?" (Protecting the annual fund).
+
+---
+
+## 6. Sources
+1.  **Giving USA 2025 Report:** Total giving data ($592.5B) and sector breakdowns.
+2.  **Carnegie Classification 2024/2025 Update:** Institution counts (R1 count rose to ~215).
+3.  **AHP (Association for Healthcare Philanthropy) Report on Giving 2024/2025:** Healthcare ROI and staffing benchmarks.
+4.  **Grand View Research & Mordor Intelligence:** Nonprofit software market size and CAGR projections.
+5.  **Definitive Healthcare:** Hospital system sizing and bed counts.

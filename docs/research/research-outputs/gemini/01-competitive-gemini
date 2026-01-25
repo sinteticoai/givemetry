@@ -1,0 +1,123 @@
+# Research Brief: AI-Driven Advancement Technology Competitive Landscape
+**Date:** January 25, 2026
+**To:** Product Strategy Team
+**Subject:** Competitive Intelligence & Strategic Positioning
+
+---
+
+## 1. Executive Summary
+
+The advancement technology market has shifted from **"systems of record"** to **"systems of intelligent action."** 2025 was a watershed year, marked by **EverTrue’s acquisition of DonorSearch**, creating a dominant player in AI-driven donor intelligence. Incumbents (Blackbaud, Salesforce) have responded by embedding autonomous "agents" directly into their CRMs, moving beyond simple predictive scoring to AI that executes tasks (e.g., drafting emails, building portfolios).
+
+### Key Competitive Dynamics
+* **Consolidation of Intelligence:** The EverTrue/DonorSearch merger signals that data and workflow can no longer be separate. Competitors must now offer "data-enriched workflows."
+* **The "Agent" Era:** Both Blackbaud (Development Agent) and Salesforce (Agentforce) are launching autonomous tools that don't just recommend actions but perform them.
+* **Adoption vs. Readiness Gap:** While ~80% of nonprofits experimented with AI in 2025, only ~9% feel "ready" or have policies in place. This creates a massive opportunity for platforms that offer "governance-first" AI.
+
+---
+
+## 2. Direct Competitors in AI-Powered Advancement
+
+### Gravyty (The "Force Multiplier")
+* **Core Offering:** AI-driven fundraiser enablement. "Raise" product automates email drafting and portfolio management.
+* **Key AI/ML:** Uses AI to prompt fundraisers on *who* to contact and *what* to say (drafts the email for them).
+* **Target Market:** Higher Education (primary), Healthcare, Large Nonprofits.
+* **Strengths:** Proven ability to increase workforce capacity (claiming "1 FTE work for 0.25 FTE effort"). Strong alumni engagement focus via Graduway.
+* **Vulnerabilities:** Can be seen as a "point solution" that requires a heavy CRM integration lift compared to native tools.
+
+### EverTrue (The "Intelligence Giant")
+* **Recent Pivot:** **Acquired DonorSearch in Sept 2025**, vertically integrating premier prospect data with their engagement platform.
+* **Core Offering:** "Signal" platform for donor portfolio monitoring and mobile-first fundraiser tools.
+* **Key AI/ML:** Predictive modeling for donor capacity and inclination; "Career Moves" tracking (detects when alumni change jobs).
+* **Pricing:** Custom tiered pricing; generally high-ticket (enterprise focus).
+* **Strengths:** Best-in-class mobile user experience (UX) for gift officers; massive data advantage post-acquisition.
+* **Vulnerabilities:** Expensive for mid-market; high dependency on CRM sync quality.
+
+### iWave / Kindsight
+* **Core Offering:** Wealth screening and prospect research. Rebranded/merged as "Kindsight" (with UC Innovation) in some contexts.
+* **Key AI/ML:** "Multi-lens" scoring (combining internal giving data with external wealth data).
+* **Pricing:** Starts at ~$4,150/year (Starter) to custom Enterprise.
+* **Vulnerabilities:** Users report rigid contract renewal terms; interface can feel "database-heavy" compared to modern UX.
+
+### Fundraise Up
+* **Core Offering:** AI-optimized donation forms and checkout experiences.
+* **Key AI/ML:** Real-time machine learning that adjusts suggested donation amounts based on user browser data/behavior.
+* **Pricing:** Performance-based (no subscription fee); ~4% platform fee per transaction.
+* **Strengths:** Zero friction onboarding; massive conversion rate optimization.
+* **Vulnerabilities:** Purely transactional focus—does not help with long-term major gift cultivation.
+
+### Windfall
+* **Core Offering:** "People intelligence" focused on net worth and consumer data.
+* **Key AI/ML:** Weekly data refreshes (unlike traditional annual screenings) to catch liquidity events.
+* **Pricing:** ~$1,500–$5,000/year for smaller/mid orgs.
+* **Vulnerabilities:** Customer reviews cite difficult contract auto-renewals and hidden clauses; data can sometimes be "noisy" (false positives).
+
+---
+
+## 3. Incumbent CRM AI Capabilities (2024–2026)
+
+### Blackbaud (Raiser’s Edge NXT)
+* **Strategy:** Moving from "System of Record" to "System of Intelligent Action."
+* **New Features (2025):**
+    * **Chat for Blackbaud AI:** Natural language query of database (e.g., "Show me donors in Boston who gave $5k+ last year").
+    * **Development Agent:** Autonomous AI that manages cultivation plans (available via Early Adopter Program).
+    * **Impact Edge:** CSR and outcome-based reporting AI.
+
+### Salesforce Nonprofit Cloud
+* **Strategy:** "Agentforce" — deploying AI agents to handle administrative heavy lifting.
+* **New Features (Spring '25):**
+    * **Interest Tags & Source Codes:** AI-assisted auto-generation of tracking codes.
+    * **Einstein for Nonprofits:** Generative AI for content creation (emails, appeals) and predictive scoring for donor churn.
+    * **Outcome Management:** Improved UI for tracking program impact data.
+
+---
+
+## 4. Adjacent Technology Ecosystem Map
+
+| Category | Market Leaders | Key Function |
+| :--- | :--- | :--- |
+| **Planned Giving** | **FreeWill**, Giving Docs, MarketSmart | Digital will creation, legacy gift marketing. |
+| **Wealth Screening** | **iWave**, Windfall, DonorSearch | Net worth & asset data append. |
+| **Alumni Engagement** | **Almabase**, Hivebrite, Graduway | Online communities, mentoring, event management. |
+| **Video Engagement** | **ThankView**, Gratavid | Personalized video messages for stewardship. |
+| **Corp. Matching** | **Double the Donation** (360MatchPro) | Automating employer matching gift forms. |
+| **Events/Auctions** | **Classy**, OneCause, Givebutter | Ticketing, peer-to-peer, mobile bidding. |
+
+---
+
+## 5. Market Positioning Map
+
+* **X-Axis:** **Advancement Specialization** (Generic Nonprofit vs. Higher Ed/Major Gift specific)
+* **Y-Axis:** **AI Sophistication** (Static Data vs. Autonomous Agents)
+
+1.  **High AI / High Specialization:** **EverTrue (post-acquisition)**, **Gravyty**. (The "Sweet Spot" for University Advancement).
+2.  **High AI / Low Specialization:** **Salesforce**, **Blackbaud**. (Broad tools, powerful but require heavy customization).
+3.  **Low AI / High Specialization:** **Almabase**, **ThankView**. (Great workflow tools, but AI is mostly "generative content" rather than predictive strategy).
+4.  **Low AI / Low Specialization:** **Zeffy**, **Givebutter**. (Transactional, low cost, mass market).
+
+---
+
+## 6. Identified Gaps & Whitespace Opportunities
+
+### 1. The "Mid-Market Intelligence" Gap
+* **Problem:** Small colleges/nonprofits can't afford EverTrue ($$$) but find Raiser's Edge native AI too clunky.
+* **Opportunity:** A "light" intelligence layer that cleans data and suggests top 10 weekly prospects without a massive implementation cost.
+
+### 2. Governance-First AI (The "Trust" Layer)
+* **Problem:** 80% of orgs use AI, but 91% lack readiness/policy.
+* **Opportunity:** An intelligence layer that explicitly includes "Audit Logs," "Bias Checks," and "Data Privacy Shields" as a core feature, marketing safety to university CIOs.
+
+### 3. "Agentic" Stewardship
+* **Problem:** Most tools focus on *asking* (fundraising).
+* **Opportunity:** AI that automates the *thanking* (stewardship) by reading gift reports and auto-generating personalized impact updates for the donor based on exactly where their money went.
+
+---
+
+## 7. Sources
+
+* **AFP Global:** *The New Currency of Fundraising: Trust in the Age of AI* (Nov 2025)
+* **TechSoup/Tapp Network:** *State of AI in Nonprofits 2025 Benchmark Report*
+* **EverTrue News:** *Acquisition of DonorSearch Announcement* (Sept 2025)
+* **Blackbaud:** *bbcon 2025 Product Update Briefings* (Nov 2025)
+* **Salesforce:** *Spring '25 Nonprofit Cloud Release Notes*
+* **G2 & TrustRadius:** User reviews for iWave, Windfall, Bloomerang (2025)
