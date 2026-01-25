@@ -44,11 +44,12 @@ AI-powered intelligence platform for university advancement offices. Transforms 
 docs/
 ├── main/
 │   ├── architecture.md      # Full technical architecture (v2.0)
-│   ├── prd.md               # Product requirements (v1.2)
+│   ├── prd.md               # Product requirements (v1.3)
 │   └── project-brief.md     # Vision and market research
 ├── research/
 │   └── initial docs/
-│       └── reference-auth-architecture.md  # Auth patterns from Converza
+│       ├── reference-auth-architecture.md  # Auth patterns from Converza
+│       └── university-advancement-dashboard.jsx  # Benchmark data visualization
 ├── project-info.md          # This file - architecture overview
 └── project-log.md           # Session history
 ```

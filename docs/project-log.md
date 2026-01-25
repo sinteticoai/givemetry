@@ -47,3 +47,36 @@
 - next_steps: Create Prisma schema with VerificationToken and PasswordResetToken models
 - open_questions: Email template design (plain HTML vs React Email components)
 - related_files: docs/main/architecture.md, docs/main/prd.md, docs/research/initial docs/reference-auth-architecture.md
+
+## SESSION 2026-01-25 15:45
+
+### CONTEXT
+- trigger: User asked if university-advancement-dashboard.jsx benchmark data should be added to docs
+- scope: docs/main/prd.md
+- prior_state: PRD v1.2 lacked industry benchmark data for donor participation, lifecycle, and historical trends
+
+### CHANGES
+- docs/main/prd.md: edit - Added "Participation decline | Alumni giving down 62% since 1980s" to Problem Statement table (line 45)
+- docs/main/prd.md: edit - Added Appendix C: Industry Benchmarks with 3 tables:
+  - Donor Participation by Institution Size (small 14.2%, medium 8.4%, large 5.8%)
+  - Donor Lifecycle Curve (5 phases: Young Alumni through Legacy)
+  - Historical Decline (1980s-2023, -62% overall)
+- docs/main/prd.md: edit - Updated version to 1.3, added document history entry
+
+### DECISIONS
+- Add benchmarks as Appendix C rather than inline: keeps Problem Statement concise while providing reference data | alternatives_considered: inline tables, separate research doc
+- Include lifecycle curve "valley" insight: directly supports GiveMetry's "who to call" value proposition | alternatives_considered: omit strategic implications
+
+### DEPENDENCIES
+- none
+
+### STATE
+- working: PRD v1.3 with industry benchmarks
+- broken: None
+- blocked: None
+
+### CONTINUITY
+- next_steps: Commit PRD changes
+- next_steps: Consider using benchmark data in sales/marketing materials
+- open_questions: None
+- related_files: docs/main/prd.md, docs/research/initial docs/university-advancement-dashboard.jsx

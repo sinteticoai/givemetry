@@ -1,6 +1,6 @@
 # GiveMetry Product Requirements Document
 
-**Version:** 1.2
+**Version:** 1.3
 **Created:** 2026-01-25
 **Updated:** 2026-01-25
 **Status:** Draft
@@ -43,6 +43,7 @@ University advancement offices face a perfect storm:
 | **Data paralysis** | Wealth screenings from 3+ years ago sit untouched |
 | **Tool fatigue** | Average office uses 5-7 disconnected systems |
 | **Reporting burden** | 40%+ of advancement services time on manual reports |
+| **Participation decline** | Alumni giving down 62% since 1980s (see Appendix C) |
 
 ### The Technology Gap
 
@@ -978,6 +979,43 @@ The following decisions were made during architecture review (see `architecture.
 
 ---
 
+# Appendix C: Industry Benchmarks
+
+## Donor Participation by Institution Size
+
+| Size | FTE | Participation Rate | Top Quartile | Bottom Quartile | Retention | Avg Gift |
+|------|-----|-------------------|--------------|-----------------|-----------|----------|
+| **Small** | <3,000 | 14.2% | 22.5% | 6.2% | 58% | $285 |
+| **Medium** | 3,000-10,000 | 8.4% | 14.8% | 4.1% | 52% | $425 |
+| **Large** | >10,000 | 5.8% | 9.2% | 2.8% | 48% | $680 |
+
+**Key insight:** Small schools outperform by 2.5x on participation; large schools compensate with higher gift sizes.
+
+## Donor Lifecycle Curve
+
+| Phase | Years Out | Participation | Avg Gift | Notes |
+|-------|-----------|---------------|----------|-------|
+| **Young Alumni** | 0-5 | 7-28% | $45-85 | High initial engagement, rapid decline |
+| **Early Career** | 10-15 | 6-7% | $145-220 | "The Valley" — lowest participation |
+| **Mid-Career** | 20-25 | 9-12% | $380-520 | Participation recovery begins |
+| **Peak Giving** | 30-45 | 15-25% | $750-1,850 | Highest participation & gift size |
+| **Legacy** | 50+ | 18-28% | $2,200-3,200 | Planned giving focus |
+
+**Strategic implication:** Alumni who maintain engagement through "the valley" (years 6-15) become prime major gift prospects with 20x gift size increase.
+
+## Historical Decline
+
+| Era | Small | Medium | Large | Overall |
+|-----|-------|--------|-------|---------|
+| 1980s | 28% | 18% | 12% | 20% |
+| 2000s | 20% | 12% | 8% | 12% |
+| 2023 | 14.2% | 8.4% | 5.8% | 7.7% |
+| **Change** | -49% | -53% | -52% | **-62%** |
+
+**Sources:** CASE VSE Survey 2023-24, U.S. News & World Report, RNL Analysis, Blackbaud Giving Report
+
+---
+
 # Document History
 
 | Version | Date | Author | Changes |
@@ -985,6 +1023,7 @@ The following decisions were made during architecture review (see `architecture.
 | 1.0 | 2026-01-25 | John (PM Agent) | Initial PRD based on project brief v1.0 |
 | 1.1 | 2026-01-25 | Winston (Architect) | Aligned with architecture v2.0: RLS multi-tenancy, SSO moved to Phase 2, simplified infrastructure |
 | 1.2 | 2026-01-25 | Winston (Architect) | Enhanced auth: email verification, password reset, Resend, NextAuth v5 |
+| 1.3 | 2026-01-25 | Winston (Architect) | Added Appendix C: Industry Benchmarks (participation, lifecycle, decline) |
 
 ---
 
