@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -17,7 +17,41 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
+function LoginFormSkeleton() {
+  return (
+    <Card>
+      <CardHeader className="space-y-1">
+        <CardTitle className="text-xl">Sign in</CardTitle>
+        <CardDescription>
+          Enter your email and password to access your account
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="space-y-2">
+          <div className="h-4 w-12 bg-muted animate-pulse rounded" />
+          <div className="h-10 bg-muted animate-pulse rounded" />
+        </div>
+        <div className="space-y-2">
+          <div className="h-4 w-16 bg-muted animate-pulse rounded" />
+          <div className="h-10 bg-muted animate-pulse rounded" />
+        </div>
+      </CardContent>
+      <CardFooter>
+        <div className="h-10 w-full bg-muted animate-pulse rounded" />
+      </CardFooter>
+    </Card>
+  );
+}
+
 export default function LoginPage() {
+  return (
+    <Suspense fallback={<LoginFormSkeleton />}>
+      <LoginForm />
+    </Suspense>
+  );
+}
+
+function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";

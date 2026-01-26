@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -17,7 +17,29 @@ import {
 } from "@/components/ui/card";
 import { trpc } from "@/lib/trpc/client";
 
+function ResetPasswordSkeleton() {
+  return (
+    <Card>
+      <CardHeader className="space-y-1">
+        <CardTitle className="text-xl">Set new password</CardTitle>
+        <CardDescription>Loading...</CardDescription>
+      </CardHeader>
+      <CardContent className="flex justify-center py-8">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+      </CardContent>
+    </Card>
+  );
+}
+
 export default function ResetPasswordPage() {
+  return (
+    <Suspense fallback={<ResetPasswordSkeleton />}>
+      <ResetPasswordForm />
+    </Suspense>
+  );
+}
+
+function ResetPasswordForm() {
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
 
