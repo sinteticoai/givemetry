@@ -16,7 +16,7 @@ export default function AboutPage() {
             <div className="w-8 h-8 rounded-lg bg-emerald-600 flex items-center justify-center">
               <BarChart3 className="w-5 h-5 text-white" />
             </div>
-            <span className="font-bold text-slate-900 dark:text-white">GiveMetry</span>
+            <span className="font-bold text-slate-900 dark:text-white">GiveMetry<sup className="text-[0.5em] font-normal">™</sup></span>
           </Link>
           <div className="flex gap-4">
             <Link
@@ -79,7 +79,7 @@ export default function AboutPage() {
             <div className="w-12 h-12 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center mb-4">
               <BarChart3 className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
             </div>
-            <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">GiveMetry</h3>
+            <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">GiveMetry<sup className="text-[0.5em] font-normal">™</sup></h3>
             <p className="text-slate-600 dark:text-slate-400 text-sm">
               AI-powered donor analytics for nonprofit gift officers. Predict lapse risk, prioritize outreach, and generate AI briefings to strengthen donor relationships.
             </p>
@@ -132,7 +132,7 @@ export default function AboutPage() {
                 <div className="w-8 h-8 rounded-lg bg-emerald-600 flex items-center justify-center">
                   <BarChart3 className="w-5 h-5 text-white" />
                 </div>
-                <span className="font-bold dark:text-white">GiveMetry</span>
+                <span className="font-bold dark:text-white">GiveMetry<sup className="text-[0.5em] font-normal">™</sup></span>
               </Link>
               <p className="text-sm text-slate-500 dark:text-slate-400">
                 AI-powered donor analytics for nonprofit gift officers.

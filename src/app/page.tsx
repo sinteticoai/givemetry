@@ -34,7 +34,7 @@ export default async function HomePage() {
               <div className="w-8 h-8 rounded-lg bg-emerald-600 flex items-center justify-center">
                 <BarChart3 className="w-5 h-5 text-white" />
               </div>
-              <span className="text-xl font-bold dark:text-white">GiveMetry</span>
+              <span className="text-xl font-bold dark:text-white">GiveMetry<sup className="text-[0.5em] font-normal">™</sup></span>
             </div>
             <div className="flex items-center gap-4">
               <ThemeToggle />
@@ -419,7 +419,7 @@ export default async function HomePage() {
                 <div className="w-8 h-8 rounded-lg bg-emerald-600 flex items-center justify-center">
                   <BarChart3 className="w-5 h-5 text-white" />
                 </div>
-                <span className="font-bold dark:text-white">GiveMetry</span>
+                <span className="font-bold dark:text-white">GiveMetry<sup className="text-[0.5em] font-normal">™</sup></span>
               </div>
               <p className="text-sm text-slate-500 dark:text-slate-400">
                 AI-powered donor analytics for nonprofit gift officers.
