@@ -136,3 +136,44 @@ export {
   type Recommendation,
   type HealthIssue,
 } from "./recommendations";
+
+// Portfolio Metrics (Phase 13 - US11)
+export {
+  calculatePortfolioMetrics,
+  calculateOfficerMetrics,
+  getPortfolioDistribution,
+  calculateWorkloadScore,
+  getPortfolioMetricsSummary,
+  type PortfolioMetricsInput,
+  type PortfolioMetricsResult,
+  type OfficerPortfolio,
+  type OfficerMetrics,
+  type ConstituentData,
+  type CapacityTier,
+  type PortfolioDistribution,
+} from "./portfolio-metrics";
+
+// Portfolio Imbalance Detection (Phase 13 - US11)
+export {
+  detectImbalances,
+  calculateImbalanceScore,
+  getImbalanceType,
+  generateImbalanceAlerts,
+  getImbalanceSummary,
+  type ImbalanceInput,
+  type ImbalanceResult,
+  type ImbalanceDetail,
+  type ImbalanceAlert,
+  type OfficerMetricsSummary,
+} from "./portfolio-imbalance";
+
+// Rebalancing Suggestions (Phase 13 - US11)
+export {
+  generateRebalanceSuggestions,
+  formatSuggestion,
+  calculateImprovementMetrics,
+  type RebalanceInput,
+  type RebalancePreview,
+  type RebalanceSuggestion,
+  type ConstituentForRebalance,
+} from "./rebalancing-suggestions";

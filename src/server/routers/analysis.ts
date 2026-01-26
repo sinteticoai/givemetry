@@ -12,7 +12,12 @@ import {
   calculateCoverageScore,
   analyzePortfolioBalance,
   generateRecommendations,
+  calculatePortfolioMetrics,
+  detectImbalances,
+  generateImbalanceAlerts,
+  generateRebalanceSuggestions,
   type HealthIssue,
+  type OfficerPortfolio,
 } from "../services/analysis";
 import {
   calculatePriorityScore,
@@ -1022,8 +1027,8 @@ export const analysisRouter = router({
   getPortfolioMetrics: protectedProcedure.query(async ({ ctx }) => {
     const organizationId = ctx.session.user.organizationId;
 
-    // Get officer metrics
-    const officerMetrics = await ctx.prisma.user.findMany({
+    // Get officers with their assigned constituents
+    const officers = await ctx.prisma.user.findMany({
       where: {
         organizationId,
         role: { in: ["admin", "manager", "gift_officer"] },
@@ -1031,9 +1036,26 @@ export const analysisRouter = router({
       select: {
         id: true,
         name: true,
-        _count: {
-          select: { assignedConstituents: true },
+        assignedConstituents: {
+          where: { isActive: true },
+          select: {
+            id: true,
+            estimatedCapacity: true,
+            priorityScore: true,
+            lapseRiskScore: true,
+          },
         },
+      },
+    });
+
+    // Get unassigned constituents
+    const unassignedConstituents = await ctx.prisma.constituent.findMany({
+      where: { organizationId, isActive: true, assignedOfficerId: null },
+      select: {
+        id: true,
+        estimatedCapacity: true,
+        priorityScore: true,
+        lapseRiskScore: true,
       },
     });
 
@@ -1042,34 +1064,153 @@ export const analysisRouter = router({
       where: { organizationId, isActive: true },
     });
 
-    const unassigned = await ctx.prisma.constituent.count({
-      where: { organizationId, isActive: true, assignedOfficerId: null },
+    // Build officer portfolios for metrics calculation
+    const officerPortfolios: OfficerPortfolio[] = officers.map((o) => ({
+      officerId: o.id,
+      officerName: o.name,
+      constituents: o.assignedConstituents.map((c) => ({
+        id: c.id,
+        estimatedCapacity: c.estimatedCapacity ? Number(c.estimatedCapacity) : null,
+        priorityScore: c.priorityScore ? Number(c.priorityScore) : null,
+        lapseRiskScore: c.lapseRiskScore ? Number(c.lapseRiskScore) : null,
+      })),
+    }));
+
+    // Calculate comprehensive metrics
+    const metrics = calculatePortfolioMetrics({
+      officers: officerPortfolios,
+      unassignedConstituents: unassignedConstituents.map((c) => ({
+        id: c.id,
+        estimatedCapacity: c.estimatedCapacity ? Number(c.estimatedCapacity) : null,
+        priorityScore: c.priorityScore ? Number(c.priorityScore) : null,
+        lapseRiskScore: c.lapseRiskScore ? Number(c.lapseRiskScore) : null,
+      })),
+      organizationId,
     });
 
-    // Analyze portfolio balance
+    // Detect imbalances
+    const imbalanceResult = detectImbalances({
+      officers: metrics.officerMetrics.map((o) => ({
+        officerId: o.officerId,
+        officerName: o.officerName,
+        constituentCount: o.constituentCount,
+        totalCapacity: o.totalCapacity,
+        avgPriorityScore: o.averagePriorityScore,
+      })),
+    });
+
+    // Generate alerts for imbalanced portfolios
+    const imbalanceAlerts = generateImbalanceAlerts(
+      metrics.officerMetrics.map((o) => ({
+        officerId: o.officerId,
+        officerName: o.officerName,
+        constituentCount: o.constituentCount,
+        totalCapacity: o.totalCapacity,
+        avgPriorityScore: o.averagePriorityScore,
+      }))
+    );
+
+    // Generate rebalancing suggestions if there are imbalances
+    let suggestions: Array<{
+      constituentId: string;
+      constituentName: string;
+      fromOfficerId: string;
+      fromOfficerName: string | null;
+      toOfficerId: string;
+      toOfficerName: string | null;
+      reason: string;
+    }> = [];
+
+    if (imbalanceResult.hasImbalances) {
+      // Get sample constituents for suggestion generation
+      const constituentsForRebalance = await ctx.prisma.constituent.findMany({
+        where: {
+          organizationId,
+          isActive: true,
+          assignedOfficerId: { not: null },
+        },
+        take: 500,
+        select: {
+          id: true,
+          firstName: true,
+          lastName: true,
+          estimatedCapacity: true,
+          priorityScore: true,
+          lapseRiskScore: true,
+          assignedOfficerId: true,
+          assignedOfficer: { select: { name: true } },
+        },
+      });
+
+      const rebalancePreview = generateRebalanceSuggestions({
+        officers: metrics.officerMetrics,
+        constituents: constituentsForRebalance.map((c) => ({
+          id: c.id,
+          displayName: [c.firstName, c.lastName].filter(Boolean).join(" ") || "Unknown",
+          estimatedCapacity: c.estimatedCapacity ? Number(c.estimatedCapacity) : null,
+          priorityScore: c.priorityScore ? Number(c.priorityScore) : null,
+          lapseRiskScore: c.lapseRiskScore ? Number(c.lapseRiskScore) : null,
+          currentOfficerId: c.assignedOfficerId!,
+          currentOfficerName: c.assignedOfficer?.name || null,
+        })),
+        alerts: imbalanceAlerts,
+        maxTransfersPerOfficer: 5,
+      });
+
+      suggestions = rebalancePreview.suggestions.map((s) => ({
+        constituentId: s.constituentId,
+        constituentName: s.constituentName,
+        fromOfficerId: s.fromOfficerId,
+        fromOfficerName: s.fromOfficerName,
+        toOfficerId: s.toOfficerId,
+        toOfficerName: s.toOfficerName,
+        reason: s.reason,
+      }));
+    }
+
+    // Use simpler balance analysis for backward compatibility
     const balance = analyzePortfolioBalance(
-      officerMetrics.map((o) => ({
+      officers.map((o) => ({
         id: o.id,
         name: o.name,
-        constituentCount: o._count.assignedConstituents,
+        constituentCount: o.assignedConstituents.length,
       }))
     );
 
     return {
-      officers: officerMetrics.map((o) => ({
-        id: o.id,
-        name: o.name,
-        constituentCount: o._count.assignedConstituents,
+      officers: metrics.officerMetrics.map((o) => ({
+        id: o.officerId,
+        name: o.officerName,
+        constituentCount: o.constituentCount,
+        totalCapacity: o.totalCapacity,
+        averageCapacity: o.averageCapacity,
+        highPriorityCount: o.highPriorityCount,
+        highRiskCount: o.highRiskCount,
+        workloadScore: o.workloadScore,
       })),
       totalConstituents,
-      unassigned,
+      unassigned: metrics.unassignedConstituents,
+      unassignedCapacity: metrics.unassignedCapacity,
       imbalances: balance.issues,
-      suggestions: [],
+      imbalanceAlerts,
+      imbalanceResult: {
+        hasImbalances: imbalanceResult.hasImbalances,
+        overallSeverity: imbalanceResult.overallSeverity,
+        sizeImbalance: imbalanceResult.sizeImbalance,
+        capacityImbalance: imbalanceResult.capacityImbalance,
+      },
+      suggestions,
+      capacityDistribution: metrics.capacityDistribution,
       stats: {
-        averagePortfolioSize: balance.averagePortfolioSize,
-        minPortfolioSize: balance.minPortfolioSize,
-        maxPortfolioSize: balance.maxPortfolioSize,
-        isBalanced: balance.isBalanced,
+        averagePortfolioSize: metrics.averagePortfolioSize,
+        minPortfolioSize: metrics.distribution.minSize,
+        maxPortfolioSize: metrics.distribution.maxSize,
+        medianPortfolioSize: metrics.distribution.medianSize,
+        standardDeviation: metrics.distribution.standardDeviation,
+        coefficientOfVariation: metrics.distribution.coefficientOfVariation,
+        isBalanced: metrics.isBalanced,
+        totalCapacity: metrics.totalCapacity,
+        assignedCapacity: metrics.assignedCapacity,
       },
     };
   }),

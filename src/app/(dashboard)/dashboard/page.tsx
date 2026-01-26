@@ -10,6 +10,7 @@ import { HealthBreakdown } from "@/components/dashboard/health-breakdown";
 import { IssueList, type HealthIssue } from "@/components/dashboard/issue-list";
 import { RecommendationsPanel } from "@/components/dashboard/recommendations-panel";
 import { HealthTrendChart } from "@/components/charts/health-trend-chart";
+import { PortfolioBalance } from "@/components/dashboard/portfolio-balance";
 import {
   Users,
   Gift,
@@ -299,6 +300,9 @@ export default function DashboardPage() {
           </Link>
         </div>
       )}
+
+      {/* Portfolio Balance (Phase 13 - US11) */}
+      {hasData && <PortfolioBalance />}
 
       {/* Freshness info */}
       {hasData && healthData.freshnessDetails && (

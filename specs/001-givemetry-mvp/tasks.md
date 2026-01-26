@@ -545,27 +545,27 @@ Based on plan.md structure:
 
 ### Tests for User Story 11 (TDD - Write First, Verify Fail)
 
-- [ ] T234 [P] [US11] Unit tests for portfolio metrics calculator in tests/unit/analysis/portfolio-metrics.test.ts
-- [ ] T235 [P] [US11] Unit tests for imbalance detection in tests/unit/analysis/portfolio-imbalance.test.ts
-- [ ] T236 [US11] Integration tests for portfolio metrics procedures in tests/integration/analysis-portfolio.test.ts
+- [X] T234 [P] [US11] Unit tests for portfolio metrics calculator in tests/unit/analysis/portfolio-metrics.test.ts
+- [X] T235 [P] [US11] Unit tests for imbalance detection in tests/unit/analysis/portfolio-imbalance.test.ts
+- [X] T236 [US11] Integration tests for portfolio metrics procedures in tests/integration/analysis-portfolio.test.ts
 
 ### Portfolio Metrics Service
 
-- [ ] T237 [US11] Create portfolio metrics calculator in src/server/services/analysis/portfolio-metrics.ts
-- [ ] T238 [US11] Create imbalance detection logic in src/server/services/analysis/portfolio-imbalance.ts
-- [ ] T239 [US11] Create rebalancing suggestion generator in src/server/services/analysis/rebalancing-suggestions.ts
+- [X] T237 [US11] Create portfolio metrics calculator in src/server/services/analysis/portfolio-metrics.ts
+- [X] T238 [US11] Create imbalance detection logic in src/server/services/analysis/portfolio-imbalance.ts
+- [X] T239 [US11] Create rebalancing suggestion generator in src/server/services/analysis/rebalancing-suggestions.ts
 
 ### Analysis Router Extensions
 
-- [ ] T240 [US11] Add getPortfolioMetrics procedure to analysis router in src/server/routers/analysis.ts
+- [X] T240 [US11] Add getPortfolioMetrics procedure to analysis router in src/server/routers/analysis.ts
 
 ### Portfolio UI
 
-- [ ] T241 [US11] Create portfolio balance section on dashboard in src/components/dashboard/portfolio-balance.tsx
-- [ ] T242 [P] [US11] Create officer metrics cards component in src/components/portfolio/officer-metrics-card.tsx
-- [ ] T243 [P] [US11] Create portfolio distribution chart in src/components/charts/portfolio-distribution-chart.tsx
-- [ ] T244 [US11] Create imbalance alerts component in src/components/portfolio/imbalance-alerts.tsx
-- [ ] T245 [US11] Create rebalancing preview component (preview only per spec) in src/components/portfolio/rebalancing-preview.tsx
+- [X] T241 [US11] Create portfolio balance section on dashboard in src/components/dashboard/portfolio-balance.tsx
+- [X] T242 [P] [US11] Create officer metrics cards component in src/components/portfolio/officer-metrics-card.tsx
+- [X] T243 [P] [US11] Create portfolio distribution chart in src/components/charts/portfolio-distribution-chart.tsx
+- [X] T244 [US11] Create imbalance alerts component in src/components/portfolio/imbalance-alerts.tsx
+- [X] T245 [US11] Create rebalancing preview component (preview only per spec) in src/components/portfolio/rebalancing-preview.tsx
 
 **Checkpoint**: At this point, User Story 11 should be fully functional - users can view portfolio balance and imbalances
 
