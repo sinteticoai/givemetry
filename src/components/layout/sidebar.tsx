@@ -62,7 +62,7 @@ export function Sidebar({ open, onOpenChange }: SidebarProps) {
             G
           </div>
           {open && (
-            <span className="text-lg font-semibold">GiveMetry</span><span className="ml-px inline-flex items-center justify-center rounded-full bg-[#d2fae5] px-1.5 py-0.5 text-[10px] font-medium text-[#34d399]">AI</span>
+            <span className="text-lg font-semibold">GiveMetry</span><span className="ml-px inline-flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 text-[10px] font-medium text-slate-700 dark:text-slate-300">AI</span>
           )}
         </Link>
       </div>

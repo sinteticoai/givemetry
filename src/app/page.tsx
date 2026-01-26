@@ -31,10 +31,10 @@ export default async function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-emerald-400 flex items-center justify-center">
-                <BarChart3 className="w-5 h-5 text-white" />
+              <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+                <BarChart3 className="w-5 h-5 text-slate-700 dark:text-slate-300" />
               </div>
-              <span className="text-xl font-bold dark:text-white">GiveMetry<sup className="text-[0.6em] font-normal text-slate-400">™</sup></span><span className="ml-0.5 inline-flex items-center justify-center rounded-full bg-[#d2fae5] px-2 py-0.5 text-xs font-medium text-[#34d399]">AI</span>
+              <span className="text-xl font-bold dark:text-white">GiveMetry<sup className="text-[0.6em] font-normal text-slate-400">™</sup></span><span className="ml-0.5 inline-flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-xs font-medium text-slate-700 dark:text-slate-300">AI</span>
             </div>
             <div className="flex items-center gap-4">
               <ThemeToggle />
@@ -58,7 +58,7 @@ export default async function HomePage() {
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-slate-900 dark:text-white mb-6">
             Know who to call.
             <br />
-            <span className="text-emerald-400 dark:text-emerald-400">Know what to say.</span>
+            <span className="text-slate-400 dark:text-slate-500">Know what to say.</span>
           </h1>
           <p className="text-xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto mb-10">
             GiveMetry transforms your donor data into actionable intelligence.
@@ -196,7 +196,7 @@ export default async function HomePage() {
       <section id="benchmarks" className="py-24 px-4 sm:px-6 lg:px-8 overflow-hidden">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <p className="text-sm font-medium text-emerald-400 dark:text-emerald-400 mb-3">
+            <p className="text-sm font-medium text-slate-600 dark:text-slate-400 mb-3">
               BUILT ON RESEARCH
             </p>
             <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-4">
@@ -259,7 +259,6 @@ export default async function HomePage() {
               topQuartile="22.5%"
               avgGift="$285"
               colorClass="emerald"
-              examples="Liberal Arts Colleges"
             />
             <BenchmarkCard
               size="Medium Institutions"
@@ -268,7 +267,6 @@ export default async function HomePage() {
               topQuartile="14.8%"
               avgGift="$425"
               colorClass="amber"
-              examples="Regional Universities"
             />
             <BenchmarkCard
               size="Large Institutions"
@@ -277,12 +275,11 @@ export default async function HomePage() {
               topQuartile="9.2%"
               avgGift="$680"
               colorClass="red"
-              examples="Research Universities"
             />
           </div>
 
           {/* Donor Lifecycle Insight */}
-          <div className="bg-gradient-to-r from-violet-500/10 to-purple-500/10 dark:from-violet-500/20 dark:to-purple-500/20 rounded-2xl p-8 border border-violet-200 dark:border-violet-800">
+          <div className="bg-[#f8fafc] dark:bg-slate-800 rounded-2xl p-8 border border-slate-200 dark:border-slate-700">
             <div className="flex flex-col md:flex-row gap-8 items-center">
               <div className="md:w-2/3">
                 <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-3">
@@ -334,9 +331,9 @@ export default async function HomePage() {
       </section>
 
       {/* Testimonial / Value Prop */}
-      <section className="py-24 px-4 sm:px-6 lg:px-8">
+      <section className="pt-0 pb-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto text-center">
-          <div className="bg-emerald-50 dark:bg-emerald-900/20 rounded-3xl p-12">
+          <div className="p-12">
             <blockquote className="text-2xl sm:text-3xl font-medium text-slate-900 dark:text-white mb-8">
               &ldquo;We have plenty of data. We have wealth screenings from three years ago we haven&apos;t touched.
               I don&apos;t need more data; I need to know which 5 people my gift officer should call tomorrow.&rdquo;
@@ -416,10 +413,10 @@ export default async function HomePage() {
             {/* Brand */}
             <div className="col-span-2 md:col-span-1">
               <div className="flex items-center gap-2 mb-4">
-                <div className="w-8 h-8 rounded-lg bg-emerald-400 flex items-center justify-center">
-                  <BarChart3 className="w-5 h-5 text-white" />
+                <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+                  <BarChart3 className="w-5 h-5 text-slate-700 dark:text-slate-300" />
                 </div>
-                <span className="font-bold dark:text-white">GiveMetry<sup className="text-[0.6em] font-normal text-slate-400">™</sup></span><span className="ml-0.5 inline-flex items-center justify-center rounded-full bg-[#d2fae5] px-2 py-0.5 text-xs font-medium text-[#34d399]">AI</span>
+                <span className="font-bold dark:text-white">GiveMetry<sup className="text-[0.6em] font-normal text-slate-400">™</sup></span><span className="ml-0.5 inline-flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-xs font-medium text-slate-700 dark:text-slate-300">AI</span>
               </div>
               <p className="text-sm text-slate-500 dark:text-slate-400">
                 AI-powered donor analytics for nonprofit gift officers.
@@ -480,7 +477,7 @@ function FeatureCard({
 }) {
   return (
     <div className="bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-sm border dark:border-slate-700 hover:shadow-md transition-shadow">
-      <div className="w-12 h-12 bg-emerald-100 dark:bg-emerald-900/30 rounded-xl flex items-center justify-center text-emerald-400 dark:text-emerald-400 mb-6">
+      <div className="w-12 h-12 bg-slate-100 dark:bg-slate-800 rounded-xl flex items-center justify-center text-slate-700 dark:text-slate-300 mb-6">
         {icon}
       </div>
       <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-3">{title}</h3>
@@ -500,7 +497,7 @@ function StepCard({
 }) {
   return (
     <div className="text-center">
-      <div className="w-12 h-12 bg-emerald-400 text-white rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-6">
+      <div className="w-12 h-12 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-6">
         {number}
       </div>
       <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-3">{title}</h3>
@@ -525,7 +522,6 @@ function BenchmarkCard({
   topQuartile,
   avgGift,
   colorClass,
-  examples,
 }: {
   size: string;
   description: string;
@@ -533,19 +529,15 @@ function BenchmarkCard({
   topQuartile: string;
   avgGift: string;
   colorClass: "emerald" | "amber" | "red";
-  examples: string;
 }) {
   const colorStyles = {
     emerald: {
-      badge: "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-500 dark:text-emerald-400",
       rate: "text-emerald-400 dark:text-emerald-400",
     },
     amber: {
-      badge: "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400",
       rate: "text-amber-600 dark:text-amber-400",
     },
     red: {
-      badge: "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400",
       rate: "text-red-600 dark:text-red-400",
     },
   };
@@ -554,14 +546,9 @@ function BenchmarkCard({
 
   return (
     <div className="bg-white dark:bg-slate-800 rounded-xl p-6 border border-slate-200 dark:border-slate-700">
-      <div className="flex items-start justify-between mb-4">
-        <div>
-          <h4 className="font-semibold text-slate-900 dark:text-white">{size}</h4>
-          <p className="text-sm text-slate-500">{description}</p>
-        </div>
-        <span className={`text-xs px-2 py-1 rounded-full ${styles.badge}`}>
-          {examples}
-        </span>
+      <div className="mb-4">
+        <h4 className="font-semibold text-slate-900 dark:text-white">{size}</h4>
+        <p className="text-sm text-slate-500">{description}</p>
       </div>
       <div className={`text-4xl font-bold ${styles.rate} mb-1`}>
         {rate}

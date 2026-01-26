@@ -17,10 +17,10 @@ export default function AuthLayout({
           Back to Home
         </Link>
         <div className="mb-8 text-center">
-          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-lg bg-emerald-400">
-            <BarChart3 className="h-7 w-7 text-white" />
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800">
+            <BarChart3 className="h-7 w-7 text-slate-700 dark:text-slate-300" />
           </div>
-          <h1 className="mt-4 text-2xl font-bold">GiveMetry<sup className="text-[0.6em] font-normal text-slate-400">™</sup> <span className="ml-px inline-flex items-center justify-center rounded-full bg-[#d2fae5] px-2 py-0.5 text-sm font-medium text-[#34d399]">AI</span></h1>
+          <h1 className="mt-4 text-2xl font-bold">GiveMetry<sup className="text-[0.6em] font-normal text-slate-400">™</sup> <span className="ml-px inline-flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-sm font-medium text-slate-700 dark:text-slate-300">AI</span></h1>
           <p className="text-sm text-muted-foreground">
             AI-Powered Advancement Intelligence
           </p>
