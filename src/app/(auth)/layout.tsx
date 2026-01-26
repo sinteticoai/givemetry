@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, BarChart3 } from "lucide-react";
 
 export default function AuthLayout({
   children,
@@ -17,8 +17,8 @@ export default function AuthLayout({
           Back to Home
         </Link>
         <div className="mb-8 text-center">
-          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-lg bg-primary text-2xl font-bold text-primary-foreground">
-            G
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-lg bg-emerald-600">
+            <BarChart3 className="h-7 w-7 text-white" />
           </div>
           <h1 className="mt-4 text-2xl font-bold">GiveMetry</h1>
           <p className="text-sm text-muted-foreground">

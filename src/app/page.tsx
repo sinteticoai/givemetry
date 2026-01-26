@@ -42,7 +42,7 @@ export default async function HomePage() {
                 <Button variant="ghost">Sign In</Button>
               </Link>
               <Link href="/signup">
-                <Button>Get Started</Button>
+                <Button>Request a Demo</Button>
               </Link>
             </div>
           </div>
@@ -52,10 +52,9 @@ export default async function HomePage() {
       {/* Hero Section */}
       <section className="pt-20 pb-32 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 px-4 py-2 rounded-full text-sm font-medium mb-8">
-            <Zap className="w-4 h-4" />
+          <p className="text-lg sm:text-xl font-medium text-slate-600 dark:text-slate-400 mb-8">
             AI-Powered Advancement Intelligence
-          </div>
+          </p>
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-slate-900 dark:text-white mb-6">
             Know who to call.
             <br />
@@ -68,7 +67,7 @@ export default async function HomePage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/signup">
               <Button size="lg" className="text-lg px-8 py-6">
-                Start Free Assessment
+                Request a Demo
                 <ArrowRight className="ml-2 w-5 h-5" />
               </Button>
             </Link>
@@ -397,12 +396,12 @@ export default async function HomePage() {
             Ready to transform your advancement office?
           </h2>
           <p className="text-lg text-slate-600 dark:text-slate-300 mb-10">
-            Start with a free data health assessment. See where you stand, who&apos;s at risk,
+            Start with a data health assessment. See where you stand, who&apos;s at risk,
             and who to prioritize — in minutes, not months.
           </p>
           <Link href="/signup">
             <Button size="lg" className="text-lg px-8 py-6">
-              Get Your Free Assessment
+              Request a Demo
               <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
           </Link>

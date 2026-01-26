@@ -29,7 +29,7 @@ export default function AboutPage() {
               href="/signup"
               className="text-sm bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700"
             >
-              Get Started
+              Request a Demo
             </Link>
           </div>
         </div>
@@ -109,7 +109,7 @@ export default function AboutPage() {
               href="/signup"
               className="bg-emerald-600 text-white px-6 py-3 rounded-lg hover:bg-emerald-700 font-medium"
             >
-              Sign Up
+              Contact Us
             </Link>
             <a
               href="mailto:hello@sintetico.ai"

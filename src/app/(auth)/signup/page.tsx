@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
   Card,
@@ -14,29 +15,21 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { trpc } from "@/lib/trpc/client";
 
-export default function SignupPage() {
+export default function ContactPage() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    password: "",
-    confirmPassword: "",
     organizationName: "",
+    message: "",
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
-  const signupMutation = trpc.auth.signup.useMutation({
-    onSuccess: () => {
-      setSuccess(true);
-    },
-    onError: (error) => {
-      setFormError(error.message);
-    },
-  });
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     setFormData((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
@@ -47,70 +40,48 @@ export default function SignupPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormError(null);
+    setIsSubmitting(true);
 
-    // Validate passwords match
-    if (formData.password !== formData.confirmPassword) {
-      setFormError("Passwords do not match");
-      return;
-    }
+    try {
+      // Send to contact email
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
 
-    // Validate password requirements
-    if (formData.password.length < 8) {
-      setFormError("Password must be at least 8 characters");
-      return;
-    }
-    if (!/[A-Z]/.test(formData.password)) {
-      setFormError("Password must contain at least one uppercase letter");
-      return;
-    }
-    if (!/[a-z]/.test(formData.password)) {
-      setFormError("Password must contain at least one lowercase letter");
-      return;
-    }
-    if (!/[0-9]/.test(formData.password)) {
-      setFormError("Password must contain at least one number");
-      return;
-    }
+      if (!response.ok) {
+        throw new Error("Failed to send message");
+      }
 
-    signupMutation.mutate({
-      name: formData.name,
-      email: formData.email,
-      password: formData.password,
-      organizationName: formData.organizationName,
-    });
+      setSuccess(true);
+    } catch {
+      setFormError("Failed to send message. Please try again or email us directly at hello@sintetico.ai");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (success) {
     return (
       <Card>
         <CardHeader className="space-y-1">
-          <CardTitle className="text-xl">Check your email</CardTitle>
+          <CardTitle className="text-xl">Thank you!</CardTitle>
           <CardDescription>
-            We&apos;ve sent a verification link to{" "}
-            <span className="font-medium">{formData.email}</span>
+            We&apos;ve received your message and will be in touch soon.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <p className="text-sm text-muted-foreground">
-            Click the link in the email to verify your account and complete
-            registration. The link will expire in 24 hours.
-          </p>
-          <p className="text-sm text-muted-foreground">
-            Didn&apos;t receive the email? Check your spam folder or{" "}
-            <button
-              type="button"
-              className="text-primary hover:underline"
-              onClick={() => setSuccess(false)}
-            >
-              try again
-            </button>
-            .
+            A member of our team will reach out to{" "}
+            <span className="font-medium">{formData.email}</span> within 1-2
+            business days.
           </p>
         </CardContent>
         <CardFooter>
-          <Link href="/login" className="w-full">
+          <Link href="/" className="w-full">
             <Button variant="outline" className="w-full">
-              Back to sign in
+              Back to Home
             </Button>
           </Link>
         </CardFooter>
@@ -121,9 +92,9 @@ export default function SignupPage() {
   return (
     <Card>
       <CardHeader className="space-y-1">
-        <CardTitle className="text-xl">Create an account</CardTitle>
+        <CardTitle className="text-xl">Contact Us</CardTitle>
         <CardDescription>
-          Sign up to start using GiveMetry for your organization
+          Interested in GiveMetry? Let us know and we&apos;ll get in touch.
         </CardDescription>
       </CardHeader>
       <form onSubmit={handleSubmit}>
@@ -143,7 +114,7 @@ export default function SignupPage() {
               value={formData.organizationName}
               onChange={handleChange}
               required
-              disabled={signupMutation.isPending}
+              disabled={isSubmitting}
             />
           </div>
 
@@ -156,7 +127,7 @@ export default function SignupPage() {
               value={formData.name}
               onChange={handleChange}
               required
-              disabled={signupMutation.isPending}
+              disabled={isSubmitting}
             />
           </div>
 
@@ -170,50 +141,28 @@ export default function SignupPage() {
               value={formData.email}
               onChange={handleChange}
               required
-              disabled={signupMutation.isPending}
+              disabled={isSubmitting}
               autoComplete="email"
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              name="password"
-              type="password"
-              value={formData.password}
+            <Label htmlFor="message">Message (Optional)</Label>
+            <Textarea
+              id="message"
+              name="message"
+              placeholder="Tell us about your organization and what you're looking for..."
+              value={formData.message}
               onChange={handleChange}
-              required
-              disabled={signupMutation.isPending}
-              autoComplete="new-password"
-            />
-            <p className="text-xs text-muted-foreground">
-              At least 8 characters with uppercase, lowercase, and a number
-            </p>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="confirmPassword">Confirm Password</Label>
-            <Input
-              id="confirmPassword"
-              name="confirmPassword"
-              type="password"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              required
-              disabled={signupMutation.isPending}
-              autoComplete="new-password"
+              disabled={isSubmitting}
+              rows={4}
             />
           </div>
         </CardContent>
 
         <CardFooter className="flex flex-col space-y-4">
-          <Button
-            type="submit"
-            className="w-full"
-            disabled={signupMutation.isPending}
-          >
-            {signupMutation.isPending ? "Creating account..." : "Create account"}
+          <Button type="submit" className="w-full" disabled={isSubmitting}>
+            {isSubmitting ? "Sending..." : "Send Message"}
           </Button>
 
           <p className="text-center text-sm text-muted-foreground">
