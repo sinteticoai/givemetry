@@ -31,10 +31,10 @@ export default async function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-emerald-600 flex items-center justify-center">
+              <div className="w-8 h-8 rounded-lg bg-emerald-400 flex items-center justify-center">
                 <BarChart3 className="w-5 h-5 text-white" />
               </div>
-              <span className="text-xl font-bold dark:text-white">GiveMetry<sup className="text-[0.6em] font-normal text-slate-400">™</sup></span><span className="text-xl font-light text-slate-400 dark:text-slate-500 ml-1">AI</span>
+              <span className="text-xl font-bold dark:text-white">GiveMetry<sup className="text-[0.6em] font-normal text-slate-400">™</sup></span><span className="ml-0.5 inline-flex items-center justify-center rounded-full bg-[#d2fae5] px-2 py-0.5 text-xs font-medium text-[#34d399]">AI</span>
             </div>
             <div className="flex items-center gap-4">
               <ThemeToggle />
@@ -58,7 +58,7 @@ export default async function HomePage() {
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-slate-900 dark:text-white mb-6">
             Know who to call.
             <br />
-            <span className="text-emerald-600 dark:text-emerald-400">Know what to say.</span>
+            <span className="text-emerald-400 dark:text-emerald-400">Know what to say.</span>
           </h1>
           <p className="text-xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto mb-10">
             GiveMetry transforms your donor data into actionable intelligence.
@@ -196,7 +196,7 @@ export default async function HomePage() {
       <section id="benchmarks" className="py-24 px-4 sm:px-6 lg:px-8 overflow-hidden">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <p className="text-sm font-medium text-emerald-600 dark:text-emerald-400 mb-3">
+            <p className="text-sm font-medium text-emerald-400 dark:text-emerald-400 mb-3">
               BUILT ON RESEARCH
             </p>
             <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-4">
@@ -416,10 +416,10 @@ export default async function HomePage() {
             {/* Brand */}
             <div className="col-span-2 md:col-span-1">
               <div className="flex items-center gap-2 mb-4">
-                <div className="w-8 h-8 rounded-lg bg-emerald-600 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-lg bg-emerald-400 flex items-center justify-center">
                   <BarChart3 className="w-5 h-5 text-white" />
                 </div>
-                <span className="font-bold dark:text-white">GiveMetry<sup className="text-[0.6em] font-normal text-slate-400">™</sup></span><span className="font-light text-slate-400 dark:text-slate-500 ml-1">AI</span>
+                <span className="font-bold dark:text-white">GiveMetry<sup className="text-[0.6em] font-normal text-slate-400">™</sup></span><span className="ml-0.5 inline-flex items-center justify-center rounded-full bg-[#d2fae5] px-2 py-0.5 text-xs font-medium text-[#34d399]">AI</span>
               </div>
               <p className="text-sm text-slate-500 dark:text-slate-400">
                 AI-powered donor analytics for nonprofit gift officers.
@@ -430,8 +430,8 @@ export default async function HomePage() {
             <div>
               <h4 className="font-semibold text-slate-900 dark:text-white mb-4">Product</h4>
               <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-400">
-                <li><a href="#features" className="hover:text-emerald-600 dark:hover:text-emerald-400">Features</a></li>
-                <li><a href="#benchmarks" className="hover:text-emerald-600 dark:hover:text-emerald-400">Benchmarks</a></li>
+                <li><a href="#features" className="hover:text-emerald-400 dark:hover:text-emerald-400">Features</a></li>
+                <li><a href="#benchmarks" className="hover:text-emerald-400 dark:hover:text-emerald-400">Benchmarks</a></li>
               </ul>
             </div>
 
@@ -439,8 +439,8 @@ export default async function HomePage() {
             <div>
               <h4 className="font-semibold text-slate-900 dark:text-white mb-4">Company</h4>
               <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-400">
-                <li><Link href="/about" className="hover:text-emerald-600 dark:hover:text-emerald-400">About</Link></li>
-                <li><a href="mailto:hello@sintetico.ai" className="hover:text-emerald-600 dark:hover:text-emerald-400">Contact Us</a></li>
+                <li><Link href="/about" className="hover:text-emerald-400 dark:hover:text-emerald-400">About</Link></li>
+                <li><a href="mailto:hello@sintetico.ai" className="hover:text-emerald-400 dark:hover:text-emerald-400">Contact Us</a></li>
               </ul>
             </div>
 
@@ -448,8 +448,8 @@ export default async function HomePage() {
             <div>
               <h4 className="font-semibold text-slate-900 dark:text-white mb-4">Legal</h4>
               <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-400">
-                <li><Link href="/privacy" className="hover:text-emerald-600 dark:hover:text-emerald-400">Privacy Policy</Link></li>
-                <li><Link href="/terms" className="hover:text-emerald-600 dark:hover:text-emerald-400">Terms of Service</Link></li>
+                <li><Link href="/privacy" className="hover:text-emerald-400 dark:hover:text-emerald-400">Privacy Policy</Link></li>
+                <li><Link href="/terms" className="hover:text-emerald-400 dark:hover:text-emerald-400">Terms of Service</Link></li>
               </ul>
             </div>
           </div>
@@ -480,7 +480,7 @@ function FeatureCard({
 }) {
   return (
     <div className="bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-sm border dark:border-slate-700 hover:shadow-md transition-shadow">
-      <div className="w-12 h-12 bg-emerald-100 dark:bg-emerald-900/30 rounded-xl flex items-center justify-center text-emerald-600 dark:text-emerald-400 mb-6">
+      <div className="w-12 h-12 bg-emerald-100 dark:bg-emerald-900/30 rounded-xl flex items-center justify-center text-emerald-400 dark:text-emerald-400 mb-6">
         {icon}
       </div>
       <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-3">{title}</h3>
@@ -500,7 +500,7 @@ function StepCard({
 }) {
   return (
     <div className="text-center">
-      <div className="w-12 h-12 bg-emerald-600 text-white rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-6">
+      <div className="w-12 h-12 bg-emerald-400 text-white rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-6">
         {number}
       </div>
       <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-3">{title}</h3>
@@ -537,8 +537,8 @@ function BenchmarkCard({
 }) {
   const colorStyles = {
     emerald: {
-      badge: "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400",
-      rate: "text-emerald-600 dark:text-emerald-400",
+      badge: "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-500 dark:text-emerald-400",
+      rate: "text-emerald-400 dark:text-emerald-400",
     },
     amber: {
       badge: "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400",

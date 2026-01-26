@@ -51,21 +51,21 @@ export default function PrivacyPage() {
       <header className="border-b dark:border-slate-800 bg-white/80 dark:bg-slate-950/80 backdrop-blur-sm sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
           <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-emerald-600 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg bg-emerald-400 flex items-center justify-center">
               <BarChart3 className="w-5 h-5 text-white" />
             </div>
-            <span className="font-bold text-slate-900 dark:text-white">GiveMetry<sup className="text-[0.6em] font-normal text-slate-400">™</sup></span><span className="font-light text-slate-400 dark:text-slate-500 ml-1">AI</span>
+            <span className="font-bold text-slate-900 dark:text-white">GiveMetry<sup className="text-[0.6em] font-normal text-slate-400">™</sup></span><span className="ml-0.5 inline-flex items-center justify-center rounded-full bg-[#d2fae5] px-2 py-0.5 text-xs font-medium text-[#34d399]">AI</span>
           </Link>
           <div className="flex gap-4">
             <Link
               href="/login"
-              className="text-sm text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400"
+              className="text-sm text-slate-600 dark:text-slate-300 hover:text-emerald-400 dark:hover:text-emerald-400"
             >
               Sign In
             </Link>
             <Link
               href="/signup"
-              className="text-sm bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700"
+              className="text-sm bg-emerald-400 text-white px-4 py-2 rounded-lg hover:bg-emerald-500"
             >
               Request a Demo
             </Link>
@@ -87,7 +87,7 @@ export default function PrivacyPage() {
                   <a
                     key={section.id}
                     href={`#${section.id}`}
-                    className="block text-sm text-slate-600 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 py-1"
+                    className="block text-sm text-slate-600 dark:text-slate-400 hover:text-emerald-400 dark:hover:text-emerald-400 py-1"
                   >
                     {index + 1}. {section.title}
                   </a>
@@ -239,7 +239,7 @@ export default function PrivacyPage() {
                   <li>Restrict certain processing activities</li>
                 </ul>
                 <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
-                  To exercise these rights, contact us at <a href="mailto:privacy@sintetico.ai" className="text-emerald-600 dark:text-emerald-400 hover:underline">privacy@sintetico.ai</a>.
+                  To exercise these rights, contact us at <a href="mailto:privacy@sintetico.ai" className="text-emerald-400 dark:text-emerald-400 hover:underline">privacy@sintetico.ai</a>.
                 </p>
               </section>
 
@@ -299,8 +299,8 @@ export default function PrivacyPage() {
                 </p>
                 <CalloutBox variant="neutral">
                   <ul className="text-slate-600 dark:text-slate-300 space-y-2 text-sm">
-                    <li><strong>Email:</strong> <a href="mailto:privacy@sintetico.ai" className="text-emerald-600 dark:text-emerald-400 hover:underline">privacy@sintetico.ai</a></li>
-                    <li><strong>DPO:</strong> <a href="mailto:dpo@sintetico.ai" className="text-emerald-600 dark:text-emerald-400 hover:underline">dpo@sintetico.ai</a></li>
+                    <li><strong>Email:</strong> <a href="mailto:privacy@sintetico.ai" className="text-emerald-400 dark:text-emerald-400 hover:underline">privacy@sintetico.ai</a></li>
+                    <li><strong>DPO:</strong> <a href="mailto:dpo@sintetico.ai" className="text-emerald-400 dark:text-emerald-400 hover:underline">dpo@sintetico.ai</a></li>
                     <li><strong>Address:</strong> 21 SE 1st Ave. Suite 300, Miami, FL 33133</li>
                   </ul>
                 </CalloutBox>
@@ -318,10 +318,10 @@ export default function PrivacyPage() {
             {/* Brand */}
             <div className="col-span-2 md:col-span-1">
               <Link href="/" className="flex items-center gap-2 mb-4">
-                <div className="w-8 h-8 rounded-lg bg-emerald-600 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-lg bg-emerald-400 flex items-center justify-center">
                   <BarChart3 className="w-5 h-5 text-white" />
                 </div>
-                <span className="font-bold dark:text-white">GiveMetry<sup className="text-[0.6em] font-normal text-slate-400">™</sup></span><span className="font-light text-slate-400 dark:text-slate-500 ml-1">AI</span>
+                <span className="font-bold dark:text-white">GiveMetry<sup className="text-[0.6em] font-normal text-slate-400">™</sup></span><span className="ml-0.5 inline-flex items-center justify-center rounded-full bg-[#d2fae5] px-2 py-0.5 text-xs font-medium text-[#34d399]">AI</span>
               </Link>
               <p className="text-sm text-slate-500 dark:text-slate-400">
                 AI-powered donor analytics for nonprofit gift officers.
@@ -332,8 +332,8 @@ export default function PrivacyPage() {
             <div>
               <h4 className="font-semibold text-slate-900 dark:text-white mb-4">Product</h4>
               <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-400">
-                <li><Link href="/#features" className="hover:text-emerald-600 dark:hover:text-emerald-400">Features</Link></li>
-                <li><Link href="/#benchmarks" className="hover:text-emerald-600 dark:hover:text-emerald-400">Benchmarks</Link></li>
+                <li><Link href="/#features" className="hover:text-emerald-400 dark:hover:text-emerald-400">Features</Link></li>
+                <li><Link href="/#benchmarks" className="hover:text-emerald-400 dark:hover:text-emerald-400">Benchmarks</Link></li>
               </ul>
             </div>
 
@@ -341,8 +341,8 @@ export default function PrivacyPage() {
             <div>
               <h4 className="font-semibold text-slate-900 dark:text-white mb-4">Company</h4>
               <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-400">
-                <li><Link href="/about" className="hover:text-emerald-600 dark:hover:text-emerald-400">About</Link></li>
-                <li><a href="mailto:hello@sintetico.ai" className="hover:text-emerald-600 dark:hover:text-emerald-400">Contact Us</a></li>
+                <li><Link href="/about" className="hover:text-emerald-400 dark:hover:text-emerald-400">About</Link></li>
+                <li><a href="mailto:hello@sintetico.ai" className="hover:text-emerald-400 dark:hover:text-emerald-400">Contact Us</a></li>
               </ul>
             </div>
 
@@ -350,8 +350,8 @@ export default function PrivacyPage() {
             <div>
               <h4 className="font-semibold text-slate-900 dark:text-white mb-4">Legal</h4>
               <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-400">
-                <li><Link href="/privacy" className="hover:text-emerald-600 dark:hover:text-emerald-400">Privacy Policy</Link></li>
-                <li><Link href="/terms" className="hover:text-emerald-600 dark:hover:text-emerald-400">Terms of Service</Link></li>
+                <li><Link href="/privacy" className="hover:text-emerald-400 dark:hover:text-emerald-400">Privacy Policy</Link></li>
+                <li><Link href="/terms" className="hover:text-emerald-400 dark:hover:text-emerald-400">Terms of Service</Link></li>
               </ul>
             </div>
           </div>

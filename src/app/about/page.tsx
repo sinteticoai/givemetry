@@ -13,21 +13,21 @@ export default function AboutPage() {
       <header className="border-b dark:border-slate-800 bg-white/80 dark:bg-slate-950/80 backdrop-blur-sm sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
           <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-emerald-600 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg bg-emerald-400 flex items-center justify-center">
               <BarChart3 className="w-5 h-5 text-white" />
             </div>
-            <span className="font-bold text-slate-900 dark:text-white">GiveMetry<sup className="text-[0.6em] font-normal text-slate-400">™</sup></span><span className="font-light text-slate-400 dark:text-slate-500 ml-1">AI</span>
+            <span className="font-bold text-slate-900 dark:text-white">GiveMetry<sup className="text-[0.6em] font-normal text-slate-400">™</sup></span><span className="ml-0.5 inline-flex items-center justify-center rounded-full bg-[#d2fae5] px-2 py-0.5 text-xs font-medium text-[#34d399]">AI</span>
           </Link>
           <div className="flex gap-4">
             <Link
               href="/login"
-              className="text-sm text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400"
+              className="text-sm text-slate-600 dark:text-slate-300 hover:text-emerald-400 dark:hover:text-emerald-400"
             >
               Sign In
             </Link>
             <Link
               href="/signup"
-              className="text-sm bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700"
+              className="text-sm bg-emerald-400 text-white px-4 py-2 rounded-lg hover:bg-emerald-500"
             >
               Request a Demo
             </Link>
@@ -77,9 +77,9 @@ export default function AboutPage() {
         <div className="grid md:grid-cols-2 gap-8 mb-16">
           <div className="bg-white dark:bg-slate-800 rounded-xl p-8 shadow-sm border dark:border-slate-700">
             <div className="w-12 h-12 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center mb-4">
-              <BarChart3 className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+              <BarChart3 className="w-6 h-6 text-emerald-400 dark:text-emerald-400" />
             </div>
-            <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">GiveMetry<sup className="text-[0.6em] font-normal text-slate-400">™</sup> <span className="font-light text-slate-400 dark:text-slate-500">AI</span></h3>
+            <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">GiveMetry<sup className="text-[0.6em] font-normal text-slate-400">™</sup> <span className="ml-0.5 inline-flex items-center justify-center rounded-full bg-[#d2fae5] px-2 py-0.5 text-xs font-medium text-[#34d399]">AI</span></h3>
             <p className="text-slate-600 dark:text-slate-400 text-sm">
               AI-powered donor analytics for nonprofit gift officers. Predict lapse risk, prioritize outreach, and generate AI briefings to strengthen donor relationships.
             </p>
@@ -107,7 +107,7 @@ export default function AboutPage() {
           <div className="flex gap-4 justify-center">
             <Link
               href="/signup"
-              className="bg-emerald-600 text-white px-6 py-3 rounded-lg hover:bg-emerald-700 font-medium"
+              className="bg-emerald-400 text-white px-6 py-3 rounded-lg hover:bg-emerald-500 font-medium"
             >
               Contact Us
             </Link>
@@ -129,10 +129,10 @@ export default function AboutPage() {
             {/* Brand */}
             <div className="col-span-2 md:col-span-1">
               <Link href="/" className="flex items-center gap-2 mb-4">
-                <div className="w-8 h-8 rounded-lg bg-emerald-600 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-lg bg-emerald-400 flex items-center justify-center">
                   <BarChart3 className="w-5 h-5 text-white" />
                 </div>
-                <span className="font-bold dark:text-white">GiveMetry<sup className="text-[0.6em] font-normal text-slate-400">™</sup></span><span className="font-light text-slate-400 dark:text-slate-500 ml-1">AI</span>
+                <span className="font-bold dark:text-white">GiveMetry<sup className="text-[0.6em] font-normal text-slate-400">™</sup></span><span className="ml-0.5 inline-flex items-center justify-center rounded-full bg-[#d2fae5] px-2 py-0.5 text-xs font-medium text-[#34d399]">AI</span>
               </Link>
               <p className="text-sm text-slate-500 dark:text-slate-400">
                 AI-powered donor analytics for nonprofit gift officers.
@@ -143,8 +143,8 @@ export default function AboutPage() {
             <div>
               <h4 className="font-semibold text-slate-900 dark:text-white mb-4">Product</h4>
               <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-400">
-                <li><Link href="/#features" className="hover:text-emerald-600 dark:hover:text-emerald-400">Features</Link></li>
-                <li><Link href="/#benchmarks" className="hover:text-emerald-600 dark:hover:text-emerald-400">Benchmarks</Link></li>
+                <li><Link href="/#features" className="hover:text-emerald-400 dark:hover:text-emerald-400">Features</Link></li>
+                <li><Link href="/#benchmarks" className="hover:text-emerald-400 dark:hover:text-emerald-400">Benchmarks</Link></li>
               </ul>
             </div>
 
@@ -152,8 +152,8 @@ export default function AboutPage() {
             <div>
               <h4 className="font-semibold text-slate-900 dark:text-white mb-4">Company</h4>
               <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-400">
-                <li><Link href="/about" className="hover:text-emerald-600 dark:hover:text-emerald-400">About</Link></li>
-                <li><a href="mailto:hello@sintetico.ai" className="hover:text-emerald-600 dark:hover:text-emerald-400">Contact Us</a></li>
+                <li><Link href="/about" className="hover:text-emerald-400 dark:hover:text-emerald-400">About</Link></li>
+                <li><a href="mailto:hello@sintetico.ai" className="hover:text-emerald-400 dark:hover:text-emerald-400">Contact Us</a></li>
               </ul>
             </div>
 
@@ -161,8 +161,8 @@ export default function AboutPage() {
             <div>
               <h4 className="font-semibold text-slate-900 dark:text-white mb-4">Legal</h4>
               <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-400">
-                <li><Link href="/privacy" className="hover:text-emerald-600 dark:hover:text-emerald-400">Privacy Policy</Link></li>
-                <li><Link href="/terms" className="hover:text-emerald-600 dark:hover:text-emerald-400">Terms of Service</Link></li>
+                <li><Link href="/privacy" className="hover:text-emerald-400 dark:hover:text-emerald-400">Privacy Policy</Link></li>
+                <li><Link href="/terms" className="hover:text-emerald-400 dark:hover:text-emerald-400">Terms of Service</Link></li>
               </ul>
             </div>
           </div>
