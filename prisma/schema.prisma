@@ -1,0 +1,404 @@
+// GiveMetry MVP - Prisma Schema
+// Based on data-model.md specification
+// PostgreSQL with pgvector extension for semantic search
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+}
+
+// ==============================================
+// MULTI-TENANCY & AUTH
+// ==============================================
+
+model Organization {
+  id            String    @id @default(uuid()) @db.Uuid
+  name          String    @db.VarChar(255)
+  slug          String    @unique @db.VarChar(100)
+  settings      Json      @default("{}")
+  features      Json      @default("{}")
+  plan          String    @default("trial") @db.VarChar(50)
+  planExpiresAt DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  users                User[]
+  uploads              Upload[]
+  constituents         Constituent[]
+  gifts                Gift[]
+  contacts             Contact[]
+  predictions          Prediction[]
+  alerts               Alert[]
+  briefs               Brief[]
+  naturalLanguageQueries NaturalLanguageQuery[]
+  auditLogs            AuditLog[]
+  reports              Report[]
+
+  @@index([slug])
+}
+
+model User {
+  id              String    @id @default(uuid()) @db.Uuid
+  organizationId  String    @db.Uuid
+  email           String    @unique @db.VarChar(255)
+  passwordHash    String?   @db.VarChar(255)
+  emailVerified   DateTime?
+  name            String?   @db.VarChar(255)
+  role            UserRole  @default(viewer)
+  preferences     Json      @default("{}")
+  lastLoginAt     DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  // Relations
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  uploads      Upload[]
+  briefs       Brief[]
+  contacts     Contact[]    @relation("ContactUser")
+  queries      NaturalLanguageQuery[]
+  auditLogs    AuditLog[]
+
+  // Constituents assigned to this user (gift officer)
+  assignedConstituents Constituent[] @relation("AssignedOfficer")
+
+  @@index([organizationId])
+  @@index([email])
+}
+
+enum UserRole {
+  admin
+  manager
+  gift_officer
+  viewer
+}
+
+model VerificationToken {
+  identifier String   @db.VarChar(255)
+  token      String   @unique @db.VarChar(255)
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model PasswordResetToken {
+  id        String   @id @default(uuid()) @db.Uuid
+  email     String   @db.VarChar(255)
+  token     String   @unique @db.VarChar(255)
+  expires   DateTime
+  createdAt DateTime @default(now())
+
+  @@index([email])
+}
+
+// ==============================================
+// DATA UPLOAD
+// ==============================================
+
+model Upload {
+  id             String       @id @default(uuid()) @db.Uuid
+  organizationId String       @db.Uuid
+  userId         String       @db.Uuid
+  filename       String       @db.VarChar(255)
+  fileSize       Int?
+  fileHash       String?      @db.VarChar(64)
+  storagePath    String?      @db.VarChar(500)
+  status         UploadStatus @default(queued)
+  rowCount       Int?
+  processedCount Int?
+  errorCount     Int?
+  errors         Json?
+  progress       Int          @default(0)
+  fieldMapping   Json?
+  startedAt      DateTime?
+  completedAt    DateTime?
+  createdAt      DateTime     @default(now())
+
+  // Relations
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id])
+
+  @@index([organizationId])
+  @@index([status])
+}
+
+enum UploadStatus {
+  queued
+  processing
+  completed
+  failed
+  completed_with_errors
+}
+
+// ==============================================
+// CONSTITUENT DATA
+// ==============================================
+
+model Constituent {
+  id                String    @id @default(uuid()) @db.Uuid
+  organizationId    String    @db.Uuid
+  externalId        String    @db.VarChar(100)
+  externalSource    String?   @db.VarChar(50)
+  prefix            String?   @db.VarChar(20)
+  firstName         String?   @db.VarChar(100)
+  middleName        String?   @db.VarChar(100)
+  lastName          String    @db.VarChar(100)
+  suffix            String?   @db.VarChar(20)
+  email             String?   @db.VarChar(255)
+  phone             String?   @db.VarChar(50)
+  addressLine1      String?   @db.VarChar(255)
+  addressLine2      String?   @db.VarChar(255)
+  city              String?   @db.VarChar(100)
+  state             String?   @db.VarChar(50)
+  postalCode        String?   @db.VarChar(20)
+  country           String?   @db.VarChar(100)
+  constituentType   String?   @db.VarChar(50)
+  classYear         Int?
+  schoolCollege     String?   @db.VarChar(100)
+  estimatedCapacity Decimal?  @db.Decimal(15, 2)
+  capacitySource    String?   @db.VarChar(100)
+  capacityUpdatedAt DateTime?
+  assignedOfficerId String?   @db.Uuid
+  portfolioTier     String?   @db.VarChar(50)
+  lapseRiskScore    Decimal?  @db.Decimal(5, 4)
+  lapseRiskFactors  Json?
+  priorityScore     Decimal?  @db.Decimal(5, 4)
+  priorityFactors   Json?
+  engagementScore   Decimal?  @db.Decimal(5, 4)
+  dataQualityScore  Decimal?  @db.Decimal(5, 4)
+  isActive          Boolean   @default(true)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  // Vector embedding for semantic search (to be added when pgvector is configured)
+  // embedding Unsupported("vector(1536)")?
+
+  // Relations
+  organization    Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  assignedOfficer User?         @relation("AssignedOfficer", fields: [assignedOfficerId], references: [id])
+  gifts           Gift[]
+  contacts        Contact[]
+  predictions     Prediction[]
+  alerts          Alert[]
+  briefs          Brief[]
+
+  @@unique([organizationId, externalId, externalSource])
+  @@index([organizationId])
+  @@index([organizationId, priorityScore(sort: Desc)])
+  @@index([organizationId, lapseRiskScore(sort: Desc)])
+  @@index([assignedOfficerId])
+}
+
+model Gift {
+  id                String   @id @default(uuid()) @db.Uuid
+  organizationId    String   @db.Uuid
+  constituentId     String   @db.Uuid
+  externalId        String?  @db.VarChar(100)
+  amount            Decimal  @db.Decimal(15, 2)
+  giftDate          DateTime @db.Date
+  giftType          String?  @db.VarChar(50)
+  fundName          String?  @db.VarChar(255)
+  fundCode          String?  @db.VarChar(50)
+  campaign          String?  @db.VarChar(255)
+  appeal            String?  @db.VarChar(100)
+  recognitionAmount Decimal? @db.Decimal(15, 2)
+  isAnonymous       Boolean  @default(false)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // Relations
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  constituent  Constituent  @relation(fields: [constituentId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([constituentId])
+  @@index([giftDate(sort: Desc)])
+}
+
+model Contact {
+  id             String    @id @default(uuid()) @db.Uuid
+  organizationId String    @db.Uuid
+  constituentId  String    @db.Uuid
+  userId         String?   @db.Uuid
+  contactType    String    @db.VarChar(50)
+  contactDate    DateTime  @db.Date
+  subject        String?   @db.VarChar(255)
+  notes          String?   @db.Text
+  outcome        String?   @db.VarChar(50)
+  nextAction     String?   @db.VarChar(255)
+  nextActionDate DateTime? @db.Date
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  // Relations
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  constituent  Constituent  @relation(fields: [constituentId], references: [id], onDelete: Cascade)
+  user         User?        @relation("ContactUser", fields: [userId], references: [id])
+
+  @@index([organizationId])
+  @@index([constituentId])
+  @@index([contactDate(sort: Desc)])
+}
+
+// ==============================================
+// AI & PREDICTIONS
+// ==============================================
+
+model Prediction {
+  id             String   @id @default(uuid()) @db.Uuid
+  organizationId String   @db.Uuid
+  constituentId  String   @db.Uuid
+  predictionType String   @db.VarChar(50)
+  score          Decimal  @db.Decimal(5, 4)
+  confidence     Decimal  @db.Decimal(5, 4)
+  factors        Json
+  modelVersion   String?  @db.VarChar(50)
+  isCurrent      Boolean  @default(true)
+  createdAt      DateTime @default(now())
+
+  // Relations
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  constituent  Constituent  @relation(fields: [constituentId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([constituentId])
+  @@index([organizationId, predictionType, isCurrent])
+}
+
+model Alert {
+  id             String      @id @default(uuid()) @db.Uuid
+  organizationId String      @db.Uuid
+  constituentId  String      @db.Uuid
+  alertType      String      @db.VarChar(50)
+  severity       AlertSeverity
+  title          String      @db.VarChar(255)
+  description    String?     @db.Text
+  factors        Json?
+  status         AlertStatus @default(active)
+  actedOnAt      DateTime?
+  actedOnBy      String?     @db.VarChar(255)
+  createdAt      DateTime    @default(now())
+
+  // Relations
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  constituent  Constituent  @relation(fields: [constituentId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([organizationId, status])
+}
+
+enum AlertSeverity {
+  high
+  medium
+  low
+}
+
+enum AlertStatus {
+  active
+  dismissed
+  acted_on
+}
+
+model Brief {
+  id               String   @id @default(uuid()) @db.Uuid
+  organizationId   String   @db.Uuid
+  constituentId    String   @db.Uuid
+  userId           String   @db.Uuid
+  content          Json
+  citations        Json
+  promptTokens     Int?
+  completionTokens Int?
+  modelUsed        String?  @db.VarChar(100)
+  createdAt        DateTime @default(now())
+
+  // Relations
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  constituent  Constituent  @relation(fields: [constituentId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id])
+
+  @@index([organizationId])
+  @@index([constituentId])
+}
+
+model NaturalLanguageQuery {
+  id              String   @id @default(uuid()) @db.Uuid
+  organizationId  String   @db.Uuid
+  userId          String   @db.Uuid
+  queryText       String   @db.Text
+  interpretedQuery Json?
+  resultCount     Int?
+  resultIds       String[]
+  savedName       String?  @db.VarChar(255)
+  wasHelpful      Boolean?
+  feedback        String?  @db.Text
+  createdAt       DateTime @default(now())
+
+  // Relations
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id])
+
+  @@index([organizationId])
+}
+
+// ==============================================
+// REPORTS
+// ==============================================
+
+model Report {
+  id             String       @id @default(uuid()) @db.Uuid
+  organizationId String       @db.Uuid
+  userId         String?      @db.Uuid
+  reportType     String       @db.VarChar(50)
+  title          String       @db.VarChar(255)
+  parameters     Json?
+  content        Json?
+  storagePath    String?      @db.VarChar(500)
+  status         ReportStatus @default(queued)
+  scheduleCron   String?      @db.VarChar(50)
+  lastRunAt      DateTime?
+  nextRunAt      DateTime?
+  createdAt      DateTime     @default(now())
+
+  // Relations
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([status])
+}
+
+enum ReportStatus {
+  queued
+  generating
+  completed
+  failed
+  scheduled
+}
+
+// ==============================================
+// AUDIT & COMPLIANCE
+// ==============================================
+
+model AuditLog {
+  id             BigInt   @id @default(autoincrement())
+  organizationId String?  @db.Uuid
+  userId         String?  @db.Uuid
+  action         String   @db.VarChar(100)
+  resourceType   String?  @db.VarChar(50)
+  resourceId     String?  @db.VarChar(100)
+  details        Json?
+  ipAddress      String?  @db.VarChar(45)
+  userAgent      String?  @db.Text
+  createdAt      DateTime @default(now())
+
+  // Relations
+  organization Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+  user         User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([organizationId, createdAt])
+  @@index([action])
+}

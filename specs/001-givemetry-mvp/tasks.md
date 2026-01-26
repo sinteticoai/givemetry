@@ -49,57 +49,57 @@ Based on plan.md structure:
 
 ### Database & Prisma
 
-- [ ] T009 Create Prisma schema with all entities per data-model.md in prisma/schema.prisma
-- [ ] T010 Configure PostgreSQL connection with pgvector extension in prisma/schema.prisma
-- [ ] T011 Create Prisma client singleton with tenant context in src/lib/prisma/client.ts
-- [ ] T012 Implement RLS tenant middleware for Prisma in src/lib/prisma/tenant.ts
+- [x] T009 Create Prisma schema with all entities per data-model.md in prisma/schema.prisma
+- [x] T010 Configure PostgreSQL connection with pgvector extension in prisma/schema.prisma
+- [x] T011 Create Prisma client singleton with tenant context in src/lib/prisma/client.ts
+- [x] T012 Implement RLS tenant middleware for Prisma in src/lib/prisma/tenant.ts
 - [ ] T013 Create initial database migration in prisma/migrations/
-- [ ] T014 Create seed script with demo organization and test users in prisma/seed.ts
+- [x] T014 Create seed script with demo organization and test users in prisma/seed.ts
 
 ### tRPC Setup
 
-- [ ] T015 Initialize tRPC with context and superjson transformer in src/server/trpc/init.ts
-- [ ] T016 Create tRPC context with tenant Prisma client in src/server/trpc/context.ts
-- [ ] T017 Create root tRPC router in src/server/routers/_app.ts
-- [ ] T018 Setup tRPC API handler in src/app/api/trpc/[trpc]/route.ts
-- [ ] T019 Create tRPC React provider and hooks in src/lib/trpc/client.ts
+- [x] T015 Initialize tRPC with context and superjson transformer in src/server/trpc/init.ts
+- [x] T016 Create tRPC context with tenant Prisma client in src/server/trpc/context.ts
+- [x] T017 Create root tRPC router in src/server/routers/_app.ts
+- [x] T018 Setup tRPC API handler in src/app/api/trpc/[trpc]/route.ts
+- [x] T019 Create tRPC React provider and hooks in src/lib/trpc/client.tsx
 
 ### Authentication Infrastructure
 
-- [ ] T020 Configure NextAuth v5 with Credentials provider in src/lib/auth/config.ts
-- [ ] T021 [P] Create secure token generation utilities in src/lib/auth/tokens.ts
-- [ ] T022 [P] Implement RBAC permission helpers in src/lib/auth/permissions.ts
-- [ ] T023 Setup NextAuth API routes in src/app/api/auth/[...nextauth]/route.ts
-- [ ] T024 Create auth middleware for session validation with idle timeout in src/middleware.ts
+- [x] T020 Configure NextAuth v5 with Credentials provider in src/lib/auth/config.ts
+- [x] T021 [P] Create secure token generation utilities in src/lib/auth/tokens.ts
+- [x] T022 [P] Implement RBAC permission helpers in src/lib/auth/permissions.ts
+- [x] T023 Setup NextAuth API routes in src/app/api/auth/[...nextauth]/route.ts
+- [x] T024 Create auth middleware for session validation with idle timeout in src/middleware.ts
 
 ### Email Infrastructure
 
-- [ ] T025 Configure Resend email client in src/server/services/email/resend.ts
-- [ ] T026 [P] Create email verification template in src/server/services/email/templates/verify-email.tsx
-- [ ] T027 [P] Create password reset template in src/server/services/email/templates/reset-password.tsx
-- [ ] T028 Implement email service with send functions in src/server/services/email/index.ts
+- [x] T025 Configure Resend email client in src/server/services/email/resend.ts
+- [x] T026 [P] Create email verification template in src/server/services/email/templates/verify-email.tsx
+- [x] T027 [P] Create password reset template in src/server/services/email/templates/reset-password.tsx
+- [x] T028 Implement email service with send functions in src/server/services/email/index.ts
 
 ### File Storage Infrastructure
 
-- [ ] T029 Create S3/R2 storage client in src/lib/storage/s3.ts
-- [ ] T030 Implement presigned URL generation for uploads in src/lib/storage/presigned.ts
-- [ ] T031 Create local filesystem fallback for development in src/lib/storage/local.ts
+- [x] T029 Create S3/R2 storage client in src/lib/storage/s3.ts
+- [x] T030 Implement presigned URL generation for uploads in src/lib/storage/presigned.ts
+- [x] T031 Create local filesystem fallback for development in src/lib/storage/local.ts
 
 ### Shared UI Components
 
-- [ ] T032 Create app layout with sidebar navigation in src/components/layout/app-layout.tsx
-- [ ] T033 [P] Create sidebar component in src/components/layout/sidebar.tsx
-- [ ] T034 [P] Create header component with user menu in src/components/layout/header.tsx
-- [ ] T035 [P] Create loading spinner and skeleton components in src/components/shared/loading.tsx
-- [ ] T036 [P] Create error boundary and error display components in src/components/shared/error.tsx
-- [ ] T037 [P] Create empty state component in src/components/shared/empty-state.tsx
+- [x] T032 Create app layout with sidebar navigation in src/components/layout/app-layout.tsx
+- [x] T033 [P] Create sidebar component in src/components/layout/sidebar.tsx
+- [x] T034 [P] Create header component with user menu in src/components/layout/header.tsx
+- [x] T035 [P] Create loading spinner and skeleton components in src/components/shared/loading.tsx
+- [x] T036 [P] Create error boundary and error display components in src/components/shared/error.tsx
+- [x] T037 [P] Create empty state component in src/components/shared/empty-state.tsx
 
 ### Constituent Infrastructure (Required by Multiple Stories)
 
-- [ ] T038 Create constituent router with get, list procedures in src/server/routers/constituent.ts
-- [ ] T039 Add update, bulkAssign procedures to constituent router in src/server/routers/constituent.ts
-- [ ] T040 Create gift router with list, get, getByConstituent procedures in src/server/routers/gift.ts
-- [ ] T041 Create contact router with list, get, getByConstituent procedures in src/server/routers/contact.ts
+- [x] T038 Create constituent router with get, list procedures in src/server/routers/constituent.ts
+- [x] T039 Add update, bulkAssign procedures to constituent router in src/server/routers/constituent.ts
+- [x] T040 Create gift router with list, get, getByConstituent procedures in src/server/routers/gift.ts
+- [x] T041 Create contact router with list, get, getByConstituent procedures in src/server/routers/contact.ts
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 
