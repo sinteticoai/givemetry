@@ -169,48 +169,48 @@ Based on plan.md structure:
 
 ### Tests for User Story 1 (TDD - Write First, Verify Fail)
 
-- [ ] T071 [P] [US1] Unit tests for CSV parser in tests/unit/upload/csv-parser.test.ts
-- [ ] T072 [P] [US1] Unit tests for date detection in tests/unit/utils/dates.test.ts
-- [ ] T073 [P] [US1] Unit tests for field mapper in tests/unit/upload/field-mapper.test.ts
-- [ ] T074 [US1] Integration tests for upload router in tests/integration/upload.test.ts
-- [ ] T075 [US1] E2E test for upload-map-process flow in tests/e2e/upload-flow.spec.ts
+- [x] T071 [P] [US1] Unit tests for CSV parser in tests/unit/upload/csv-parser.test.ts
+- [x] T072 [P] [US1] Unit tests for date detection in tests/unit/utils/dates.test.ts
+- [x] T073 [P] [US1] Unit tests for field mapper in tests/unit/upload/field-mapper.test.ts
+- [x] T074 [US1] Integration tests for upload router in tests/integration/upload.test.ts
+- [x] T075 [US1] E2E test for upload-map-process flow in tests/e2e/upload-flow.spec.ts
 
 ### Upload Router & Procedures
 
-- [ ] T076 [US1] Create upload router with createPresignedUrl procedure in src/server/routers/upload.ts
-- [ ] T077 [US1] Implement confirmUpload procedure with field detection in src/server/routers/upload.ts
-- [ ] T078 [US1] Implement updateFieldMapping procedure in src/server/routers/upload.ts
-- [ ] T079 [US1] Implement get, list, retry, delete procedures in src/server/routers/upload.ts
+- [x] T076 [US1] Create upload router with createPresignedUrl procedure in src/server/routers/upload.ts
+- [x] T077 [US1] Implement confirmUpload procedure with field detection in src/server/routers/upload.ts
+- [x] T078 [US1] Implement updateFieldMapping procedure in src/server/routers/upload.ts
+- [x] T079 [US1] Implement get, list, retry, delete procedures in src/server/routers/upload.ts
 
 ### CSV Processing Service
 
-- [ ] T080 [US1] Create CSV parser service with Papa Parse streaming in src/server/services/upload/csv-parser.ts
-- [ ] T081 [P] [US1] Implement date format detection with chrono-node in src/lib/utils/dates.ts
-- [ ] T082 [US1] Create field mapping suggestions logic in src/server/services/upload/field-mapper.ts
-- [ ] T083 [US1] Implement data validation with Zod schemas in src/lib/utils/validation.ts
-- [ ] T084 [US1] Create constituent upsert logic with CRM ID matching in src/server/services/upload/constituent-processor.ts
-- [ ] T085 [P] [US1] Create gift import processor in src/server/services/upload/gift-processor.ts
-- [ ] T086 [P] [US1] Create contact import processor in src/server/services/upload/contact-processor.ts
+- [x] T080 [US1] Create CSV parser service with Papa Parse streaming in src/server/services/upload/csv-parser.ts
+- [x] T081 [P] [US1] Implement date format detection with chrono-node in src/lib/utils/dates.ts
+- [x] T082 [US1] Create field mapping suggestions logic in src/server/services/upload/field-mapper.ts
+- [x] T083 [US1] Implement data validation with Zod schemas in src/lib/utils/validation.ts
+- [x] T084 [US1] Create constituent upsert logic with CRM ID matching in src/server/services/upload/constituent-processor.ts
+- [x] T085 [P] [US1] Create gift import processor in src/server/services/upload/gift-processor.ts
+- [x] T086 [P] [US1] Create contact import processor in src/server/services/upload/contact-processor.ts
 
 ### Background Worker
 
-- [ ] T087 [US1] Create CSV processing worker with database queue polling in worker/csv-processor.ts
-- [ ] T088 [US1] Implement progress tracking and status updates in worker/csv-processor.ts
-- [ ] T089 [US1] Add error handling with row-level error collection in worker/csv-processor.ts
+- [x] T087 [US1] Create CSV processing worker with database queue polling in worker/csv-processor.ts
+- [x] T088 [US1] Implement progress tracking and status updates in worker/csv-processor.ts
+- [x] T089 [US1] Add error handling with row-level error collection in worker/csv-processor.ts
 
 ### Upload UI
 
-- [ ] T090 [US1] Create uploads management page in src/app/(dashboard)/uploads/page.tsx
-- [ ] T091 [P] [US1] Create file upload dropzone component in src/components/uploads/upload-dropzone.tsx
-- [ ] T092 [P] [US1] Create field mapping UI component in src/components/uploads/field-mapping.tsx
-- [ ] T093 [P] [US1] Create upload progress indicator component in src/components/uploads/upload-progress.tsx
-- [ ] T094 [P] [US1] Create upload history list component in src/components/uploads/upload-list.tsx
-- [ ] T095 [US1] Create upload detail page with error display in src/app/(dashboard)/uploads/[id]/page.tsx
+- [x] T090 [US1] Create uploads management page in src/app/(dashboard)/uploads/page.tsx
+- [x] T091 [P] [US1] Create file upload dropzone component in src/components/uploads/upload-dropzone.tsx
+- [x] T092 [P] [US1] Create field mapping UI component in src/components/uploads/field-mapping.tsx
+- [x] T093 [P] [US1] Create upload progress indicator component in src/components/uploads/upload-progress.tsx
+- [x] T094 [P] [US1] Create upload history list component in src/components/uploads/upload-list.tsx
+- [x] T095 [US1] Create upload detail page with error display in src/app/(dashboard)/uploads/[id]/page.tsx
 
 ### Incremental Updates
 
-- [ ] T096 [US1] Implement duplicate detection with fuzzy matching in src/server/services/upload/duplicate-detector.ts
-- [ ] T097 [US1] Add incremental update logic (new/changed record detection) in src/server/services/upload/incremental-processor.ts
+- [x] T096 [US1] Implement duplicate detection with fuzzy matching in src/server/services/upload/duplicate-detector.ts
+- [x] T097 [US1] Add incremental update logic (new/changed record detection) in src/server/services/upload/incremental-processor.ts
 
 **Checkpoint**: At this point, User Story 1 should be fully functional - users can upload CSVs, map fields, track processing progress, and view results
 

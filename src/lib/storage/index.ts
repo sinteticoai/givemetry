@@ -47,6 +47,19 @@ export async function getFile(key: string): Promise<Buffer> {
 }
 
 /**
+ * Get file contents as string (for CSV processing)
+ */
+export async function getFileContents(key: string): Promise<string | null> {
+  try {
+    const buffer = await getFile(key);
+    return buffer.toString("utf-8");
+  } catch (error) {
+    console.error("Error reading file:", error);
+    return null;
+  }
+}
+
+/**
  * Delete a file from storage
  */
 export async function deleteFile(key: string): Promise<void> {
