@@ -20,7 +20,7 @@ export default function AuthLayout({
           <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-lg bg-emerald-600">
             <BarChart3 className="h-7 w-7 text-white" />
           </div>
-          <h1 className="mt-4 text-2xl font-bold">GiveMetry<span className="text-emerald-600 dark:text-emerald-400">AI</span><sup className="text-[0.6em] font-normal text-slate-400">™</sup></h1>
+          <h1 className="mt-4 text-2xl font-bold">GiveMetry<sup className="text-[0.6em] font-normal text-slate-400">™</sup> <span className="font-light text-slate-400 dark:text-slate-500">AI</span></h1>
           <p className="text-sm text-muted-foreground">
             AI-Powered Advancement Intelligence
           </p>
