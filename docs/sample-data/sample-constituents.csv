@@ -1,0 +1,21 @@
+externalId,firstName,lastName,email,phone,addressLine1,city,state,postalCode,constituentType,classYear,schoolCollege,estimatedCapacity,portfolioTier
+CONST-001,Robert,Smith,robert.smith@alumni.edu,555-123-4567,123 Oak Street,Boston,MA,02101,alumni,1985,Engineering,500000,major
+CONST-002,Jennifer,Williams,j.williams@email.com,555-234-5678,456 Maple Ave,Cambridge,MA,02139,alumni,1990,Business,250000,major
+CONST-003,Michael,Johnson,m.johnson@company.com,555-345-6789,789 Pine Road,Newton,MA,02458,alumni,1978,Medicine,1000000,principal
+CONST-004,Sarah,Davis,sarah.davis@gmail.com,555-456-7890,321 Elm Court,Brookline,MA,02445,alumni,2005,Arts & Sciences,75000,leadership
+CONST-005,David,Brown,david.brown@outlook.com,555-567-8901,654 Cedar Lane,Somerville,MA,02143,parent,,,150000,major
+CONST-006,Emily,Wilson,emily.wilson@alumni.edu,555-678-9012,987 Birch Drive,Arlington,MA,02474,alumni,2010,Engineering,50000,leadership
+CONST-007,James,Taylor,james.taylor@work.com,555-789-0123,147 Spruce Way,Lexington,MA,02420,alumni,1995,Law,300000,major
+CONST-008,Lisa,Anderson,lisa.a@email.com,555-890-1234,258 Willow Path,Medford,MA,02155,friend,,,25000,
+CONST-009,Christopher,Thomas,c.thomas@business.com,555-901-2345,369 Ash Boulevard,Waltham,MA,02451,alumni,1982,Business,750000,principal
+CONST-010,Amanda,Martinez,amanda.m@alumni.edu,555-012-3456,741 Hickory Street,Belmont,MA,02478,alumni,2015,Computer Science,35000,leadership
+CONST-011,Daniel,Garcia,d.garcia@tech.io,555-111-2222,852 Chestnut Ave,Watertown,MA,02472,alumni,2008,Engineering,100000,major
+CONST-012,Michelle,Lee,michelle.lee@corp.com,555-222-3333,963 Poplar Road,Wellesley,MA,02481,alumni,1992,Medicine,400000,major
+CONST-013,Kevin,Clark,kevin.clark@email.com,555-333-4444,174 Sycamore Lane,Needham,MA,02492,parent,,,200000,major
+CONST-014,Rachel,Lewis,r.lewis@university.edu,555-444-5555,285 Redwood Court,Natick,MA,01760,alumni,2000,Education,60000,leadership
+CONST-015,Brian,Walker,brian.w@consulting.com,555-555-6666,396 Magnolia Drive,Framingham,MA,01701,alumni,1988,Business,350000,major
+CONST-016,Jessica,Hall,jessica.hall@alumni.edu,555-666-7777,507 Dogwood Way,Concord,MA,01742,alumni,2012,Arts & Sciences,40000,
+CONST-017,Steven,Young,s.young@finance.com,555-777-8888,618 Cypress Path,Acton,MA,01720,alumni,1975,Business,1500000,principal
+CONST-018,Nicole,King,nicole.king@email.com,555-888-9999,729 Juniper Street,Bedford,MA,01730,friend,,,15000,
+CONST-019,Matthew,Wright,matt.wright@tech.com,555-999-0000,840 Hawthorn Ave,Burlington,MA,01803,alumni,2003,Computer Science,125000,major
+CONST-020,Stephanie,Scott,stephanie.s@alumni.edu,555-000-1111,951 Linden Road,Woburn,MA,01801,alumni,1998,Law,225000,major

@@ -1,0 +1,21 @@
+constituentExternalId,contactDate,contactType,subject,notes,outcome
+CONST-001,2024-03-15,meeting,Annual cultivation lunch,Discussed Engineering priorities and upcoming capital campaign. Very engaged with robotics lab project.,positive
+CONST-001,2024-01-20,call,Thank you call,Thanked for January gift. Mentioned interest in student scholarships.,positive
+CONST-002,2024-03-10,email,Campaign update,Sent quarterly campaign newsletter. No response yet.,no_response
+CONST-002,2024-02-05,call,Lapse prevention outreach,Called to reconnect. Constituent mentioned job change affecting giving capacity.,neutral
+CONST-003,2024-03-01,meeting,Major gift discussion,Met at hospital. Interested in naming opportunity for new research wing. Requested proposal.,positive
+CONST-003,2024-01-15,call,New Year check-in,Brief call to wish happy new year. Confirmed meeting for March.,positive
+CONST-004,2024-02-20,event,Alumni art exhibition,Attended gallery opening. Showed interest in student art fund.,positive
+CONST-005,2024-03-05,call,Parent weekend invitation,Invited to spring parent weekend. Confirmed attendance with spouse.,positive
+CONST-007,2024-03-12,meeting,Law school reunion planning,Met to discuss reunion giving challenge. Agreed to serve as class chair.,positive
+CONST-007,2024-01-25,email,Reunion announcement,Sent initial reunion information. Immediate positive response.,positive
+CONST-009,2024-02-28,meeting,Capital campaign discussion,Presented capital campaign priorities. Considering $100k pledge over 5 years.,positive
+CONST-009,2024-01-10,call,Year-end follow-up,Thanked for December gift. Discussed business school advisory board.,positive
+CONST-011,2024-02-15,event,Engineering networking night,Attended alumni career panel. Interested in mentoring program.,positive
+CONST-012,2024-03-08,call,Medical research update,Shared research outcomes from funded projects. Very appreciative of impact report.,positive
+CONST-013,2024-03-18,meeting,Parent advisory council,Quarterly council meeting. Discussed financial aid priorities.,positive
+CONST-015,2024-02-22,meeting,Business school lunch,Annual cultivation meeting. Stable giving expected to continue.,positive
+CONST-017,2024-03-20,meeting,Estate planning discussion,Met with planned giving officer. Considering bequest provision in will.,positive
+CONST-017,2024-01-30,call,Endowment gift acknowledgment,Personal thank you call from president. Very meaningful to constituent.,positive
+CONST-019,2024-03-10,event,Tech alumni mixer,Attended startup showcase. Interested in innovation fund.,positive
+CONST-020,2024-02-10,email,Law school newsletter,Quarterly update sent. Clicked through to giving page but did not complete.,neutral

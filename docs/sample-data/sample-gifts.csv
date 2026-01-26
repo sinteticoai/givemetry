@@ -1,0 +1,33 @@
+constituentExternalId,amount,giftDate,giftType,fundName,fundCode,campaign,appeal
+CONST-001,5000,2024-01-15,cash,Annual Fund,AF001,Annual Giving 2024,Spring Appeal
+CONST-001,10000,2023-06-20,cash,Engineering Excellence,ENG001,Capital Campaign,Dean's Letter
+CONST-001,5000,2023-01-10,cash,Annual Fund,AF001,Annual Giving 2023,Spring Appeal
+CONST-002,2500,2024-02-28,cash,Business School Fund,BUS001,Annual Giving 2024,Alumni Weekend
+CONST-002,2500,2023-03-15,cash,Business School Fund,BUS001,Annual Giving 2023,Spring Appeal
+CONST-003,25000,2024-01-05,cash,Medical Research,MED001,Research Initiative,Major Gift
+CONST-003,50000,2023-07-01,pledge,Medical Research,MED001,Capital Campaign,Personal Visit
+CONST-003,25000,2022-12-20,cash,Annual Fund,AF001,Year-End Giving,December Appeal
+CONST-004,1000,2024-03-10,cash,Arts Fund,ARTS001,Annual Giving 2024,Spring Appeal
+CONST-004,750,2023-04-22,cash,Annual Fund,AF001,Annual Giving 2023,Giving Day
+CONST-005,3500,2024-02-14,cash,Parent Fund,PAR001,Parent Giving,Parent Letter
+CONST-005,3000,2023-02-10,cash,Parent Fund,PAR001,Parent Giving,Parent Letter
+CONST-006,500,2024-01-30,cash,Annual Fund,AF001,Annual Giving 2024,Email Campaign
+CONST-007,7500,2024-03-01,cash,Law School Fund,LAW001,Annual Giving 2024,Alumni Dinner
+CONST-007,7500,2023-03-05,cash,Law School Fund,LAW001,Annual Giving 2023,Alumni Dinner
+CONST-007,5000,2022-03-10,cash,Law School Fund,LAW001,Annual Giving 2022,Alumni Dinner
+CONST-008,250,2024-02-20,cash,General Fund,GEN001,Annual Giving 2024,Friend Mailing
+CONST-009,15000,2024-01-20,cash,Business School Fund,BUS001,Annual Giving 2024,Major Gift
+CONST-009,20000,2023-06-15,cash,Capital Fund,CAP001,Capital Campaign,Personal Visit
+CONST-010,500,2024-03-15,cash,Computer Science Fund,CS001,Annual Giving 2024,Giving Day
+CONST-011,2000,2024-02-05,cash,Engineering Excellence,ENG001,Annual Giving 2024,Email Campaign
+CONST-011,1500,2023-02-10,cash,Engineering Excellence,ENG001,Annual Giving 2023,Email Campaign
+CONST-012,10000,2024-01-25,cash,Medical Research,MED001,Annual Giving 2024,Dean's Letter
+CONST-012,10000,2023-01-28,cash,Medical Research,MED001,Annual Giving 2023,Dean's Letter
+CONST-013,5000,2024-03-05,cash,Parent Fund,PAR001,Parent Giving,Parent Weekend
+CONST-014,1500,2024-02-15,cash,Education Fund,EDU001,Annual Giving 2024,Spring Appeal
+CONST-015,8000,2024-01-12,cash,Business School Fund,BUS001,Annual Giving 2024,Alumni Event
+CONST-015,8000,2023-01-15,cash,Business School Fund,BUS001,Annual Giving 2023,Alumni Event
+CONST-017,35000,2024-02-01,cash,Endowment Fund,END001,Endowment Campaign,Major Gift
+CONST-017,50000,2023-06-30,pledge,Capital Fund,CAP001,Capital Campaign,Personal Visit
+CONST-019,3000,2024-03-20,cash,Computer Science Fund,CS001,Annual Giving 2024,Tech Alumni Event
+CONST-020,6000,2024-02-25,cash,Law School Fund,LAW001,Annual Giving 2024,Spring Appeal
