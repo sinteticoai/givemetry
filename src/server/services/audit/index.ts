@@ -102,6 +102,54 @@ export const AuditActions = {
 export type AuditAction = (typeof AuditActions)[keyof typeof AuditActions];
 
 /**
+ * T066: Log route access (for sensitive routes)
+ */
+export async function logRouteAccess(
+  organizationId: string,
+  userId: string,
+  route: string,
+  options?: {
+    method?: string;
+    ipAddress?: string;
+    userAgent?: string;
+  }
+) {
+  return createAuditLog({
+    organizationId,
+    userId,
+    action: "route.access",
+    resourceType: "route",
+    resourceId: route,
+    details: {
+      method: options?.method || "GET",
+    },
+    ipAddress: options?.ipAddress,
+    userAgent: options?.userAgent,
+  });
+}
+
+/**
+ * T066: Log data export
+ */
+export async function logDataExport(
+  organizationId: string,
+  userId: string,
+  exportType: string,
+  recordCount: number
+) {
+  return createAuditLog({
+    organizationId,
+    userId,
+    action: "data.export",
+    resourceType: "export",
+    details: {
+      exportType,
+      recordCount,
+    },
+  });
+}
+
+/**
  * Get audit logs for an organization
  */
 export async function getAuditLogs(
