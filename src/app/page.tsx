@@ -11,7 +11,6 @@ import {
   Shield,
   TrendingUp,
   Users,
-  Zap,
   ArrowRight,
   CheckCircle2,
 } from "lucide-react";
