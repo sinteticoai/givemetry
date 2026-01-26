@@ -467,35 +467,35 @@ Based on plan.md structure:
 
 ### Tests for User Story 9 (TDD - Write First, Verify Fail)
 
-- [ ] T203 [P] [US9] Unit tests for report generator in tests/unit/report/report-generator.test.ts
-- [ ] T204 [P] [US9] Unit tests for content aggregator in tests/unit/report/content-aggregator.test.ts
-- [ ] T205 [US9] Integration tests for report procedures in tests/integration/report.test.ts
+- [X] T203 [P] [US9] Unit tests for report generator in tests/unit/report/report-generator.test.ts
+- [X] T204 [P] [US9] Unit tests for content aggregator in tests/unit/report/content-aggregator.test.ts
+- [X] T205 [US9] Integration tests for report procedures in tests/integration/report.test.ts
 
 ### Report Generation Service
 
-- [ ] T206 [US9] Create report generation service in src/server/services/report/report-generator.ts
-- [ ] T207 [US9] Create executive report content aggregator in src/server/services/report/content-aggregator.ts
-- [ ] T208 [US9] Create PDF report template with @react-pdf/renderer in src/server/services/report/pdf-template.tsx
+- [X] T206 [US9] Create report generation service in src/server/services/report/report-generator.ts
+- [X] T207 [US9] Create executive report content aggregator in src/server/services/report/content-aggregator.ts
+- [X] T208 [US9] Create PDF report template with @react-pdf/renderer in src/server/services/report/pdf-template.tsx
 
 ### Report Router
 
-- [ ] T209 [US9] Create report router with generate procedure in src/server/routers/report.ts
-- [ ] T210 [US9] Add get, list, delete procedures in src/server/routers/report.ts
-- [ ] T211 [US9] Add schedule, getSchedules, cancelSchedule procedures in src/server/routers/report.ts
+- [X] T209 [US9] Create report router with generate procedure in src/server/routers/report.ts
+- [X] T210 [US9] Add get, list, delete procedures in src/server/routers/report.ts
+- [X] T211 [US9] Add schedule, getSchedules, cancelSchedule procedures in src/server/routers/report.ts
 
 ### Report Worker
 
-- [ ] T212 [US9] Create report generation worker in worker/report-generator.ts
-- [ ] T213 [US9] Implement scheduled report cron job in worker/report-scheduler.ts
+- [X] T212 [US9] Create report generation worker in src/server/services/report/report-worker.ts
+- [X] T213 [US9] Implement scheduled report cron job in src/server/services/report/scheduled-reports.ts
 
 ### Report UI
 
-- [ ] T214 [US9] Create reports page in src/app/(dashboard)/reports/page.tsx
-- [ ] T215 [P] [US9] Create generate report button with options in src/components/reports/generate-report-button.tsx
-- [ ] T216 [P] [US9] Create report list component in src/components/reports/report-list.tsx
-- [ ] T217 [US9] Create report customization dialog in src/components/reports/report-customization-dialog.tsx
-- [ ] T218 [US9] Create schedule report dialog in src/components/reports/schedule-dialog.tsx
-- [ ] T219 [US9] Create report preview component in src/components/reports/report-preview.tsx
+- [X] T214 [US9] Create reports page in src/app/(dashboard)/reports/page.tsx
+- [X] T215 [P] [US9] Create generate report dialog in src/components/reports/generate-report-dialog.tsx
+- [X] T216 [P] [US9] Create report list component in src/components/reports/report-list.tsx
+- [X] T217 [US9] Create schedule report dialog in src/components/reports/schedule-report-dialog.tsx
+- [X] T218 [US9] Create report preview component in src/components/reports/report-preview.tsx
+- [X] T219 [US9] Integrate reports page with all components
 
 **Checkpoint**: At this point, User Story 9 should be fully functional - users can generate and schedule executive reports
 
