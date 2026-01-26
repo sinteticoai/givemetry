@@ -4,6 +4,7 @@
 import { Menu, Bell, Search, User, LogOut, Settings } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/shared/theme-toggle";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -53,6 +54,9 @@ export function Header({ onMenuClick }: HeaderProps) {
 
       {/* Right side */}
       <div className="flex items-center gap-2">
+        {/* Theme toggle */}
+        <ThemeToggle />
+
         {/* Notifications */}
         <Button variant="ghost" size="icon" className="relative">
           <Bell className="h-5 w-5" />
