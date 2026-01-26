@@ -53,7 +53,7 @@ Based on plan.md structure:
 - [x] T010 Configure PostgreSQL connection with pgvector extension in prisma/schema.prisma
 - [x] T011 Create Prisma client singleton with tenant context in src/lib/prisma/client.ts
 - [x] T012 Implement RLS tenant middleware for Prisma in src/lib/prisma/tenant.ts
-- [ ] T013 Create initial database migration in prisma/migrations/
+- [x] T013 Create initial database migration in prisma/migrations/
 - [x] T014 Create seed script with demo organization and test users in prisma/seed.ts
 
 ### tRPC Setup
@@ -115,47 +115,47 @@ Based on plan.md structure:
 
 ### Tests for User Story 7 (TDD - Write First, Verify Fail)
 
-- [ ] T042 [P] [US7] Unit tests for auth token utilities in tests/unit/auth/tokens.test.ts
-- [ ] T043 [P] [US7] Unit tests for RBAC permissions in tests/unit/auth/permissions.test.ts
-- [ ] T044 [P] [US7] Integration tests for auth router (signup, verify, reset) in tests/integration/auth.test.ts
-- [ ] T045 [US7] E2E test for complete signup-verify-login flow in tests/e2e/auth-flow.spec.ts
+- [x] T042 [P] [US7] Unit tests for auth token utilities in tests/unit/auth/tokens.test.ts
+- [x] T043 [P] [US7] Unit tests for RBAC permissions in tests/unit/auth/permissions.test.ts
+- [x] T044 [P] [US7] Integration tests for auth router (signup, verify, reset) in tests/integration/auth/auth-router.test.ts
+- [x] T045 [US7] E2E test for complete signup-verify-login flow in tests/e2e/auth.spec.ts
 
 ### Auth Router & Procedures
 
-- [ ] T046 [US7] Implement auth.signup procedure (create org + admin user, send verification) in src/server/routers/auth.ts
-- [ ] T047 [P] [US7] Create signup page UI in src/app/(auth)/signup/page.tsx
-- [ ] T048 [US7] Implement auth.verifyEmail procedure in src/server/routers/auth.ts
-- [ ] T049 [P] [US7] Create email verification page in src/app/(auth)/verify-email/page.tsx
-- [ ] T050 [US7] Implement auth.forgotPassword procedure in src/server/routers/auth.ts
-- [ ] T051 [P] [US7] Create forgot password page in src/app/(auth)/forgot-password/page.tsx
-- [ ] T052 [US7] Implement auth.resetPassword procedure in src/server/routers/auth.ts
-- [ ] T053 [P] [US7] Create reset password page in src/app/(auth)/reset-password/page.tsx
-- [ ] T054 [US7] Create login page with credentials form in src/app/(auth)/login/page.tsx
-- [ ] T055 [US7] Implement auth.getSession procedure in src/server/routers/auth.ts
-- [ ] T056 [US7] Implement auth.changePassword procedure in src/server/routers/auth.ts
-- [ ] T057 [US7] Implement auth.updateProfile procedure in src/server/routers/auth.ts
+- [x] T046 [US7] Implement auth.signup procedure (create org + admin user, send verification) in src/server/routers/auth.ts
+- [x] T047 [P] [US7] Create signup page UI in src/app/(auth)/signup/page.tsx
+- [x] T048 [US7] Implement auth.verifyEmail procedure in src/server/routers/auth.ts
+- [x] T049 [P] [US7] Create email verification page in src/app/(auth)/verify-email/page.tsx
+- [x] T050 [US7] Implement auth.forgotPassword procedure in src/server/routers/auth.ts
+- [x] T051 [P] [US7] Create forgot password page in src/app/(auth)/forgot-password/page.tsx
+- [x] T052 [US7] Implement auth.resetPassword procedure in src/server/routers/auth.ts
+- [x] T053 [P] [US7] Create reset password page in src/app/(auth)/reset-password/page.tsx
+- [x] T054 [US7] Create login page with credentials form in src/app/(auth)/login/page.tsx
+- [x] T055 [US7] Implement auth.getSession procedure in src/server/routers/auth.ts
+- [x] T056 [US7] Implement auth.changePassword procedure in src/server/routers/auth.ts
+- [x] T057 [US7] Implement auth.updateProfile procedure in src/server/routers/auth.ts
 
 ### User Management (Admin Features)
 
-- [ ] T058 [US7] Create organization router with user invite procedure in src/server/routers/organization.ts
-- [ ] T059 [US7] Create user router with list/update/delete procedures in src/server/routers/user.ts
-- [ ] T060 [US7] Create settings page with user management UI in src/app/(dashboard)/settings/page.tsx
-- [ ] T061 [P] [US7] Create user invite dialog component in src/components/settings/user-invite-dialog.tsx
-- [ ] T062 [P] [US7] Create user list component with role editing in src/components/settings/user-list.tsx
-- [ ] T063 [US7] Implement organization settings panel in src/components/settings/org-settings.tsx
+- [x] T058 [US7] Create organization router with user invite procedure in src/server/routers/organization.ts
+- [x] T059 [US7] Create user router with list/update/delete procedures in src/server/routers/user.ts
+- [x] T060 [US7] Create settings page with user management UI in src/app/(dashboard)/settings/page.tsx
+- [x] T061 [P] [US7] Create user invite dialog component in src/components/settings/user-invite-dialog.tsx
+- [x] T062 [P] [US7] Create user list component with role editing in src/components/settings/team-section.tsx
+- [x] T063 [US7] Implement organization settings panel in src/components/settings/organization-section.tsx
 
 ### Route Protection
 
-- [ ] T064 [US7] Create protected route wrapper with role checks in src/components/auth/protected-route.tsx
-- [ ] T065 [US7] Implement portfolio-based access filtering in tRPC context in src/server/trpc/context.ts
-- [ ] T066 [US7] Create audit log service for user actions in src/server/services/audit/index.ts
+- [x] T064 [US7] Create protected route wrapper with role checks in src/components/auth/protected-route.tsx
+- [x] T065 [US7] Implement portfolio-based access filtering in tRPC context in src/server/trpc/context.ts
+- [x] T066 [US7] Create audit log service for user actions in src/server/services/audit/index.ts
 
 ### Data Management (Admin Features)
 
-- [ ] T067 [US7] Implement organization.deleteAllData procedure with confirmation in src/server/routers/organization.ts
-- [ ] T068 [P] [US7] Create delete organization confirmation dialog in src/components/settings/delete-org-dialog.tsx
-- [ ] T069 [US7] Add data deletion cascade logic (constituents, gifts, contacts, briefs) in src/server/services/data/deletion-cascade.ts
-- [ ] T070 [US7] Create audit log entry for data deletion events in src/server/services/audit/index.ts
+- [x] T067 [US7] Implement organization.deleteAllData procedure with confirmation in src/server/routers/organization.ts
+- [x] T068 [P] [US7] Create delete organization confirmation dialog in src/components/settings/delete-org-dialog.tsx
+- [x] T069 [US7] Add data deletion cascade logic (constituents, gifts, contacts, briefs) in src/server/services/data/deletion-cascade.ts
+- [x] T070 [US7] Create audit log entry for data deletion events in src/server/services/audit/index.ts
 
 **Checkpoint**: At this point, User Story 7 should be fully functional - users can sign up, verify email, log in, manage passwords, and admins can invite users with appropriate roles and delete organization data
 
