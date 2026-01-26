@@ -263,39 +263,39 @@ Based on plan.md structure:
 
 ### Tests for User Story 3 (TDD - Write First, Verify Fail)
 
-- [ ] T115 [P] [US3] Unit tests for lapse risk engine in tests/unit/analysis/lapse-risk.test.ts
-- [ ] T116 [P] [US3] Unit tests for lapse factors (recency, frequency, monetary, contact) in tests/unit/analysis/lapse-factors.test.ts
-- [ ] T117 [US3] Golden dataset validation for lapse predictions in tests/validation/lapse-risk-golden.test.ts
-- [ ] T118 [US3] Integration tests for lapse risk procedures in tests/integration/analysis-lapse.test.ts
+- [X] T115 [P] [US3] Unit tests for lapse risk engine in tests/unit/analysis/lapse-risk.test.ts
+- [X] T116 [P] [US3] Unit tests for lapse factors (recency, frequency, monetary, contact) in tests/unit/analysis/lapse-factors.test.ts
+- [X] T117 [US3] Golden dataset validation for lapse predictions in tests/validation/lapse-risk-golden.test.ts
+- [X] T118 [US3] Integration tests for lapse risk procedures in tests/integration/analysis-lapse.test.ts
 
 ### Lapse Risk Prediction Service
 
-- [ ] T119 [US3] Create lapse risk calculation engine in src/server/services/analysis/lapse-risk.ts
-- [ ] T120 [P] [US3] Implement recency factor scoring in src/server/services/analysis/lapse-factors/recency.ts
-- [ ] T121 [P] [US3] Implement frequency factor scoring in src/server/services/analysis/lapse-factors/frequency.ts
-- [ ] T122 [P] [US3] Implement monetary factor scoring in src/server/services/analysis/lapse-factors/monetary.ts
-- [ ] T123 [P] [US3] Implement contact factor scoring in src/server/services/analysis/lapse-factors/contact.ts
-- [ ] T124 [US3] Create prediction storage service in src/server/services/analysis/prediction-store.ts
-- [ ] T125 [US3] Implement confidence indicator calculation in src/server/services/analysis/confidence.ts
+- [X] T119 [US3] Create lapse risk calculation engine in src/server/services/analysis/lapse-risk.ts
+- [X] T120 [P] [US3] Implement recency factor scoring in src/server/services/analysis/lapse-factors/recency.ts
+- [X] T121 [P] [US3] Implement frequency factor scoring in src/server/services/analysis/lapse-factors/frequency.ts
+- [X] T122 [P] [US3] Implement monetary factor scoring in src/server/services/analysis/lapse-factors/monetary.ts
+- [X] T123 [P] [US3] Implement contact factor scoring in src/server/services/analysis/lapse-factors/contact.ts
+- [X] T124 [US3] Create prediction storage service in src/server/services/analysis/prediction-store.ts
+- [X] T125 [US3] Implement confidence indicator calculation in src/server/services/analysis/confidence.ts
 
 ### Analysis Router Extensions
 
-- [ ] T126 [US3] Add getLapseRiskList procedure to analysis router in src/server/routers/analysis.ts
-- [ ] T127 [US3] Add markLapseAddressed procedure in src/server/routers/analysis.ts
+- [X] T126 [US3] Add getLapseRiskList procedure to analysis router in src/server/routers/analysis.ts
+- [X] T127 [US3] Add markLapseAddressed procedure in src/server/routers/analysis.ts
 
 ### Lapse Risk UI
 
-- [ ] T128 [US3] Create lapse risk panel page in src/app/(dashboard)/lapse-risk/page.tsx
-- [ ] T129 [P] [US3] Create lapse risk list component in src/components/lapse-risk/lapse-list.tsx
-- [ ] T130 [P] [US3] Create lapse risk detail card with explainable factors in src/components/lapse-risk/lapse-detail-card.tsx
-- [ ] T131 [P] [US3] Create lapse risk summary stats component in src/components/lapse-risk/lapse-summary.tsx
-- [ ] T132 [US3] Create gift officer filter dropdown in src/components/shared/officer-filter.tsx
-- [ ] T133 [US3] Implement mark as addressed/retained/dismissed actions in src/components/lapse-risk/lapse-actions.tsx
+- [X] T128 [US3] Create lapse risk panel page in src/app/(dashboard)/lapse-risk/page.tsx
+- [X] T129 [P] [US3] Create lapse risk list component in src/components/lapse-risk/lapse-list.tsx
+- [X] T130 [P] [US3] Create lapse risk detail card with explainable factors in src/components/lapse-risk/lapse-detail-card.tsx
+- [X] T131 [P] [US3] Create lapse risk summary stats component in src/components/lapse-risk/lapse-summary.tsx
+- [X] T132 [US3] Create gift officer filter dropdown in src/components/shared/officer-filter.tsx
+- [X] T133 [US3] Implement mark as addressed/retained/dismissed actions in src/components/lapse-risk/lapse-actions.tsx
 
 ### Analysis Worker
 
-- [ ] T134 [US3] Create analysis engine worker for batch prediction in worker/analysis-engine.ts
-- [ ] T135 [US3] Trigger prediction recalculation on upload completion in worker/csv-processor.ts
+- [X] T134 [US3] Create analysis engine worker for batch prediction in worker/analysis-engine.ts
+- [X] T135 [US3] Trigger prediction recalculation on upload completion in worker/csv-processor.ts
 
 **Checkpoint**: At this point, User Story 3 should be fully functional - users can view lapse risk predictions with explainable factors and record interventions
 

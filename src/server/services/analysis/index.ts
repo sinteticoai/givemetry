@@ -14,6 +14,64 @@ export {
   type HealthScoreResult,
 } from "./health-scorer";
 
+// Lapse Risk
+export {
+  calculateLapseRiskScore,
+  calculateBatchLapseRisk,
+  getLapseRiskSummary,
+  getRiskLevel,
+  DEFAULT_LAPSE_WEIGHTS,
+  RISK_THRESHOLDS,
+  type LapseRiskInput,
+  type LapseRiskResult,
+  type LapseRiskFactor,
+  type GiftRecord,
+  type ContactRecord,
+} from "./lapse-risk";
+
+// Lapse Factors
+export {
+  calculateRecencyScore,
+  getRecencyCategory,
+  calculateFrequencyScore,
+  analyzeGiftFrequency,
+  calculateMonetaryScore,
+  estimateCapacityFromHistory,
+  analyzeGiftAmounts,
+  calculateContactScore,
+  analyzeContactPatterns,
+  type RecencyInput,
+  type RecencyResult,
+  type FrequencyInput,
+  type FrequencyResult,
+  type MonetaryInput,
+  type MonetaryResult,
+  type ContactInput,
+  type ContactResult,
+} from "./lapse-factors";
+
+// Prediction Store
+export {
+  storePrediction,
+  storeBatchPredictions,
+  getCurrentPredictions,
+  getPredictionHistory,
+  getPredictionSummary,
+  cleanupOldPredictions,
+  type StorePredictionInput,
+  type PredictionRecord,
+} from "./prediction-store";
+
+// Confidence
+export {
+  calculateConfidence,
+  calculateBatchConfidence,
+  getConfidenceStats,
+  type ConfidenceInput,
+  type ConfidenceResult,
+  type ConfidenceFactor,
+} from "./confidence";
+
 // Completeness
 export {
   calculateCompletenessScore,

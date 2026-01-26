@@ -252,24 +252,39 @@ export const analysisRouter = router({
     };
   }),
 
-  // Get lapse risk list
+  // T126: Get lapse risk list with comprehensive data
   getLapseRiskList: protectedProcedure
     .input(
       z.object({
         limit: z.number().min(1).max(100).default(50),
         cursor: z.string().uuid().optional(),
         minRisk: z.number().min(0).max(1).default(0.4),
+        riskLevel: z.enum(["high", "medium", "low"]).optional(),
         assignedOfficerId: z.string().uuid().optional(),
       })
     )
     .query(async ({ ctx, input }) => {
       const portfolioFilter = getPortfolioFilter(ctx);
+      const organizationId = ctx.session.user.organizationId;
+
+      // Map risk level to score ranges
+      let minScore = input.minRisk;
+      let maxScore = 1.0;
+      if (input.riskLevel === "high") {
+        minScore = 0.7;
+      } else if (input.riskLevel === "medium") {
+        minScore = 0.4;
+        maxScore = 0.7;
+      } else if (input.riskLevel === "low") {
+        minScore = 0;
+        maxScore = 0.4;
+      }
 
       const constituents = await ctx.prisma.constituent.findMany({
         where: {
           ...portfolioFilter,
           isActive: true,
-          lapseRiskScore: { gte: input.minRisk },
+          lapseRiskScore: { gte: minScore, lt: maxScore },
           ...(input.assignedOfficerId && {
             assignedOfficerId: input.assignedOfficerId,
           }),
@@ -290,6 +305,21 @@ export const analysisRouter = router({
           assignedOfficer: {
             select: { id: true, name: true },
           },
+          gifts: {
+            orderBy: { giftDate: "desc" },
+            take: 1,
+            select: {
+              amount: true,
+              giftDate: true,
+            },
+          },
+          contacts: {
+            orderBy: { contactDate: "desc" },
+            take: 1,
+            select: {
+              contactDate: true,
+            },
+          },
           _count: {
             select: { gifts: true, contacts: true },
           },
@@ -302,38 +332,150 @@ export const analysisRouter = router({
         nextCursor = nextItem?.id;
       }
 
+      // Get summary counts
+      const [highCount, mediumCount, lowCount, totalAtRiskValue] = await Promise.all([
+        ctx.prisma.constituent.count({
+          where: { ...portfolioFilter, isActive: true, lapseRiskScore: { gte: 0.7 } },
+        }),
+        ctx.prisma.constituent.count({
+          where: { ...portfolioFilter, isActive: true, lapseRiskScore: { gte: 0.4, lt: 0.7 } },
+        }),
+        ctx.prisma.constituent.count({
+          where: { ...portfolioFilter, isActive: true, lapseRiskScore: { gt: 0, lt: 0.4 } },
+        }),
+        ctx.prisma.gift.aggregate({
+          where: {
+            organizationId,
+            constituent: {
+              ...portfolioFilter,
+              isActive: true,
+              lapseRiskScore: { gte: 0.4 },
+            },
+          },
+          _sum: { amount: true },
+        }),
+      ]);
+
+      // Helper to get risk level from score
+      const getRiskLevel = (score: number | null): "high" | "medium" | "low" => {
+        if (!score || score < 0.4) return "low";
+        if (score < 0.7) return "medium";
+        return "high";
+      };
+
+      // Helper to get predicted lapse window
+      const getLapseWindow = (score: number | null): string => {
+        if (!score) return "Unknown";
+        if (score >= 0.85) return "1-3 months";
+        if (score >= 0.7) return "3-6 months";
+        if (score >= 0.5) return "6-12 months";
+        if (score >= 0.4) return "12-18 months";
+        return "18+ months";
+      };
+
       return {
-        items: constituents,
+        items: constituents.map((c) => ({
+          constituent: {
+            id: c.id,
+            displayName: [c.firstName, c.lastName].filter(Boolean).join(" ") || "Unknown",
+            email: c.email,
+            assignedOfficerId: c.assignedOfficer?.id || null,
+            assignedOfficerName: c.assignedOfficer?.name || null,
+          },
+          riskScore: Number(c.lapseRiskScore) || 0,
+          riskLevel: getRiskLevel(Number(c.lapseRiskScore)),
+          confidence: 0.7, // TODO: Calculate from data quality
+          predictedLapseWindow: getLapseWindow(Number(c.lapseRiskScore)),
+          factors: (c.lapseRiskFactors as Array<{ name: string; value: string; impact: string }>) || [],
+          givingSummary: {
+            totalLifetime: 0, // Could aggregate if needed
+            lastGiftDate: c.gifts[0]?.giftDate?.toISOString() || null,
+            lastGiftAmount: c.gifts[0]?.amount ? Number(c.gifts[0].amount) : null,
+            avgAnnualGiving: 0, // Could calculate if needed
+          },
+          lastContactDate: c.contacts[0]?.contactDate?.toISOString() || null,
+          status: null, // TODO: Track from alerts
+        })),
         nextCursor,
+        totalCount: highCount + mediumCount + lowCount,
+        summary: {
+          highRiskCount: highCount,
+          mediumRiskCount: mediumCount,
+          lowRiskCount: lowCount,
+          totalAtRiskValue: Number(totalAtRiskValue._sum.amount) || 0,
+        },
       };
     }),
 
-  // Mark lapse risk as addressed
+  // T127: Mark lapse risk as addressed with proper tracking
   markLapseAddressed: protectedProcedure
     .input(
       z.object({
         constituentId: z.string().uuid(),
-        action: z.enum(["retained", "dismissed", "contacted"]),
-        notes: z.string().optional(),
+        action: z.enum(["addressed", "retained", "dismissed"]),
+        notes: z.string().max(1000).optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
-      // Create an alert record to track this
+      const organizationId = ctx.session.user.organizationId;
+
+      // Get the constituent to verify access
+      const constituent = await ctx.prisma.constituent.findFirst({
+        where: {
+          id: input.constituentId,
+          organizationId,
+          isActive: true,
+        },
+        select: {
+          id: true,
+          firstName: true,
+          lastName: true,
+          lapseRiskScore: true,
+        },
+      });
+
+      if (!constituent) {
+        throw new Error("Constituent not found");
+      }
+
+      // Determine alert status based on action
+      const alertStatus = input.action === "dismissed" ? "dismissed" : "acted_on";
+
+      // Create an alert record to track this action
       await ctx.prisma.alert.create({
         data: {
-          organizationId: ctx.session.user.organizationId,
+          organizationId,
           constituentId: input.constituentId,
           alertType: "lapse_risk",
-          severity: "medium",
-          title: `Lapse risk ${input.action}`,
-          description: input.notes,
-          status: "acted_on",
+          severity: Number(constituent.lapseRiskScore) >= 0.7 ? "high" : "medium",
+          title: `Lapse risk ${input.action}: ${[constituent.firstName, constituent.lastName].filter(Boolean).join(" ")}`,
+          description: input.notes || `User marked lapse risk as ${input.action}`,
+          status: alertStatus,
           actedOnAt: new Date(),
           actedOnBy: ctx.session.user.name || ctx.session.user.email,
         },
       });
 
-      return { success: true };
+      // Create audit log entry
+      await ctx.prisma.auditLog.create({
+        data: {
+          organizationId,
+          userId: ctx.session.user.id,
+          action: "lapse_risk.addressed",
+          resourceType: "constituent",
+          resourceId: input.constituentId,
+          details: {
+            action: input.action,
+            notes: input.notes,
+            riskScore: Number(constituent.lapseRiskScore),
+          },
+        },
+      });
+
+      return {
+        success: true,
+        message: `Lapse risk marked as ${input.action}`,
+      };
     }),
 
   // Get priority list

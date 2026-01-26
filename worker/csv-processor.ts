@@ -1,4 +1,5 @@
 // T087-T089: CSV processing worker with database queue polling
+// T135: Trigger prediction recalculation on upload completion
 import { PrismaClient } from "@prisma/client";
 import {
   parseCSV,
@@ -14,6 +15,7 @@ import { processConstituents } from "@/server/services/upload/constituent-proces
 import { processGifts } from "@/server/services/upload/gift-processor";
 import { processContacts } from "@/server/services/upload/contact-processor";
 import { getFileContents } from "@/lib/storage";
+import { triggerAnalysisForOrganization } from "./analysis-engine";
 
 const prisma = new PrismaClient();
 
@@ -269,6 +271,15 @@ async function processJob(job: UploadJob): Promise<void> {
     console.log(
       `Completed upload ${job.id}: ${processedCount} processed, ${errorCount} errors`
     );
+
+    // T135: Trigger analysis recalculation after successful upload
+    if (finalStatus === "completed" || finalStatus === "completed_with_errors") {
+      console.log(`Triggering analysis for org: ${job.organizationId}`);
+      // Run analysis asynchronously (don't block upload completion)
+      triggerAnalysisForOrganization(job.organizationId).catch((err) => {
+        console.error("Analysis trigger failed:", err);
+      });
+    }
   } catch (error) {
     console.error(`Failed to process upload ${job.id}:`, error);
 
