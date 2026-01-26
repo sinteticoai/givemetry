@@ -194,7 +194,7 @@ export default async function HomePage() {
       </section>
 
       {/* Industry Benchmarks */}
-      <section className="py-24 px-4 sm:px-6 lg:px-8 overflow-hidden">
+      <section id="benchmarks" className="py-24 px-4 sm:px-6 lg:px-8 overflow-hidden">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <p className="text-sm font-medium text-emerald-600 dark:text-emerald-400 mb-3">
@@ -208,49 +208,47 @@ export default async function HomePage() {
             </p>
           </div>
 
-          {/* Historical Decline Chart */}
+          {/* Historical Decline - Before/After Design */}
           <div className="bg-slate-900 dark:bg-slate-800 rounded-2xl p-8 mb-8">
-            <div className="flex flex-col lg:flex-row lg:items-end gap-8">
-              <div className="lg:w-1/3">
-                <h3 className="text-xl font-semibold text-white mb-2">
-                  The Participation Crisis
-                </h3>
-                <p className="text-slate-400 text-sm mb-4">
-                  Alumni giving rates have declined 62% since the 1980s. Advancement offices need smarter tools to reverse this trend.
-                </p>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-5xl font-bold text-red-400">-62%</span>
-                  <span className="text-slate-500">since 1980s</span>
-                </div>
+            <h3 className="text-xl font-semibold text-white text-center mb-6">
+              The Participation Crisis
+            </h3>
+
+            {/* Before / After Comparison */}
+            <div className="flex items-center justify-center gap-4 sm:gap-8 mb-6">
+              {/* 1980s */}
+              <div className="text-center">
+                <div className="text-2xl sm:text-3xl font-semibold text-emerald-400">20%</div>
+                <div className="text-slate-400 text-sm mt-1">1980s</div>
               </div>
 
-              {/* Simple bar chart visualization */}
-              <div className="lg:w-2/3">
-                <div className="flex items-end justify-between gap-2 h-48">
-                  {[
-                    { year: "'80s", value: 20, color: "bg-emerald-500" },
-                    { year: "'90s", value: 16, color: "bg-emerald-500" },
-                    { year: "'00s", value: 12, color: "bg-yellow-500" },
-                    { year: "2010", value: 10, color: "bg-yellow-500" },
-                    { year: "2016", value: 8.5, color: "bg-orange-500" },
-                    { year: "2019", value: 7.8, color: "bg-orange-500" },
-                    { year: "2023", value: 7.7, color: "bg-red-500" },
-                  ].map((item) => (
-                    <div key={item.year} className="flex-1 flex flex-col items-center gap-2">
-                      <div className="text-xs text-slate-400">{item.value}%</div>
-                      <div
-                        className={`w-full ${item.color} rounded-t-lg transition-all duration-500`}
-                        style={{ height: `${(item.value / 20) * 100}%` }}
-                      />
-                      <div className="text-xs text-slate-500">{item.year}</div>
-                    </div>
-                  ))}
-                </div>
-                <p className="text-xs text-slate-600 mt-4 text-right">
-                  Source: CASE VSE Survey 2023-24
-                </p>
+              {/* Arrow with decline */}
+              <div className="flex flex-col items-center px-2 sm:px-4">
+                <div className="text-5xl sm:text-6xl md:text-7xl font-bold text-red-400">-62%</div>
+                <svg className="w-12 sm:w-20 h-6 text-slate-600" viewBox="0 0 80 24" fill="none">
+                  <path d="M0 12h72M72 12l-8-8M72 12l-8 8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
+
+              {/* 2023 */}
+              <div className="text-center">
+                <div className="text-2xl sm:text-3xl font-semibold text-red-400">7.7%</div>
+                <div className="text-slate-400 text-sm mt-1">2023</div>
               </div>
             </div>
+
+            {/* Gradient decline bar */}
+            <div className="max-w-md mx-auto mb-4">
+              <div className="h-2 rounded-full bg-gradient-to-r from-emerald-500 via-yellow-500 to-red-500" />
+            </div>
+
+            <p className="text-slate-400 text-sm text-center max-w-lg mx-auto">
+              Alumni giving rates have declined dramatically. Advancement offices need smarter tools to reverse this trend.
+            </p>
+
+            <p className="text-xs text-slate-400 mt-4 text-center">
+              Source: CASE VSE Survey 2023-24
+            </p>
           </div>
 
           {/* Participation by School Size */}
@@ -414,20 +412,57 @@ export default async function HomePage() {
       {/* Footer */}
       <footer className="border-t dark:border-slate-800 py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-emerald-600 flex items-center justify-center">
-                <BarChart3 className="w-5 h-5 text-white" />
+          {/* Footer Grid */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
+            {/* Brand */}
+            <div className="col-span-2 md:col-span-1">
+              <div className="flex items-center gap-2 mb-4">
+                <div className="w-8 h-8 rounded-lg bg-emerald-600 flex items-center justify-center">
+                  <BarChart3 className="w-5 h-5 text-white" />
+                </div>
+                <span className="font-bold dark:text-white">GiveMetry</span>
               </div>
-              <span className="font-bold dark:text-white">GiveMetry</span>
+              <p className="text-sm text-slate-500 dark:text-slate-400">
+                AI-powered donor analytics for nonprofit gift officers.
+              </p>
             </div>
+
+            {/* Product */}
+            <div>
+              <h4 className="font-semibold text-slate-900 dark:text-white mb-4">Product</h4>
+              <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-400">
+                <li><a href="#features" className="hover:text-emerald-600 dark:hover:text-emerald-400">Features</a></li>
+                <li><a href="#benchmarks" className="hover:text-emerald-600 dark:hover:text-emerald-400">Benchmarks</a></li>
+              </ul>
+            </div>
+
+            {/* Company */}
+            <div>
+              <h4 className="font-semibold text-slate-900 dark:text-white mb-4">Company</h4>
+              <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-400">
+                <li><Link href="/about" className="hover:text-emerald-600 dark:hover:text-emerald-400">About</Link></li>
+                <li><a href="mailto:hello@sintetico.ai" className="hover:text-emerald-600 dark:hover:text-emerald-400">Contact Us</a></li>
+              </ul>
+            </div>
+
+            {/* Legal */}
+            <div>
+              <h4 className="font-semibold text-slate-900 dark:text-white mb-4">Legal</h4>
+              <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-400">
+                <li><Link href="/privacy" className="hover:text-emerald-600 dark:hover:text-emerald-400">Privacy Policy</Link></li>
+                <li><Link href="/terms" className="hover:text-emerald-600 dark:hover:text-emerald-400">Terms of Service</Link></li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Bottom Bar */}
+          <div className="border-t dark:border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-sm text-slate-500 dark:text-slate-400">
-              Smarter giving. Stronger relationships.
+              A Sintetico Labs Product · © 2026 Sintetico Inc.
             </p>
-            <div className="flex gap-6 text-sm text-slate-600 dark:text-slate-400">
-              <Link href="/login" className="hover:text-emerald-600 dark:hover:text-emerald-400">Sign In</Link>
-              <Link href="/signup" className="hover:text-emerald-600 dark:hover:text-emerald-400">Sign Up</Link>
-            </div>
+            <p className="text-sm text-slate-500 dark:text-slate-400">
+              21 SE 1st Ave. Suite 300, Miami, FL 33133
+            </p>
           </div>
         </div>
       </footer>
