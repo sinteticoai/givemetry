@@ -17,14 +17,29 @@ function getBaseUrl() {
   return `http://localhost:${process.env.PORT ?? 3000}`;
 }
 
+// T257: Enhanced React Query caching configuration
 export function TRPCProvider({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(
     () =>
       new QueryClient({
         defaultOptions: {
           queries: {
-            staleTime: 5 * 1000, // 5 seconds
+            // Data considered fresh for 30 seconds
+            staleTime: 30 * 1000,
+            // Cache data for 5 minutes
+            gcTime: 5 * 60 * 1000,
+            // Don't refetch on window focus by default (user can manually refresh)
             refetchOnWindowFocus: false,
+            // Retry failed requests up to 3 times with exponential backoff
+            retry: 3,
+            retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+            // Don't refetch on reconnect for most queries
+            refetchOnReconnect: false,
+          },
+          mutations: {
+            // Retry mutations once on failure (except auth-related)
+            retry: 1,
+            retryDelay: 1000,
           },
         },
       })

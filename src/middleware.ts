@@ -1,7 +1,40 @@
-// T024, T064: Auth middleware for session validation with idle timeout and role-based protection
+// T024, T064, T262: Auth middleware with session validation, role-based protection, and security headers
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
+
+// T262: Security headers configuration
+const securityHeaders = {
+  // Prevent clickjacking
+  "X-Frame-Options": "DENY",
+  // Prevent MIME type sniffing
+  "X-Content-Type-Options": "nosniff",
+  // Enable XSS filter (legacy browsers)
+  "X-XSS-Protection": "1; mode=block",
+  // Control referrer information
+  "Referrer-Policy": "strict-origin-when-cross-origin",
+  // Prevent DNS prefetching for privacy
+  "X-DNS-Prefetch-Control": "off",
+  // Content Security Policy
+  "Content-Security-Policy": [
+    "default-src 'self'",
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval'", // Required for Next.js
+    "style-src 'self' 'unsafe-inline'", // Required for styled components
+    "img-src 'self' data: blob: https:",
+    "font-src 'self' data:",
+    "connect-src 'self' https://api.anthropic.com https://api.openai.com",
+    "frame-ancestors 'none'",
+    "base-uri 'self'",
+    "form-action 'self'",
+  ].join("; "),
+  // Permissions Policy (disable unnecessary features)
+  "Permissions-Policy": [
+    "camera=()",
+    "microphone=()",
+    "geolocation=()",
+    "interest-cohort=()", // Disable FLoC
+  ].join(", "),
+};
 
 // Routes that don't require authentication
 const publicRoutes = [
@@ -43,9 +76,14 @@ const IDLE_TIMEOUT = 30 * 60 * 1000;
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Allow public routes
+  // Allow public routes with security headers
   if (publicRoutes.some((route) => pathname.startsWith(route))) {
-    return NextResponse.next();
+    const response = NextResponse.next();
+    // T262: Apply security headers to public routes as well
+    for (const [header, value] of Object.entries(securityHeaders)) {
+      response.headers.set(header, value);
+    }
+    return response;
   }
 
   // Check for authentication token
@@ -91,8 +129,13 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // Add security headers for all authenticated routes
+  // Add security headers for all routes
   const response = NextResponse.next();
+
+  // T262: Apply security headers
+  for (const [header, value] of Object.entries(securityHeaders)) {
+    response.headers.set(header, value);
+  }
 
   // T066: Add request metadata for audit logging (available via headers in API routes)
   response.headers.set("x-user-id", token.sub || "");

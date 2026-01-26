@@ -188,10 +188,14 @@ model Constituent {
   briefs          Brief[]
 
   @@unique([organizationId, externalId, externalSource])
+  // T259: Optimized indexes for common query patterns
   @@index([organizationId])
   @@index([organizationId, priorityScore(sort: Desc)])
   @@index([organizationId, lapseRiskScore(sort: Desc)])
   @@index([assignedOfficerId])
+  @@index([organizationId, isActive]) // Filter active constituents
+  @@index([organizationId, lastName]) // Name searches
+  @@index([organizationId, classYear]) // Class year filtering
 }
 
 model Gift {
@@ -215,9 +219,11 @@ model Gift {
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   constituent  Constituent  @relation(fields: [constituentId], references: [id], onDelete: Cascade)
 
+  // T259: Optimized indexes for gift queries
   @@index([organizationId])
   @@index([constituentId])
   @@index([giftDate(sort: Desc)])
+  @@index([organizationId, giftDate(sort: Desc)]) // Recent gifts for org
 }
 
 model Contact {
