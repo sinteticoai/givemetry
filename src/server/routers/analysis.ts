@@ -1,35 +1,253 @@
-// Analysis router - placeholder for Phase 5-7
+// T108: Analysis router with health scores and analytics
 import { z } from "zod";
 import { router, protectedProcedure, managerProcedure } from "../trpc/init";
 import { getPortfolioFilter } from "../trpc/context";
+import {
+  calculateHealthScore,
+  calculateBatchCompleteness,
+  calculateFreshnessScore,
+  analyzeDataAge,
+  calculateBatchConsistency,
+  calculateCoverageScore,
+  analyzePortfolioBalance,
+  generateRecommendations,
+  type HealthIssue,
+} from "../services/analysis";
 
 export const analysisRouter = router({
-  // Get health scores for organization
+  // T108: Get health scores for organization
   getHealthScores: protectedProcedure.query(async ({ ctx }) => {
-    // Placeholder - will be implemented in Phase 5 (US2)
     const organizationId = ctx.session.user.organizationId;
 
-    // Get basic stats for now
-    const [constituentCount, giftCount, contactCount] = await Promise.all([
+    // Get basic stats
+    const [
+      constituentCount,
+      giftCount,
+      contactCount,
+      assignedCount,
+      constituentsWithGifts,
+      constituentsWithContacts,
+    ] = await Promise.all([
       ctx.prisma.constituent.count({
         where: { organizationId, isActive: true },
       }),
       ctx.prisma.gift.count({ where: { organizationId } }),
       ctx.prisma.contact.count({ where: { organizationId } }),
+      ctx.prisma.constituent.count({
+        where: { organizationId, isActive: true, assignedOfficerId: { not: null } },
+      }),
+      ctx.prisma.gift.groupBy({
+        by: ["constituentId"],
+        where: { organizationId },
+      }).then((groups) => groups.length),
+      ctx.prisma.contact.groupBy({
+        by: ["constituentId"],
+        where: { organizationId },
+      }).then((groups) => groups.length),
     ]);
 
+    // Get sample of constituents for completeness/consistency analysis
+    const constituents = await ctx.prisma.constituent.findMany({
+      where: { organizationId, isActive: true },
+      take: 500, // Sample size for performance
+      select: {
+        externalId: true,
+        firstName: true,
+        lastName: true,
+        email: true,
+        phone: true,
+        addressLine1: true,
+        city: true,
+        state: true,
+        postalCode: true,
+        constituentType: true,
+      },
+    });
+
+    // Get freshness data
+    const [lastGift, lastContact, lastUpload] = await Promise.all([
+      ctx.prisma.gift.findFirst({
+        where: { organizationId },
+        orderBy: { giftDate: "desc" },
+        select: { giftDate: true },
+      }),
+      ctx.prisma.contact.findFirst({
+        where: { organizationId },
+        orderBy: { contactDate: "desc" },
+        select: { contactDate: true },
+      }),
+      ctx.prisma.upload.findFirst({
+        where: { organizationId, status: "completed" },
+        orderBy: { completedAt: "desc" },
+        select: { completedAt: true },
+      }),
+    ]);
+
+    // Calculate completeness score
+    const completenessStats = calculateBatchCompleteness(
+      constituents.map((c) => ({
+        ...c,
+        lastName: c.lastName || "",
+      }))
+    );
+
+    // Calculate freshness score
+    const freshnessResult = calculateFreshnessScore({
+      lastGiftDate: lastGift?.giftDate || null,
+      lastContactDate: lastContact?.contactDate || null,
+      lastUploadDate: lastUpload?.completedAt || null,
+    });
+
+    // Get freshness issues
+    const dataAge = analyzeDataAge({
+      lastGiftDate: lastGift?.giftDate || null,
+      lastContactDate: lastContact?.contactDate || null,
+      lastUploadDate: lastUpload?.completedAt || null,
+    });
+
+    // Calculate consistency score
+    const consistencyStats = calculateBatchConsistency(
+      constituents.map((c) => ({
+        ...c,
+        lastName: c.lastName || "",
+      }))
+    );
+
+    // Calculate coverage score
+    const coverageResult = calculateCoverageScore({
+      totalConstituents: constituentCount,
+      assignedConstituents: assignedCount,
+      constituentsWithContacts,
+      constituentsWithGifts,
+    });
+
+    // Get portfolio balance for coverage issues
+    const officers = await ctx.prisma.user.findMany({
+      where: {
+        organizationId,
+        role: { in: ["admin", "manager", "gift_officer"] },
+      },
+      select: {
+        id: true,
+        name: true,
+        _count: { select: { assignedConstituents: true } },
+      },
+    });
+
+    const portfolioBalance = analyzePortfolioBalance(
+      officers.map((o) => ({
+        id: o.id,
+        name: o.name,
+        constituentCount: o._count.assignedConstituents,
+      }))
+    );
+
+    // Calculate overall health score
+    const healthScore = calculateHealthScore({
+      completeness: completenessStats.averageScore,
+      freshness: freshnessResult.overall,
+      consistency: consistencyStats.averageScore,
+      coverage: coverageResult.score,
+    });
+
+    // Collect all issues
+    const issues: HealthIssue[] = [];
+
+    // Completeness issues
+    if (completenessStats.issuesSummary.missing_required) {
+      issues.push({
+        type: "missing_required",
+        severity: "high",
+        message: `${completenessStats.issuesSummary.missing_required} constituents missing required fields`,
+        count: completenessStats.issuesSummary.missing_required,
+      });
+    }
+    if (completenessStats.issuesSummary.missing_contact) {
+      issues.push({
+        type: "missing_contact",
+        severity: "medium",
+        message: `${completenessStats.issuesSummary.missing_contact} constituents without contact info`,
+        count: completenessStats.issuesSummary.missing_contact,
+      });
+    }
+
+    // Freshness issues
+    for (const issue of dataAge.issues) {
+      issues.push({
+        type: issue.type,
+        severity: issue.severity,
+        message: issue.message,
+      });
+    }
+
+    // Consistency issues
+    if (consistencyStats.totalIssues > 0) {
+      for (const [type, count] of Object.entries(consistencyStats.issuesByType)) {
+        issues.push({
+          type,
+          severity: "low",
+          message: `${count} records with ${type.replace(/_/g, " ")}`,
+          count,
+        });
+      }
+    }
+
+    // Coverage issues
+    for (const issue of coverageResult.issues) {
+      issues.push({
+        type: issue.type,
+        severity: issue.severity,
+        message: issue.message,
+        count: issue.count,
+        percentage: issue.percentage,
+      });
+    }
+
+    // Portfolio balance issues
+    for (const issue of portfolioBalance.issues) {
+      issues.push({
+        type: issue.type,
+        severity: issue.severity,
+        message: issue.message,
+        count: issue.count,
+      });
+    }
+
+    // Sort issues by severity
+    const severityOrder = { high: 0, medium: 1, low: 2 };
+    issues.sort((a, b) => severityOrder[a.severity] - severityOrder[b.severity]);
+
+    // Generate recommendations
+    const recommendations = generateRecommendations(issues, {
+      totalConstituents: constituentCount,
+      overallScore: healthScore.overall,
+      completenessScore: healthScore.completeness,
+      freshnessScore: healthScore.freshness,
+      consistencyScore: healthScore.consistency,
+      coverageScore: healthScore.coverage,
+    });
+
     return {
-      overall: 0.75, // Placeholder
-      completeness: 0.8,
-      freshness: 0.7,
-      consistency: 0.75,
-      coverage: 0.75,
-      issues: [],
-      recommendations: [],
+      overall: healthScore.overall,
+      completeness: healthScore.completeness,
+      freshness: healthScore.freshness,
+      consistency: healthScore.consistency,
+      coverage: healthScore.coverage,
+      issues,
+      recommendations,
       stats: {
         constituentCount,
         giftCount,
         contactCount,
+        assignedCount,
+        unassignedCount: constituentCount - assignedCount,
+        constituentsWithGifts,
+        constituentsWithContacts,
+      },
+      freshnessDetails: {
+        daysSinceLastGift: dataAge.daysSinceLastGift,
+        daysSinceLastContact: dataAge.daysSinceLastContact,
+        daysSinceLastUpload: dataAge.daysSinceLastUpload,
       },
     };
   }),
@@ -266,6 +484,15 @@ export const analysisRouter = router({
       where: { organizationId, isActive: true, assignedOfficerId: null },
     });
 
+    // Analyze portfolio balance
+    const balance = analyzePortfolioBalance(
+      officerMetrics.map((o) => ({
+        id: o.id,
+        name: o.name,
+        constituentCount: o._count.assignedConstituents,
+      }))
+    );
+
     return {
       officers: officerMetrics.map((o) => ({
         id: o.id,
@@ -274,8 +501,46 @@ export const analysisRouter = router({
       })),
       totalConstituents,
       unassigned,
-      imbalances: [], // Placeholder
-      suggestions: [], // Placeholder
+      imbalances: balance.issues,
+      suggestions: [],
+      stats: {
+        averagePortfolioSize: balance.averagePortfolioSize,
+        minPortfolioSize: balance.minPortfolioSize,
+        maxPortfolioSize: balance.maxPortfolioSize,
+        isBalanced: balance.isBalanced,
+      },
     };
   }),
+
+  // Get health score history for trend chart
+  getHealthHistory: protectedProcedure
+    .input(
+      z.object({
+        days: z.number().min(7).max(365).default(30),
+      })
+    )
+    .query(async ({ input }) => {
+      // For now, return placeholder data
+      // In a real implementation, we'd store historical scores in a separate table
+      const endDate = new Date();
+      const startDate = new Date();
+      startDate.setDate(startDate.getDate() - input.days);
+
+      // Generate mock trend data
+      const data: Array<{
+        date: string;
+        overall: number;
+        completeness: number;
+        freshness: number;
+        consistency: number;
+        coverage: number;
+      }> = [];
+
+      // For now, return empty array - will be populated when we have real history
+      return {
+        data,
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString(),
+      };
+    }),
 });
