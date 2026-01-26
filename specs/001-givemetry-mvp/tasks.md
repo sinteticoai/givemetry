@@ -509,29 +509,29 @@ Based on plan.md structure:
 
 ### Tests for User Story 10 (TDD - Write First, Verify Fail)
 
-- [ ] T220 [P] [US10] Unit tests for anomaly detector in tests/unit/analysis/anomaly-detector.test.ts
-- [ ] T221 [P] [US10] Unit tests for alert generator in tests/unit/analysis/alert-generator.test.ts
-- [ ] T222 [US10] Integration tests for alert procedures in tests/integration/alert.test.ts
+- [X] T220 [P] [US10] Unit tests for anomaly detector in tests/unit/analysis/anomaly-detector.test.ts
+- [X] T221 [P] [US10] Unit tests for alert generator in tests/unit/analysis/alert-generator.test.ts
+- [X] T222 [US10] Integration tests for alert procedures in tests/integration/alert.test.ts
 
 ### Anomaly Detection Service
 
-- [ ] T223 [US10] Create anomaly detection engine in src/server/services/analysis/anomaly-detector.ts
-- [ ] T224 [P] [US10] Implement engagement spike detector in src/server/services/analysis/anomaly-detectors/engagement-spike.ts
-- [ ] T225 [P] [US10] Implement giving pattern change detector in src/server/services/analysis/anomaly-detectors/giving-pattern.ts
-- [ ] T226 [P] [US10] Implement contact gap detector in src/server/services/analysis/anomaly-detectors/contact-gap.ts
-- [ ] T227 [US10] Create alert generation service in src/server/services/analysis/alert-generator.ts
+- [X] T223 [US10] Create anomaly detection engine in src/server/services/analysis/anomaly-detector.ts
+- [X] T224 [P] [US10] Implement engagement spike detector in src/server/services/analysis/anomaly-detectors/engagement-spike.ts
+- [X] T225 [P] [US10] Implement giving pattern change detector in src/server/services/analysis/anomaly-detectors/giving-pattern.ts
+- [X] T226 [P] [US10] Implement contact gap detector in src/server/services/analysis/anomaly-detectors/contact-gap.ts
+- [X] T227 [US10] Create alert generation service in src/server/services/analysis/alert-generator.ts
 
 ### Alert Router
 
-- [ ] T228 [US10] Create alert router with list, get, dismiss, markActed procedures in src/server/routers/alert.ts
+- [X] T228 [US10] Create alert router with list, get, dismiss, markActed procedures in src/server/routers/alert.ts
 
 ### Alert UI
 
-- [ ] T229 [US10] Create alerts page in src/app/(dashboard)/alerts/page.tsx
-- [ ] T230 [P] [US10] Create alert list component in src/components/alerts/alert-list.tsx
-- [ ] T231 [P] [US10] Create alert detail card with pattern description in src/components/alerts/alert-detail-card.tsx
-- [ ] T232 [US10] Create alert action buttons (dismiss, acted on) in src/components/alerts/alert-actions.tsx
-- [ ] T233 [US10] Add alerts badge to sidebar navigation in src/components/layout/sidebar.tsx
+- [X] T229 [US10] Create alerts page in src/app/(dashboard)/alerts/page.tsx
+- [X] T230 [P] [US10] Create alert list component in src/components/alerts/alert-list.tsx
+- [X] T231 [P] [US10] Create alert detail card with pattern description in src/components/alerts/alert-detail-card.tsx
+- [X] T232 [US10] Create alert action buttons (dismiss, acted on) in src/components/alerts/alert-actions.tsx
+- [X] T233 [US10] Add alerts badge to sidebar navigation in src/components/layout/sidebar.tsx
 
 **Checkpoint**: At this point, User Story 10 should be fully functional - users can view and act on anomaly alerts
 

@@ -1,4 +1,5 @@
 // T033: Sidebar component
+// T233: Alerts badge in sidebar navigation
 "use client";
 
 import Link from "next/link";
@@ -17,6 +18,8 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { trpc } from "@/lib/trpc/client";
 
 interface SidebarProps {
   open: boolean;
@@ -39,6 +42,11 @@ const bottomNavigation = [
 
 export function Sidebar({ open, onOpenChange }: SidebarProps) {
   const pathname = usePathname();
+
+  // Fetch alert counts for badge
+  const { data: alertCounts } = trpc.alert.counts.useQuery(undefined, {
+    refetchInterval: 60000, // Refresh every minute
+  });
 
   return (
     <aside
@@ -63,19 +71,48 @@ export function Sidebar({ open, onOpenChange }: SidebarProps) {
       <nav className="flex-1 space-y-1 p-2">
         {navigation.map((item) => {
           const isActive = pathname.startsWith(item.href);
+          const isAlerts = item.name === "Alerts";
+          const activeAlertCount = alertCounts?.active ?? 0;
+          const highAlertCount = alertCounts?.high ?? 0;
+
           return (
             <Link
               key={item.name}
               href={item.href}
               className={cn(
-                "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+                "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors relative",
                 isActive
                   ? "bg-primary text-primary-foreground"
                   : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
               )}
             >
-              <item.icon className="h-5 w-5 flex-shrink-0" />
-              {open && <span>{item.name}</span>}
+              <div className="relative">
+                <item.icon className="h-5 w-5 flex-shrink-0" />
+                {isAlerts && activeAlertCount > 0 && !open && (
+                  <span
+                    className={cn(
+                      "absolute -top-1 -right-1 h-2 w-2 rounded-full",
+                      highAlertCount > 0 ? "bg-red-500" : "bg-yellow-500"
+                    )}
+                  />
+                )}
+              </div>
+              {open && (
+                <>
+                  <span className="flex-1">{item.name}</span>
+                  {isAlerts && activeAlertCount > 0 && (
+                    <Badge
+                      variant={isActive ? "secondary" : "default"}
+                      className={cn(
+                        "ml-auto h-5 px-1.5 text-xs",
+                        !isActive && highAlertCount > 0 && "bg-red-500 hover:bg-red-600"
+                      )}
+                    >
+                      {activeAlertCount}
+                    </Badge>
+                  )}
+                </>
+              )}
             </Link>
           );
         })}
