@@ -579,13 +579,15 @@ Based on plan.md structure:
 
 ### Constituent UI
 
-- [ ] T246 [P] Create donors list page in src/app/(dashboard)/donors/page.tsx
-- [ ] T247 [P] Create constituent list component with filtering in src/components/donors/constituent-list.tsx
-- [ ] T248 [P] Create constituent search and filters in src/components/donors/constituent-filters.tsx
-- [ ] T249 [P] Create constituent card component in src/components/donors/constituent-card.tsx
-- [ ] T250 Create constituent detail sidebar in src/components/donors/constituent-detail.tsx
-- [ ] T251 Create giving history timeline in src/components/donors/giving-history.tsx
-- [ ] T252 Create contact history timeline in src/components/donors/contact-history.tsx
+- [x] T246 [P] Create donors list page in src/app/(dashboard)/donors/page.tsx
+- [x] T247 [P] Create constituent list component with filtering in src/components/donors/constituent-list.tsx
+- [x] T248 [P] Create constituent search and filters in src/components/donors/constituent-filters.tsx
+- [x] T249 [P] Create constituent card component in src/components/donors/constituent-card.tsx
+- [x] T250 Create constituent detail sidebar in src/components/donors/constituent-detail.tsx
+- [x] T251 Create giving history timeline in src/components/donors/giving-history.tsx
+- [x] T252 Create contact history timeline in src/components/donors/contact-history.tsx
+
+**Checkpoint**: At this point, Phase 14 is complete - users can view donor lists, filter/search, and see detailed constituent information
 
 ---
 
