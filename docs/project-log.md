@@ -129,3 +129,50 @@
 - next_steps: Begin Phase A: Foundation (Auth + Multi-tenancy)
 - open_questions: Email template design still open from prior session
 - related_files: specs/001-givemetry-mvp/spec.md, specs/001-givemetry-mvp/plan.md, specs/001-givemetry-mvp/data-model.md, specs/001-givemetry-mvp/contracts/*.ts, docs/main/architecture.md, docs/main/prd.md
+
+## SESSION 2026-01-25 17:15
+
+### CONTEXT
+- trigger: User ran `/speckit.tasks` then `/speckit.analyze` for GiveMetry MVP
+- scope: specs/001-givemetry-mvp/tasks.md, specs/001-givemetry-mvp/spec.md
+- prior_state: Plan artifacts complete (spec.md, plan.md, data-model.md, contracts/, research.md, quickstart.md) but no tasks.md
+
+### CHANGES
+- specs/001-givemetry-mvp/tasks.md: create - Initial 223 tasks organized by user story (11 stories across 15 phases)
+- specs/001-givemetry-mvp/tasks.md: rewrite - Expanded to 268 tasks after analysis remediation:
+  - Added 45 TDD test tasks (tests precede implementation per Constitution Principle III)
+  - Added T067-T070 for organization data deletion (FR-030 coverage)
+  - Moved constituent/gift/contact routers to Phase 2 Foundational (T038-T041)
+  - Phase 14 reduced to UI-only with explicit dependency note
+  - Updated header: TDD required, test tasks precede implementation
+  - Added TDD workflow note to Notes section
+- specs/001-givemetry-mvp/spec.md: edit - Clarified FR-009 (line ~278): confidence level (0-1 data sufficiency) vs probability score (prediction output) distinction added
+
+### DECISIONS
+- TDD compliance: Add test tasks before implementation tasks in each user story phase | alternatives_considered: exclude tests per original generation, constitution waiver
+- Constituent infrastructure placement: Move to Phase 2 Foundational (blocks user stories) | alternatives_considered: keep in Phase 14, add dependency note only
+- Gift/Contact routers: Add as separate routers in Foundational | alternatives_considered: merge into constituent router, remove from plan.md
+- FR-009 clarification: Add example distinguishing probability from confidence | alternatives_considered: merge with FR-007, leave ambiguous
+
+### DEPENDENCIES
+- none added
+
+### STATE
+- working: Complete tasks.md (268 tasks) with TDD compliance, full requirement coverage
+- broken: None
+- blocked: None
+
+### CONTINUITY
+- next_steps: Run `/speckit.implement` to begin task execution
+- next_steps: Start with Phase 1: Setup (T001-T008)
+- next_steps: Then Phase 2: Foundational (T009-T041) - BLOCKS all user stories
+- open_questions: Email template design still open
+- related_files: specs/001-givemetry-mvp/tasks.md, specs/001-givemetry-mvp/spec.md, specs/001-givemetry-mvp/plan.md
+
+### ANALYSIS FINDINGS (from /speckit.analyze)
+- C1 (CRITICAL): Constitution Principle III violated - RESOLVED by adding 45 test tasks
+- I3 (HIGH): FR-030 data deletion missing - RESOLVED by adding T067-T070
+- I1 (HIGH): Phase 14 dependency issue - RESOLVED by moving routers to Phase 2
+- I2 (HIGH): Missing gift/contact routers - RESOLVED by adding T040-T041
+- D1 (HIGH): FR-007/FR-009 overlap - RESOLVED by clarifying FR-009
+- Remaining LOW/MEDIUM issues: terminology drift (DataUpload vs Upload), validation criteria ambiguity (SC-003, SC-004, SC-007), fuzzy matching algorithm unspecified - deferred to implementation

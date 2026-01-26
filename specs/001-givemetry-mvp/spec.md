@@ -275,7 +275,7 @@ As a **Director of Advancement Services**, I want to see how portfolios are bala
 - **FR-006**: System MUST calculate data health scores across completeness, freshness, consistency, and coverage dimensions
 - **FR-007**: System MUST generate donor lapse risk predictions with probability scores (high/medium/low) and explainable factors
 - **FR-008**: System MUST generate prospect prioritization scores using capacity, likelihood, timing, and recency signals
-- **FR-009**: System MUST provide confidence levels for all predictions indicating data sufficiency
+- **FR-009**: System MUST provide confidence levels (0-1 scale) for all predictions indicating data sufficiency, distinct from the prediction probability score itself (e.g., a donor may have 80% lapse probability with only 60% confidence due to limited history)
 - **FR-032**: System MUST automatically recalculate all predictions (lapse risk, prioritization scores) when new data is uploaded
 
 **AI Features**
