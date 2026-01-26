@@ -1,3 +1,6 @@
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
+
 export default function AuthLayout({
   children,
 }: {
@@ -6,6 +9,13 @@ export default function AuthLayout({
   return (
     <div className="flex min-h-screen items-center justify-center bg-background">
       <div className="w-full max-w-md p-6">
+        <Link
+          href="/"
+          className="mb-6 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to Home
+        </Link>
         <div className="mb-8 text-center">
           <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-lg bg-primary text-2xl font-bold text-primary-foreground">
             G
