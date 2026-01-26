@@ -1,6 +1,7 @@
 // T108: Analysis router with health scores and analytics
+// T144-T146: Priority list, feedback, and refresh procedures
 import { z } from "zod";
-import { router, protectedProcedure, managerProcedure } from "../trpc/init";
+import { router, protectedProcedure } from "../trpc/init";
 import { getPortfolioFilter } from "../trpc/context";
 import {
   calculateHealthScore,
@@ -13,6 +14,11 @@ import {
   generateRecommendations,
   type HealthIssue,
 } from "../services/analysis";
+import {
+  calculatePriorityScore,
+  type PriorityScoreInput,
+} from "../services/analysis/priority-scorer";
+import { formatCapacity as formatCap } from "../services/analysis/priority-factors/capacity";
 
 export const analysisRouter = router({
   // T108: Get health scores for organization
@@ -478,23 +484,24 @@ export const analysisRouter = router({
       };
     }),
 
-  // Get priority list
+  // T144: Get priority list with comprehensive scoring data
   getPriorityList: protectedProcedure
     .input(
       z.object({
-        limit: z.number().min(1).max(100).default(50),
+        limit: z.number().min(1).max(100).default(10),
         cursor: z.string().uuid().optional(),
         minPriority: z.number().min(0).max(1).default(0.5),
         assignedOfficerId: z.string().uuid().optional(),
-        excludeRecentlyContacted: z.boolean().default(false),
+        excludeRecentContact: z.boolean().default(true),
+        recentContactDays: z.number().int().default(7),
       })
     )
     .query(async ({ ctx, input }) => {
       const portfolioFilter = getPortfolioFilter(ctx);
 
-      // Calculate date for "recently contacted" filter (30 days)
-      const recentlyContactedDate = new Date();
-      recentlyContactedDate.setDate(recentlyContactedDate.getDate() - 30);
+      // Calculate date for "recently contacted" filter
+      const recentContactCutoff = new Date();
+      recentContactCutoff.setDate(recentContactCutoff.getDate() - input.recentContactDays);
 
       const constituents = await ctx.prisma.constituent.findMany({
         where: {
@@ -504,11 +511,11 @@ export const analysisRouter = router({
           ...(input.assignedOfficerId && {
             assignedOfficerId: input.assignedOfficerId,
           }),
-          ...(input.excludeRecentlyContacted && {
+          ...(input.excludeRecentContact && {
             NOT: {
               contacts: {
                 some: {
-                  contactDate: { gte: recentlyContactedDate },
+                  contactDate: { gte: recentContactCutoff },
                 },
               },
             },
@@ -525,6 +532,9 @@ export const analysisRouter = router({
           firstName: true,
           lastName: true,
           email: true,
+          phone: true,
+          constituentType: true,
+          classYear: true,
           priorityScore: true,
           priorityFactors: true,
           estimatedCapacity: true,
@@ -537,6 +547,11 @@ export const analysisRouter = router({
             take: 1,
             select: { contactDate: true },
           },
+          gifts: {
+            orderBy: { giftDate: "desc" },
+            take: 1,
+            select: { giftDate: true, amount: true },
+          },
         },
       });
 
@@ -546,24 +561,170 @@ export const analysisRouter = router({
         nextCursor = nextItem?.id;
       }
 
+      // Get portfolio summary
+      const [totalProspects, totalCapacityResult] = await Promise.all([
+        ctx.prisma.constituent.count({
+          where: { ...portfolioFilter, isActive: true, priorityScore: { gte: 0.4 } },
+        }),
+        ctx.prisma.constituent.aggregate({
+          where: { ...portfolioFilter, isActive: true },
+          _sum: { estimatedCapacity: true },
+          _avg: { priorityScore: true },
+        }),
+      ]);
+
+      // Helper to get capacity label
+      const getCapacityLabel = (capacity: number | null): string => {
+        if (capacity === null) return "Unknown";
+        if (capacity >= 1000000) return "$1M+";
+        if (capacity >= 500000) return "$500K-$1M";
+        if (capacity >= 250000) return "$250K-$500K";
+        if (capacity >= 100000) return "$100K-$250K";
+        if (capacity >= 50000) return "$50K-$100K";
+        if (capacity >= 25000) return "$25K-$50K";
+        if (capacity >= 10000) return "$10K-$25K";
+        return "<$10K";
+      };
+
+      // Generate activity summary
+      const getRecentActivitySummary = (
+        lastGiftDate: Date | null,
+        lastContactDate: Date | null
+      ): string => {
+        const parts: string[] = [];
+        const now = new Date();
+
+        if (lastGiftDate) {
+          const daysSinceGift = Math.floor(
+            (now.getTime() - lastGiftDate.getTime()) / (1000 * 60 * 60 * 24)
+          );
+          if (daysSinceGift < 30) {
+            parts.push(`Gift ${daysSinceGift} days ago`);
+          } else if (daysSinceGift < 365) {
+            parts.push(`Gift ${Math.round(daysSinceGift / 30)} months ago`);
+          }
+        }
+
+        if (lastContactDate) {
+          const daysSinceContact = Math.floor(
+            (now.getTime() - lastContactDate.getTime()) / (1000 * 60 * 60 * 24)
+          );
+          if (daysSinceContact < 30) {
+            parts.push(`Contact ${daysSinceContact} days ago`);
+          } else if (daysSinceContact < 365) {
+            parts.push(`Contact ${Math.round(daysSinceContact / 30)} months ago`);
+          }
+        }
+
+        return parts.length > 0 ? parts.join(", ") : "No recent activity";
+      };
+
+      // Generate recommended action from factors
+      const getRecommendedAction = (
+        score: number,
+        _factors: Array<{ name: string; value: string; impact: string }>,
+        lastContactDate: Date | null
+      ): { action: string; reason: string } | null => {
+        if (score < 0.5) return null;
+
+        const hasRecentContact = lastContactDate &&
+          (new Date().getTime() - lastContactDate.getTime()) < 30 * 24 * 60 * 60 * 1000;
+
+        if (score >= 0.8 && !hasRecentContact) {
+          return {
+            action: "Schedule personal meeting",
+            reason: "High priority prospect - optimal timing for engagement",
+          };
+        }
+
+        if (score >= 0.6 && !hasRecentContact) {
+          return {
+            action: "Review for outreach",
+            reason: "Good priority score - consider for next outreach cycle",
+          };
+        }
+
+        return null;
+      };
+
       return {
-        items: constituents.map((c) => ({
-          ...c,
-          lastContactDate: c.contacts[0]?.contactDate || null,
+        items: constituents.map((c, index) => ({
+          rank: index + 1,
+          constituent: {
+            id: c.id,
+            displayName: [c.firstName, c.lastName].filter(Boolean).join(" ") || "Unknown",
+            email: c.email,
+            phone: c.phone,
+            constituentType: c.constituentType,
+            classYear: c.classYear,
+          },
+          priorityScore: Number(c.priorityScore) || 0,
+          confidence: 0.7, // TODO: Calculate from data quality
+          factors: (c.priorityFactors as Array<{ name: string; value: string; impact: string }>) || [],
+          capacityIndicator: {
+            estimate: c.estimatedCapacity ? Number(c.estimatedCapacity) : null,
+            label: getCapacityLabel(c.estimatedCapacity ? Number(c.estimatedCapacity) : null),
+          },
+          engagement: {
+            lastContactDate: c.contacts[0]?.contactDate?.toISOString() || null,
+            lastGiftDate: c.gifts[0]?.giftDate?.toISOString() || null,
+            recentActivitySummary: getRecentActivitySummary(
+              c.gifts[0]?.giftDate || null,
+              c.contacts[0]?.contactDate || null
+            ),
+          },
+          timing: {
+            indicator: "Standard timing",
+            score: 0.5, // TODO: Calculate from org fiscal year
+          },
+          recommendedAction: getRecommendedAction(
+            Number(c.priorityScore) || 0,
+            (c.priorityFactors as Array<{ name: string; value: string; impact: string }>) || [],
+            c.contacts[0]?.contactDate || null
+          ),
         })),
-        nextCursor,
+        nextCursor: nextCursor || null,
+        totalCount: totalProspects,
+        generatedAt: new Date().toISOString(),
+        portfolioSummary: {
+          totalProspects,
+          totalCapacity: Number(totalCapacityResult._sum.estimatedCapacity) || 0,
+          avgPriorityScore: Number(totalCapacityResult._avg.priorityScore) || 0,
+        },
       };
     }),
 
-  // Provide priority feedback
+  // T145: Provide priority feedback for model improvement
   providePriorityFeedback: protectedProcedure
     .input(
       z.object({
         constituentId: z.string().uuid(),
-        feedback: z.enum(["useful", "not_useful", "already_contacted"]),
+        feedback: z.enum(["not_now", "already_in_conversation", "not_interested", "wrong_timing"]),
+        notes: z.string().max(1000).optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
+      const organizationId = ctx.session.user.organizationId;
+
+      // Verify constituent exists and user has access
+      const constituent = await ctx.prisma.constituent.findFirst({
+        where: {
+          id: input.constituentId,
+          organizationId,
+          isActive: true,
+        },
+        select: {
+          id: true,
+          firstName: true,
+          lastName: true,
+          priorityScore: true,
+        },
+      });
+
+      if (!constituent) {
+        throw new Error("Constituent not found");
+      }
+
       // Store feedback in prediction record
       await ctx.prisma.prediction.updateMany({
         where: {
@@ -574,28 +735,287 @@ export const analysisRouter = router({
         data: {
           factors: {
             feedback: input.feedback,
+            feedbackNotes: input.notes,
             feedbackAt: new Date().toISOString(),
             feedbackBy: ctx.session.user.id,
           },
         },
       });
 
-      return { success: true };
+      // If no current prediction exists, create one with feedback
+      const existingPrediction = await ctx.prisma.prediction.findFirst({
+        where: {
+          constituentId: input.constituentId,
+          predictionType: "priority",
+          isCurrent: true,
+        },
+      });
+
+      if (!existingPrediction) {
+        await ctx.prisma.prediction.create({
+          data: {
+            organizationId,
+            constituentId: input.constituentId,
+            predictionType: "priority",
+            score: Number(constituent.priorityScore) || 0,
+            confidence: 0.7,
+            isCurrent: true,
+            factors: {
+              feedback: input.feedback,
+              feedbackNotes: input.notes,
+              feedbackAt: new Date().toISOString(),
+              feedbackBy: ctx.session.user.id,
+            },
+          },
+        });
+      }
+
+      // Create audit log for feedback
+      await ctx.prisma.auditLog.create({
+        data: {
+          organizationId,
+          userId: ctx.session.user.id,
+          action: "priority.feedback",
+          resourceType: "constituent",
+          resourceId: input.constituentId,
+          details: {
+            feedback: input.feedback,
+            notes: input.notes,
+            priorityScore: Number(constituent.priorityScore),
+          },
+        },
+      });
+
+      return {
+        success: true,
+        message: `Feedback recorded: ${input.feedback.replace(/_/g, " ")}`,
+      };
     }),
 
-  // Refresh priorities (trigger recalculation)
-  refreshPriorities: managerProcedure.mutation(async ({ ctx }) => {
-    // Placeholder - will trigger background job in Phase 6
-    await ctx.prisma.auditLog.create({
-      data: {
-        organizationId: ctx.session.user.organizationId,
-        userId: ctx.session.user.id,
-        action: "analysis.refresh",
-        resourceType: "priority",
+  // T146: Refresh priorities - recalculate for user's portfolio
+  refreshPriorities: protectedProcedure.mutation(async ({ ctx }) => {
+    const portfolioFilter = getPortfolioFilter(ctx);
+    const organizationId = ctx.session.user.organizationId;
+
+    // Get constituents in portfolio with their data for recalculation
+    const constituents = await ctx.prisma.constituent.findMany({
+      where: {
+        ...portfolioFilter,
+        isActive: true,
+      },
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        email: true,
+        phone: true,
+        constituentType: true,
+        classYear: true,
+        estimatedCapacity: true,
+        lapseRiskScore: true,
+        priorityScore: true,
+        priorityFactors: true,
+        gifts: {
+          orderBy: { giftDate: "desc" },
+          take: 10,
+          select: { giftDate: true, amount: true },
+        },
+        contacts: {
+          orderBy: { contactDate: "desc" },
+          take: 10,
+          select: { contactDate: true, contactType: true },
+        },
       },
     });
 
-    return { success: true, message: "Priority refresh queued" };
+    // Get organization fiscal year end (default to June 30)
+    const fiscalYearEnd = new Date();
+    fiscalYearEnd.setMonth(5); // June
+    fiscalYearEnd.setDate(30);
+    if (fiscalYearEnd < new Date()) {
+      fiscalYearEnd.setFullYear(fiscalYearEnd.getFullYear() + 1);
+    }
+
+    const referenceDate = new Date();
+    let updatedCount = 0;
+
+    // Recalculate priority for each constituent
+    for (const constituent of constituents) {
+      const input: PriorityScoreInput = {
+        capacity: {
+          estimatedCapacity: constituent.estimatedCapacity
+            ? Number(constituent.estimatedCapacity)
+            : null,
+        },
+        lapseRisk: {
+          score: constituent.lapseRiskScore
+            ? Number(constituent.lapseRiskScore)
+            : null,
+        },
+        timing: {
+          fiscalYearEnd,
+          campaigns: [], // TODO: Get active campaigns
+        },
+        engagement: {
+          gifts: constituent.gifts.map((g) => ({
+            date: g.giftDate,
+            amount: Number(g.amount),
+          })),
+          contacts: constituent.contacts.map((c) => ({
+            date: c.contactDate,
+            type: c.contactType || "unknown",
+          })),
+        },
+        referenceDate,
+      };
+
+      const result = calculatePriorityScore(input);
+
+      // Convert factors to JSON-safe format
+      const factorsJson = result.factors.map(f => ({
+        name: f.name,
+        value: f.value,
+        impact: f.impact,
+        weight: f.weight,
+        rawScore: f.rawScore,
+      }));
+
+      // Update constituent with new priority score and factors
+      await ctx.prisma.constituent.update({
+        where: { id: constituent.id },
+        data: {
+          priorityScore: result.score,
+          priorityFactors: factorsJson,
+        },
+      });
+
+      // Mark existing predictions as not current
+      await ctx.prisma.prediction.updateMany({
+        where: {
+          constituentId: constituent.id,
+          predictionType: "priority",
+          isCurrent: true,
+        },
+        data: {
+          isCurrent: false,
+        },
+      });
+
+      // Create new prediction record
+      await ctx.prisma.prediction.create({
+        data: {
+          organizationId,
+          constituentId: constituent.id,
+          predictionType: "priority",
+          score: result.score,
+          confidence: result.confidence,
+          factors: factorsJson,
+          isCurrent: true,
+        },
+      });
+
+      updatedCount++;
+    }
+
+    // Create audit log
+    await ctx.prisma.auditLog.create({
+      data: {
+        organizationId,
+        userId: ctx.session.user.id,
+        action: "analysis.refresh",
+        resourceType: "priority",
+        details: {
+          constituentsUpdated: updatedCount,
+          refreshedAt: referenceDate.toISOString(),
+        },
+      },
+    });
+
+    // Return the updated priority list
+    const refreshedConstituents = await ctx.prisma.constituent.findMany({
+      where: {
+        ...portfolioFilter,
+        isActive: true,
+        priorityScore: { gte: 0.4 },
+      },
+      orderBy: { priorityScore: "desc" },
+      take: 10,
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        email: true,
+        phone: true,
+        constituentType: true,
+        classYear: true,
+        priorityScore: true,
+        priorityFactors: true,
+        estimatedCapacity: true,
+        contacts: {
+          orderBy: { contactDate: "desc" },
+          take: 1,
+          select: { contactDate: true },
+        },
+        gifts: {
+          orderBy: { giftDate: "desc" },
+          take: 1,
+          select: { giftDate: true },
+        },
+      },
+    });
+
+    // Get summary
+    const [totalProspects, summaryStats] = await Promise.all([
+      ctx.prisma.constituent.count({
+        where: { ...portfolioFilter, isActive: true, priorityScore: { gte: 0.4 } },
+      }),
+      ctx.prisma.constituent.aggregate({
+        where: { ...portfolioFilter, isActive: true },
+        _sum: { estimatedCapacity: true },
+        _avg: { priorityScore: true },
+      }),
+    ]);
+
+    return {
+      items: refreshedConstituents.map((c, index) => ({
+        rank: index + 1,
+        constituent: {
+          id: c.id,
+          displayName: [c.firstName, c.lastName].filter(Boolean).join(" ") || "Unknown",
+          email: c.email,
+          phone: c.phone,
+          constituentType: c.constituentType,
+          classYear: c.classYear,
+        },
+        priorityScore: Number(c.priorityScore) || 0,
+        confidence: 0.7,
+        factors: (c.priorityFactors as Array<{ name: string; value: string; impact: string }>) || [],
+        capacityIndicator: {
+          estimate: c.estimatedCapacity ? Number(c.estimatedCapacity) : null,
+          label: c.estimatedCapacity
+            ? formatCap(Number(c.estimatedCapacity))
+            : "Unknown",
+        },
+        engagement: {
+          lastContactDate: c.contacts[0]?.contactDate?.toISOString() || null,
+          lastGiftDate: c.gifts[0]?.giftDate?.toISOString() || null,
+          recentActivitySummary: "Refreshed",
+        },
+        timing: {
+          indicator: "Standard timing",
+          score: 0.5,
+        },
+        recommendedAction: null,
+      })),
+      nextCursor: null,
+      totalCount: totalProspects,
+      generatedAt: referenceDate.toISOString(),
+      portfolioSummary: {
+        totalProspects,
+        totalCapacity: Number(summaryStats._sum.estimatedCapacity) || 0,
+        avgPriorityScore: Number(summaryStats._avg.priorityScore) || 0,
+      },
+    };
   }),
 
   // Get portfolio metrics (Phase 13 - US11)

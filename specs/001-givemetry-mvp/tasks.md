@@ -309,32 +309,32 @@ Based on plan.md structure:
 
 ### Tests for User Story 4 (TDD - Write First, Verify Fail)
 
-- [ ] T136 [P] [US4] Unit tests for priority scorer in tests/unit/analysis/priority-scorer.test.ts
-- [ ] T137 [P] [US4] Unit tests for priority factors in tests/unit/analysis/priority-factors.test.ts
-- [ ] T138 [US4] Integration tests for priority procedures in tests/integration/analysis-priority.test.ts
+- [X] T136 [P] [US4] Unit tests for priority scorer in tests/unit/analysis/priority-scorer.test.ts
+- [X] T137 [P] [US4] Unit tests for priority factors in tests/unit/analysis/priority-factors.test.ts
+- [X] T138 [US4] Integration tests for priority procedures in tests/integration/analysis-priority.test.ts
 
 ### Priority Scoring Service
 
-- [ ] T139 [US4] Create priority scoring engine in src/server/services/analysis/priority-scorer.ts
-- [ ] T140 [P] [US4] Implement capacity score calculation in src/server/services/analysis/priority-factors/capacity.ts
-- [ ] T141 [P] [US4] Implement likelihood score (inverse lapse) in src/server/services/analysis/priority-factors/likelihood.ts
-- [ ] T142 [P] [US4] Implement timing score calculation in src/server/services/analysis/priority-factors/timing.ts
-- [ ] T143 [P] [US4] Implement recency score calculation in src/server/services/analysis/priority-factors/recency.ts
+- [X] T139 [US4] Create priority scoring engine in src/server/services/analysis/priority-scorer.ts
+- [X] T140 [P] [US4] Implement capacity score calculation in src/server/services/analysis/priority-factors/capacity.ts
+- [X] T141 [P] [US4] Implement likelihood score (inverse lapse) in src/server/services/analysis/priority-factors/likelihood.ts
+- [X] T142 [P] [US4] Implement timing score calculation in src/server/services/analysis/priority-factors/timing.ts
+- [X] T143 [P] [US4] Implement recency score calculation in src/server/services/analysis/priority-factors/recency.ts
 
 ### Analysis Router Extensions
 
-- [ ] T144 [US4] Add getPriorityList procedure to analysis router in src/server/routers/analysis.ts
-- [ ] T145 [US4] Add providePriorityFeedback procedure in src/server/routers/analysis.ts
-- [ ] T146 [US4] Add refreshPriorities procedure in src/server/routers/analysis.ts
+- [X] T144 [US4] Add getPriorityList procedure to analysis router in src/server/routers/analysis.ts
+- [X] T145 [US4] Add providePriorityFeedback procedure in src/server/routers/analysis.ts
+- [X] T146 [US4] Add refreshPriorities procedure in src/server/routers/analysis.ts
 
 ### Priority Dashboard UI
 
-- [ ] T147 [US4] Create priorities page in src/app/(dashboard)/priorities/page.tsx
-- [ ] T148 [P] [US4] Create priority list component with ranking in src/components/priorities/priority-list.tsx
-- [ ] T149 [P] [US4] Create priority detail card with factors in src/components/priorities/priority-detail-card.tsx
-- [ ] T150 [P] [US4] Create priority feedback buttons in src/components/priorities/priority-feedback.tsx
-- [ ] T151 [US4] Create refresh priorities button with loading state in src/components/priorities/refresh-button.tsx
-- [ ] T152 [US4] Implement recently contacted filter toggle in src/components/priorities/contact-filter.tsx
+- [X] T147 [US4] Create priorities page in src/app/(dashboard)/priorities/page.tsx
+- [X] T148 [P] [US4] Create priority list component with ranking in src/components/priorities/priority-list.tsx
+- [X] T149 [P] [US4] Create priority detail card with factors in src/components/priorities/priority-detail-card.tsx
+- [X] T150 [P] [US4] Create priority feedback buttons in src/components/priorities/priority-feedback.tsx
+- [X] T151 [US4] Create refresh priorities button with loading state in src/components/priorities/refresh-button.tsx
+- [X] T152 [US4] Implement recently contacted filter toggle in src/components/priorities/contact-filter.tsx
 
 **Checkpoint**: At this point, User Story 4 should be fully functional - gift officers can view prioritized prospects with explainable scoring
 
