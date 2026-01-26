@@ -88,7 +88,10 @@ export const authRouter = router({
     // Hash password
     const passwordHash = await bcrypt.hash(input.password, 12);
 
-    // Generate verification token
+    // In development mode, auto-verify users
+    const isDev = process.env.NODE_ENV === "development";
+
+    // Generate verification token (only needed in production)
     const { token, hashedToken, expires } = generateVerificationToken();
 
     // Create organization and user in a transaction
@@ -101,7 +104,7 @@ export const authRouter = router({
         },
       });
 
-      // Create admin user
+      // Create admin user (auto-verified in dev mode)
       const user = await tx.user.create({
         data: {
           email: input.email,
@@ -109,17 +112,20 @@ export const authRouter = router({
           name: input.name,
           organizationId: organization.id,
           role: "admin",
+          emailVerified: isDev ? new Date() : null,
         },
       });
 
-      // Create verification token
-      await tx.verificationToken.create({
-        data: {
-          identifier: input.email,
-          token: hashedToken,
-          expires,
-        },
-      });
+      // Create verification token (only in production)
+      if (!isDev) {
+        await tx.verificationToken.create({
+          data: {
+            identifier: input.email,
+            token: hashedToken,
+            expires,
+          },
+        });
+      }
 
       // Create audit log
       await tx.auditLog.create({
@@ -134,16 +140,20 @@ export const authRouter = router({
 
     });
 
-    // Send verification email
-    await sendVerificationEmail({
-      to: input.email,
-      name: input.name,
-      token,
-    });
+    // Send verification email (only in production)
+    if (!isDev) {
+      await sendVerificationEmail({
+        to: input.email,
+        name: input.name,
+        token,
+      });
+    }
 
     return {
       success: true,
-      message: "Account created. Please check your email to verify your account.",
+      message: isDev
+        ? "Account created and auto-verified (dev mode). You can now sign in."
+        : "Account created. Please check your email to verify your account.",
     };
   }),
 

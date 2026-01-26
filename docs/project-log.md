@@ -176,3 +176,38 @@
 - I2 (HIGH): Missing gift/contact routers - RESOLVED by adding T040-T041
 - D1 (HIGH): FR-007/FR-009 overlap - RESOLVED by clarifying FR-009
 - Remaining LOW/MEDIUM issues: terminology drift (DataUpload vs Upload), validation criteria ambiguity (SC-003, SC-004, SC-007), fuzzy matching algorithm unspecified - deferred to implementation
+
+## SESSION 2026-01-26 02:00
+
+### CONTEXT
+- trigger: User signed up but never received verification email
+- scope: src/server/routers/auth.ts, .env.local, database User table
+- prior_state: RESEND_API_KEY empty, email service in mock mode (console.log only)
+
+### CHANGES
+- src/server/routers/auth.ts: edit - Added dev mode auto-verify logic (lines 91-152):
+  - Check `process.env.NODE_ENV === "development"` at start of signup
+  - Set `emailVerified: isDev ? new Date() : null` when creating user
+  - Skip VerificationToken creation in dev mode
+  - Skip sendVerificationEmail call in dev mode
+  - Return different success message based on mode
+- database: manual SQL - Verified existing user `balbontincg@gmail.com` via `UPDATE "User" SET "emailVerified" = NOW() WHERE email = 'balbontincg@gmail.com'`
+
+### DECISIONS
+- Auto-verify in dev mode vs configure Resend: Free solution for development, Resend setup deferred to production | alternatives_considered: Resend test mode (requires domain $), SendGrid free tier, Nodemailer+Gmail, console log verification link
+- Skip verification token creation in dev: Cleaner than creating unused tokens | alternatives_considered: create token anyway for consistency
+
+### DEPENDENCIES
+- none
+
+### STATE
+- working: Signup flow completes without email in dev mode; user auto-verified immediately
+- working: App running at http://154.38.189.195:3002/ (started via `PORT=3002 npm run dev`)
+- broken: None
+- blocked: Production email verification requires RESEND_API_KEY configuration
+
+### CONTINUITY
+- next_steps: Configure RESEND_API_KEY before production deployment
+- next_steps: Continue onboarding flow testing
+- open_questions: Domain verification for Resend (cost consideration)
+- related_files: src/server/routers/auth.ts, src/server/services/email/resend.ts, .env.local
