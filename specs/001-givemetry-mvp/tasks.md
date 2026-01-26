@@ -348,40 +348,40 @@ Based on plan.md structure:
 
 ### Tests for User Story 5 (TDD - Write First, Verify Fail)
 
-- [ ] T153 [P] [US5] Unit tests for Claude client wrapper in tests/unit/ai/claude.test.ts
-- [ ] T154 [P] [US5] Unit tests for citation validator in tests/unit/ai/citation-validator.test.ts
-- [ ] T155 [US5] Integration tests for brief generation in tests/integration/ai-brief.test.ts
-- [ ] T156 [US5] Golden dataset validation for brief accuracy in tests/validation/brief-accuracy.test.ts
+- [X] T153 [P] [US5] Unit tests for Claude client wrapper in tests/unit/ai/claude.test.ts
+- [X] T154 [P] [US5] Unit tests for citation validator in tests/unit/ai/citation-validator.test.ts
+- [X] T155 [US5] Integration tests for brief generation in tests/integration/ai-brief.test.ts
+- [X] T156 [US5] Golden dataset validation for brief accuracy in tests/validation/brief-accuracy.test.ts
 
 ### AI Infrastructure
 
-- [ ] T157 [US5] Create Claude API client wrapper in src/lib/ai/claude.ts
-- [ ] T158 [P] [US5] Create OpenAI embeddings client in src/lib/ai/embeddings.ts
-- [ ] T159 [US5] Create prompt templates directory structure in src/lib/ai/prompts/
-- [ ] T160 [US5] Create donor brief generation prompt in src/lib/ai/prompts/donor-brief.ts
+- [X] T157 [US5] Create Claude API client wrapper in src/lib/ai/claude.ts
+- [X] T158 [P] [US5] Create OpenAI embeddings client in src/lib/ai/embeddings.ts
+- [X] T159 [US5] Create prompt templates directory structure in src/lib/ai/prompts/
+- [X] T160 [US5] Create donor brief generation prompt in src/lib/ai/prompts/donor-brief.ts
 
 ### Brief Generation Service
 
-- [ ] T161 [US5] Create brief generation service in src/server/services/ai/brief-generator.ts
-- [ ] T162 [US5] Implement citation extraction and validation in src/server/services/ai/citation-validator.ts
-- [ ] T163 [US5] Create brief caching for AI fallback in src/server/services/ai/brief-cache.ts
+- [X] T161 [US5] Create brief generation service in src/server/services/ai/brief-generator.ts
+- [X] T162 [US5] Implement citation extraction and validation in src/server/services/ai/citation-validator.ts
+- [X] T163 [US5] Create brief caching for AI fallback in src/server/services/ai/brief-cache.ts
 
 ### AI Router
 
-- [ ] T164 [US5] Create AI router with generateBrief procedure in src/server/routers/ai.ts
-- [ ] T165 [US5] Add getBrief, listBriefs procedures in src/server/routers/ai.ts
-- [ ] T166 [US5] Add updateBrief, flagBriefError procedures in src/server/routers/ai.ts
+- [X] T164 [US5] Create AI router with generateBrief procedure in src/server/routers/ai.ts
+- [X] T165 [US5] Add getBrief, listBriefs procedures in src/server/routers/ai.ts
+- [X] T166 [US5] Add updateBrief, flagBriefError procedures in src/server/routers/ai.ts
 
 ### Brief UI
 
-- [ ] T167 [US5] Create donor detail page in src/app/(dashboard)/donors/[id]/page.tsx
-- [ ] T168 [P] [US5] Create generate brief button component in src/components/briefs/generate-brief-button.tsx
-- [ ] T169 [P] [US5] Create brief display component with sections in src/components/briefs/brief-display.tsx
-- [ ] T170 [P] [US5] Create brief section with citations in src/components/briefs/brief-section.tsx
-- [ ] T171 [US5] Create brief edit mode component in src/components/briefs/brief-editor.tsx
-- [ ] T172 [US5] Create PDF export button using @react-pdf/renderer in src/components/briefs/export-pdf-button.tsx
-- [ ] T173 [US5] Create brief PDF template in src/components/briefs/brief-pdf-template.tsx
-- [ ] T174 [US5] Create error flagging dialog in src/components/briefs/flag-error-dialog.tsx
+- [X] T167 [US5] Create donor detail page in src/app/(dashboard)/donors/[id]/page.tsx
+- [X] T168 [P] [US5] Create generate brief button component in src/components/briefs/generate-brief-button.tsx
+- [X] T169 [P] [US5] Create brief display component with sections in src/components/briefs/brief-display.tsx
+- [X] T170 [P] [US5] Create brief section with citations in src/components/briefs/brief-section.tsx
+- [X] T171 [US5] Create brief edit mode component in src/components/briefs/brief-editor.tsx
+- [X] T172 [US5] Create PDF export button using @react-pdf/renderer in src/components/briefs/export-pdf-button.tsx
+- [X] T173 [US5] Create brief PDF template in src/components/briefs/brief-pdf-template.tsx
+- [X] T174 [US5] Create error flagging dialog in src/components/briefs/flag-error-dialog.tsx
 
 **Checkpoint**: At this point, User Story 5 should be fully functional - users can generate, view, edit, and export donor briefs
 

@@ -1,11 +1,56 @@
-// AI router - placeholder for Phase 8-9
+// T164-T166: AI router with generateBrief, getBrief, listBriefs, updateBrief, flagBriefError
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { router, protectedProcedure } from "../trpc/init";
 import { getPortfolioFilter } from "../trpc/context";
+import { generateBrief, getFallbackBrief, getBriefCache, generateDataVersion } from "../services/ai";
 
 const generateBriefSchema = z.object({
   constituentId: z.string().uuid(),
+  useFallback: z.boolean().optional().default(false),
+});
+
+const briefContentSchema = z.object({
+  summary: z.object({
+    text: z.string(),
+    citations: z.array(z.object({
+      text: z.string(),
+      source: z.enum(["profile", "gift", "contact", "prediction"]),
+      sourceId: z.string(),
+      date: z.string().optional(),
+    })).optional().default([]),
+  }).optional(),
+  givingHistory: z.object({
+    text: z.string(),
+    totalLifetime: z.number(),
+    citations: z.array(z.any()).optional().default([]),
+  }).optional(),
+  relationshipHighlights: z.object({
+    text: z.string(),
+    citations: z.array(z.any()).optional().default([]),
+  }).optional(),
+  conversationStarters: z.object({
+    items: z.array(z.string()),
+    citations: z.array(z.any()).optional().default([]),
+  }).optional(),
+  recommendedAsk: z.object({
+    amount: z.number().nullable(),
+    purpose: z.string(),
+    rationale: z.string(),
+    citations: z.array(z.any()).optional().default([]),
+  }).optional(),
+});
+
+const updateBriefSchema = z.object({
+  id: z.string().uuid(),
+  content: briefContentSchema,
+});
+
+const flagBriefErrorSchema = z.object({
+  briefId: z.string().uuid(),
+  errorType: z.enum(["factual_error", "missing_information", "outdated", "formatting", "other"]),
+  description: z.string().min(1).max(1000),
+  section: z.enum(["summary", "givingHistory", "relationshipHighlights", "conversationStarters", "recommendedAsk"]).optional(),
 });
 
 const querySchema = z.object({
@@ -18,7 +63,7 @@ const savequerySchema = z.object({
 });
 
 export const aiRouter = router({
-  // Generate donor brief
+  // T164: Generate donor brief
   generateBrief: protectedProcedure
     .input(generateBriefSchema)
     .mutation(async ({ ctx, input }) => {
@@ -52,42 +97,181 @@ export const aiRouter = router({
         });
       }
 
-      // Placeholder - actual AI generation in Phase 8 (US5)
+      // Check if we have a valid cached brief
+      const cache = getBriefCache();
+      const dataVersion = generateDataVersion({
+        constituent: {
+          id: constituent.id,
+          updatedAt: constituent.updatedAt,
+        },
+        gifts: constituent.gifts.map((g) => ({
+          id: g.id,
+          updatedAt: g.updatedAt,
+        })),
+        contacts: constituent.contacts.map((c) => ({
+          id: c.id,
+          updatedAt: c.updatedAt,
+        })),
+      });
+
+      const cached = cache.get(ctx.session.user.organizationId, constituent.id);
+      if (cached && cached.dataVersion === dataVersion) {
+        // Return cached brief
+        const brief = await ctx.prisma.brief.create({
+          data: {
+            organizationId: ctx.session.user.organizationId,
+            constituentId: input.constituentId,
+            userId: ctx.session.user.id,
+            content: JSON.parse(JSON.stringify(cached.content)),
+            citations: [],
+            modelUsed: "cached",
+          },
+        });
+
+        await ctx.prisma.auditLog.create({
+          data: {
+            organizationId: ctx.session.user.organizationId,
+            userId: ctx.session.user.id,
+            action: "brief.generate",
+            resourceType: "brief",
+            resourceId: brief.id,
+            details: { source: "cache" },
+          },
+        });
+
+        return brief;
+      }
+
+      // Get API key from environment
+      const apiKey = process.env.ANTHROPIC_API_KEY;
+
+      // Calculate summary data for fallback
+      const lifetimeGiving = constituent.gifts.reduce(
+        (sum, g) => sum + Number(g.amount),
+        0
+      );
+      const lastGiftDate = constituent.gifts[0]?.giftDate || null;
+
+      let briefResult;
+
+      if (!apiKey || input.useFallback) {
+        // Use fallback brief
+        const fallbackContent = getFallbackBrief({
+          constituent: {
+            firstName: constituent.firstName,
+            lastName: constituent.lastName,
+            constituentType: constituent.constituentType,
+          },
+          totalGifts: constituent.gifts.length,
+          lifetimeGiving,
+          contactCount: constituent.contacts.length,
+          lastGiftDate,
+        });
+
+        briefResult = {
+          content: fallbackContent,
+          citations: [],
+          promptTokens: null,
+          completionTokens: null,
+          modelUsed: "fallback",
+        };
+      } else {
+        // Generate real brief using Claude
+        try {
+          const result = await generateBrief({
+            apiKey,
+            constituent: {
+              id: constituent.id,
+              organizationId: constituent.organizationId,
+              externalId: constituent.externalId,
+              firstName: constituent.firstName,
+              lastName: constituent.lastName,
+              prefix: constituent.prefix,
+              email: constituent.email,
+              phone: constituent.phone,
+              constituentType: constituent.constituentType,
+              classYear: constituent.classYear,
+              schoolCollege: constituent.schoolCollege,
+              estimatedCapacity: constituent.estimatedCapacity,
+              portfolioTier: constituent.portfolioTier,
+            },
+            gifts: constituent.gifts.map((g) => ({
+              id: g.id,
+              amount: g.amount,
+              giftDate: g.giftDate,
+              fundName: g.fundName,
+              giftType: g.giftType,
+              campaign: g.campaign,
+            })),
+            contacts: constituent.contacts.map((c) => ({
+              id: c.id,
+              contactType: c.contactType,
+              contactDate: c.contactDate,
+              subject: c.subject,
+              notes: c.notes,
+              outcome: c.outcome,
+            })),
+            predictions: constituent.predictions.map((p) => ({
+              id: p.id,
+              predictionType: p.predictionType,
+              score: p.score,
+              factors: p.factors,
+            })),
+          });
+
+          briefResult = {
+            content: result.content,
+            citations: result.citations,
+            promptTokens: result.promptTokens,
+            completionTokens: result.completionTokens,
+            modelUsed: result.modelUsed,
+          };
+
+          // Cache the result
+          cache.set({
+            constituentId: constituent.id,
+            organizationId: ctx.session.user.organizationId,
+            content: result.content,
+            generatedAt: new Date(),
+            dataVersion,
+          });
+        } catch (error) {
+          console.error("Brief generation failed, using fallback:", error);
+
+          // Fall back to template brief
+          const fallbackContent = getFallbackBrief({
+            constituent: {
+              firstName: constituent.firstName,
+              lastName: constituent.lastName,
+              constituentType: constituent.constituentType,
+            },
+            totalGifts: constituent.gifts.length,
+            lifetimeGiving,
+            contactCount: constituent.contacts.length,
+            lastGiftDate,
+          });
+
+          briefResult = {
+            content: fallbackContent,
+            citations: [],
+            promptTokens: null,
+            completionTokens: null,
+            modelUsed: "fallback-error",
+          };
+        }
+      }
+
+      // Save brief to database
       const brief = await ctx.prisma.brief.create({
         data: {
           organizationId: ctx.session.user.organizationId,
           constituentId: input.constituentId,
           userId: ctx.session.user.id,
-          content: {
-            summary: {
-              text: `${constituent.firstName} ${constituent.lastName} is a valued constituent.`,
-              citations: [],
-            },
-            givingHistory: {
-              text: `Has made ${constituent.gifts.length} gifts.`,
-              totalLifetime: constituent.gifts.reduce(
-                (sum, g) => sum + Number(g.amount),
-                0
-              ),
-              citations: [],
-            },
-            relationshipHighlights: {
-              text: `${constituent.contacts.length} contact records on file.`,
-              citations: [],
-            },
-            conversationStarters: {
-              items: ["Discuss recent giving impact", "Thank for continued support"],
-              citations: [],
-            },
-            recommendedAsk: {
-              amount: null,
-              purpose: "General support",
-              rationale: "Based on giving history",
-              citations: [],
-            },
-          },
-          citations: [],
-          modelUsed: "placeholder",
+          content: JSON.parse(JSON.stringify(briefResult.content)),
+          citations: JSON.parse(JSON.stringify(briefResult.citations)),
+          promptTokens: briefResult.promptTokens,
+          completionTokens: briefResult.completionTokens,
+          modelUsed: briefResult.modelUsed,
         },
       });
 
@@ -99,13 +283,17 @@ export const aiRouter = router({
           action: "brief.generate",
           resourceType: "brief",
           resourceId: brief.id,
+          details: {
+            model: briefResult.modelUsed,
+            tokens: (briefResult.promptTokens || 0) + (briefResult.completionTokens || 0),
+          },
         },
       });
 
       return brief;
     }),
 
-  // Get brief
+  // T165: Get brief by ID
   getBrief: protectedProcedure
     .input(z.object({ id: z.string().uuid() }))
     .query(async ({ ctx, input }) => {
@@ -142,7 +330,7 @@ export const aiRouter = router({
       return brief;
     }),
 
-  // List briefs
+  // T165: List briefs
   listBriefs: protectedProcedure
     .input(
       z.object({
@@ -183,7 +371,85 @@ export const aiRouter = router({
       return { items: briefs, nextCursor };
     }),
 
-  // Natural language query
+  // T166: Update brief
+  updateBrief: protectedProcedure
+    .input(updateBriefSchema)
+    .mutation(async ({ ctx, input }) => {
+      // Verify brief exists and belongs to organization
+      const existing = await ctx.prisma.brief.findFirst({
+        where: {
+          id: input.id,
+          organizationId: ctx.session.user.organizationId,
+        },
+      });
+
+      if (!existing) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Brief not found",
+        });
+      }
+
+      const updated = await ctx.prisma.brief.update({
+        where: { id: input.id },
+        data: {
+          content: input.content,
+        },
+      });
+
+      // Audit log
+      await ctx.prisma.auditLog.create({
+        data: {
+          organizationId: ctx.session.user.organizationId,
+          userId: ctx.session.user.id,
+          action: "brief.update",
+          resourceType: "brief",
+          resourceId: input.id,
+        },
+      });
+
+      return updated;
+    }),
+
+  // T166: Flag brief error
+  flagBriefError: protectedProcedure
+    .input(flagBriefErrorSchema)
+    .mutation(async ({ ctx, input }) => {
+      // Verify brief exists
+      const brief = await ctx.prisma.brief.findFirst({
+        where: {
+          id: input.briefId,
+          organizationId: ctx.session.user.organizationId,
+        },
+      });
+
+      if (!brief) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Brief not found",
+        });
+      }
+
+      // Log the error flag
+      await ctx.prisma.auditLog.create({
+        data: {
+          organizationId: ctx.session.user.organizationId,
+          userId: ctx.session.user.id,
+          action: "brief.flag_error",
+          resourceType: "brief",
+          resourceId: input.briefId,
+          details: {
+            errorType: input.errorType,
+            description: input.description,
+            section: input.section,
+          },
+        },
+      });
+
+      return { success: true };
+    }),
+
+  // Natural language query (Phase 9 - US6 placeholder)
   query: protectedProcedure
     .input(querySchema)
     .mutation(async ({ ctx, input }) => {
