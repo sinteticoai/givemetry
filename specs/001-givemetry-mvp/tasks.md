@@ -435,25 +435,25 @@ Based on plan.md structure:
 
 ### Tests for User Story 8 (TDD - Write First, Verify Fail)
 
-- [ ] T193 [P] [US8] Unit tests for recommendation engine in tests/unit/ai/recommendation-engine.test.ts
-- [ ] T194 [US8] Integration tests for recommendation procedures in tests/integration/ai-recommendation.test.ts
+- [X] T193 [P] [US8] Unit tests for recommendation engine in tests/unit/ai/recommendation-engine.test.ts
+- [X] T194 [US8] Integration tests for recommendation procedures in tests/integration/ai-recommendation.test.ts
 
 ### Recommendation Service
 
-- [ ] T195 [US8] Create next-best-action recommendation engine in src/server/services/ai/recommendation-engine.ts
-- [ ] T196 [US8] Create action type definitions and templates in src/server/services/ai/action-types.ts
+- [X] T195 [US8] Create next-best-action recommendation engine in src/server/services/ai/recommendation-engine.ts
+- [X] T196 [US8] Create action type definitions and templates in src/server/services/ai/action-types.ts
 
 ### AI Router Extensions
 
-- [ ] T197 [US8] Add getRecommendation procedure to AI router in src/server/routers/ai.ts
-- [ ] T198 [US8] Add markActionComplete procedure in src/server/routers/ai.ts
+- [X] T197 [US8] Add getRecommendation procedure to AI router in src/server/routers/ai.ts
+- [X] T198 [US8] Add markActionComplete procedure in src/server/routers/ai.ts
 
 ### Recommendation UI
 
-- [ ] T199 [US8] Create recommendation card component in src/components/recommendations/recommendation-card.tsx
-- [ ] T200 [P] [US8] Create action reasoning display in src/components/recommendations/action-reasoning.tsx
-- [ ] T201 [US8] Create mark complete button with next action display in src/components/recommendations/complete-action-button.tsx
-- [ ] T202 [US8] Integrate recommendations into priority detail view in src/components/priorities/priority-detail-card.tsx
+- [X] T199 [US8] Create recommendation card component in src/components/recommendations/recommendation-card.tsx
+- [X] T200 [P] [US8] Create action reasoning display in src/components/recommendations/action-reasoning.tsx
+- [X] T201 [US8] Create mark complete button with next action display in src/components/recommendations/complete-action-button.tsx
+- [X] T202 [US8] Integrate recommendations into priority detail view in src/components/priorities/priority-detail-card.tsx
 
 **Checkpoint**: At this point, User Story 8 should be fully functional - users can view and complete recommended actions
 

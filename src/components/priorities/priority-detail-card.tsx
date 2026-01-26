@@ -1,14 +1,20 @@
 // T149: Priority detail card with factor breakdown
+// T202: Integrated recommendations into priority detail view
 "use client";
 
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
-import { DollarSign, Clock, TrendingUp, Activity, Calendar, Gift } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { DollarSign, Clock, TrendingUp, Activity, Calendar, Gift, Lightbulb, ChevronRight, AlertTriangle, Loader2 } from "lucide-react";
+import { trpc } from "@/lib/trpc/client";
+import { CompleteActionButton } from "@/components/recommendations/complete-action-button";
 import type { PriorityItem } from "./priority-list";
 
 interface PriorityDetailCardProps {
   item: PriorityItem;
+  showRecommendation?: boolean;
 }
 
 function getImpactColor(impact: string): string {
@@ -58,9 +64,27 @@ function formatDate(dateStr: string | null): string {
   });
 }
 
-export function PriorityDetailCard({ item }: PriorityDetailCardProps) {
+export function PriorityDetailCard({ item, showRecommendation = true }: PriorityDetailCardProps) {
+  // Fetch recommendation for this constituent
+  const { data: recommendation, isLoading: recommendationLoading } = trpc.ai.getRecommendation.useQuery(
+    { constituentId: item.constituent.id },
+    { enabled: showRecommendation }
+  );
+
   return (
     <div className="space-y-4">
+      {/* Recommendation Section (T202) */}
+      {showRecommendation && (
+        <>
+          <RecommendationSection
+            recommendation={recommendation}
+            isLoading={recommendationLoading}
+            constituentId={item.constituent.id}
+          />
+          <Separator />
+        </>
+      )}
+
       {/* Scoring Factors */}
       <div>
         <h4 className="text-sm font-medium mb-3">Priority Factors</h4>
@@ -139,6 +163,96 @@ export function PriorityDetailCard({ item }: PriorityDetailCardProps) {
           <span className="text-sm text-muted-foreground">Estimated Capacity</span>
           <span className="text-lg font-semibold">{item.capacityIndicator.label}</span>
         </div>
+      </div>
+    </div>
+  );
+}
+
+// T202: Recommendation section for priority detail card
+interface RecommendationSectionProps {
+  recommendation: {
+    action: string;
+    actionType: string;
+    reasoning: string;
+    confidence: number;
+    urgencyLevel: "high" | "medium" | "low";
+    nextSteps: string[];
+    context: {
+      primaryFactor: string;
+    };
+  } | undefined;
+  isLoading: boolean;
+  constituentId: string;
+}
+
+function RecommendationSection({ recommendation, isLoading, constituentId }: RecommendationSectionProps) {
+  if (isLoading) {
+    return (
+      <div className="space-y-3">
+        <div className="flex items-center gap-2">
+          <Loader2 className="h-4 w-4 animate-spin text-primary" />
+          <span className="text-sm text-muted-foreground">Loading recommendation...</span>
+        </div>
+        <Skeleton className="h-20 w-full" />
+      </div>
+    );
+  }
+
+  if (!recommendation) {
+    return null;
+  }
+
+  const urgencyColors = {
+    high: "bg-red-100 text-red-800 border-red-200 dark:bg-red-900/30 dark:text-red-400 dark:border-red-800",
+    medium: "bg-yellow-100 text-yellow-800 border-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-400 dark:border-yellow-800",
+    low: "bg-green-100 text-green-800 border-green-200 dark:bg-green-900/30 dark:text-green-400 dark:border-green-800",
+  };
+
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center justify-between">
+        <h4 className="text-sm font-medium flex items-center gap-2">
+          <Lightbulb className="h-4 w-4 text-primary" />
+          Recommended Action
+        </h4>
+        {recommendation.urgencyLevel === "high" && (
+          <Badge variant="destructive" className="text-xs">
+            <AlertTriangle className="h-3 w-3 mr-1" />
+            High Priority
+          </Badge>
+        )}
+      </div>
+
+      <div className={`p-3 rounded-lg border ${urgencyColors[recommendation.urgencyLevel]}`}>
+        <div className="flex items-start justify-between gap-2">
+          <div className="flex-1">
+            <p className="font-medium text-sm">{recommendation.action}</p>
+            <p className="text-xs mt-1 opacity-90">{recommendation.context.primaryFactor}</p>
+          </div>
+          <Badge variant="outline" className="text-xs shrink-0">
+            {Math.round(recommendation.confidence * 100)}%
+          </Badge>
+        </div>
+      </div>
+
+      {/* Quick next step */}
+      {recommendation.nextSteps.length > 0 && (
+        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+          <ChevronRight className="h-3 w-3" />
+          <span>{recommendation.nextSteps[0]}</span>
+        </div>
+      )}
+
+      {/* Action button */}
+      <div className="flex gap-2">
+        <CompleteActionButton
+          constituentId={constituentId}
+          actionType={recommendation.actionType}
+          actionLabel={recommendation.action}
+        />
+        <Button variant="outline" size="sm" className="flex-1">
+          View Details
+        </Button>
       </div>
     </div>
   );
