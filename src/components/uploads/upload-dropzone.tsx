@@ -43,7 +43,7 @@ export function UploadDropzone({
   );
 
   const onDropRejected = useCallback(
-    (rejectedFiles: Array<{ file: File; errors: Array<{ code: string }> }>) => {
+    (rejectedFiles: Array<{ file: File; errors: readonly { code: string; message: string }[] }>) => {
       if (rejectedFiles.length > 0) {
         const rejection = rejectedFiles[0];
         if (rejection && rejection.errors.some((e) => e.code === "file-too-large")) {

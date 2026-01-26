@@ -449,32 +449,286 @@ export const aiRouter = router({
       return { success: true };
     }),
 
-  // Natural language query (Phase 9 - US6 placeholder)
+  // T183: Natural language query - full implementation
   query: protectedProcedure
     .input(querySchema)
     .mutation(async ({ ctx, input }) => {
-      // Placeholder - actual NL processing in Phase 9 (US6)
+      const apiKey = process.env.ANTHROPIC_API_KEY;
+
+      // Import NL query services
+      const { parseNaturalLanguageQuery } = await import("../services/ai/nl-query-parser");
+      const { translateQueryToPrisma, buildAggregationQuery } = await import("../services/ai/query-translator");
+      const { getPortfolioFilter } = await import("../trpc/context");
+
+      // Parse the natural language query using Claude
+      let parsedQuery;
+      if (apiKey) {
+        parsedQuery = await parseNaturalLanguageQuery({
+          apiKey,
+          query: input.query,
+          timeout: 10000, // 10 second timeout
+        });
+      } else {
+        // Fallback: return empty results when API key not available
+        parsedQuery = {
+          success: false,
+          filters: [],
+          limit: 50,
+          interpretation: "AI service unavailable",
+          error: "API key not configured",
+        };
+      }
+
+      // Get portfolio filter for gift officers
+      const portfolioFilter = getPortfolioFilter(ctx);
+
+      let results: Array<{
+        id: string;
+        displayName: string;
+        email: string | null;
+        totalGiving: number;
+        lastGiftDate: Date | null;
+        lastContactDate: Date | null;
+        priorityScore: number | null;
+        lapseRiskLevel: "high" | "medium" | "low" | null;
+      }> = [];
+      let totalCount = 0;
+
+      if (parsedQuery.success && parsedQuery.filters.length > 0) {
+        // Check if we need aggregation-based query
+        const hasAggregationFilters = parsedQuery.filters.some(
+          (f) => ["total_giving", "last_gift_date", "last_contact_date"].includes(f.field)
+        );
+
+        if (hasAggregationFilters) {
+          // Build and execute raw SQL query for aggregation filters
+          const aggregationFilters = parsedQuery.filters
+            .filter((f) => ["total_giving", "last_gift_date", "last_contact_date"].includes(f.field))
+            .map((f) => ({ field: f.field, operator: f.operator, value: f.value }));
+
+          const { sql, params } = buildAggregationQuery(
+            aggregationFilters,
+            ctx.session.user.organizationId,
+            parsedQuery.limit || 50,
+            parsedQuery.sort
+          );
+
+          // Execute raw query
+          type RawResult = {
+            id: string;
+            firstName: string | null;
+            lastName: string | null;
+            email: string | null;
+            lapseRiskScore: number | null;
+            priorityScore: number | null;
+            total_giving: number;
+            last_gift_date: Date | null;
+            last_contact_date: Date | null;
+          };
+
+          const rawResults = await ctx.prisma.$queryRawUnsafe<RawResult[]>(sql, ...params);
+
+          // Apply additional non-aggregation filters in memory
+          const nonAggregationFilters = parsedQuery.filters.filter(
+            (f) => !["total_giving", "last_gift_date", "last_contact_date"].includes(f.field)
+          );
+
+          let filteredResults = rawResults;
+          if (nonAggregationFilters.length > 0) {
+            // Translate for reference but filter in memory for non-aggregation criteria
+            translateQueryToPrisma(nonAggregationFilters, ctx.session.user.organizationId);
+            // Filter in memory based on additional criteria
+            filteredResults = rawResults.filter((r) => {
+              // Check each additional filter
+              for (const filter of nonAggregationFilters) {
+                switch (filter.field) {
+                  case "lapse_risk":
+                    if (r.lapseRiskScore === null) return false;
+                    const riskScore = Number(r.lapseRiskScore);
+                    if (filter.operator === "gt" && riskScore <= Number(filter.value)) return false;
+                    if (filter.operator === "gte" && riskScore < Number(filter.value)) return false;
+                    if (filter.operator === "lt" && riskScore >= Number(filter.value)) return false;
+                    break;
+                  case "priority_score":
+                    if (r.priorityScore === null) return false;
+                    const pScore = Number(r.priorityScore);
+                    if (filter.operator === "gt" && pScore <= Number(filter.value)) return false;
+                    if (filter.operator === "gte" && pScore < Number(filter.value)) return false;
+                    break;
+                }
+              }
+              return true;
+            });
+          }
+
+          results = filteredResults.map((r) => {
+            const lapseRisk = r.lapseRiskScore ? Number(r.lapseRiskScore) : null;
+            return {
+              id: r.id,
+              displayName: [r.firstName, r.lastName].filter(Boolean).join(" ") || "Unknown",
+              email: r.email,
+              totalGiving: Number(r.total_giving) || 0,
+              lastGiftDate: r.last_gift_date,
+              lastContactDate: r.last_contact_date,
+              priorityScore: r.priorityScore ? Number(r.priorityScore) : null,
+              lapseRiskLevel: lapseRisk !== null
+                ? lapseRisk > 0.7 ? "high" : lapseRisk > 0.4 ? "medium" : "low"
+                : null,
+            };
+          });
+          totalCount = results.length;
+        } else {
+          // Use Prisma query for simple filters
+          const prismaWhere = translateQueryToPrisma(parsedQuery.filters, ctx.session.user.organizationId);
+
+          // Apply portfolio filter for gift officers
+          const whereClause = {
+            ...prismaWhere,
+            ...portfolioFilter,
+          };
+
+          // Fetch constituents
+          const constituents = await ctx.prisma.constituent.findMany({
+            where: whereClause,
+            orderBy: parsedQuery.sort
+              ? {
+                  [parsedQuery.sort.field === "lapse_risk" ? "lapseRiskScore" :
+                   parsedQuery.sort.field === "priority_score" ? "priorityScore" :
+                   parsedQuery.sort.field === "capacity" ? "estimatedCapacity" : "priorityScore"]:
+                    parsedQuery.sort.direction,
+                }
+              : { priorityScore: "desc" },
+            take: parsedQuery.limit || 50,
+            include: {
+              gifts: {
+                orderBy: { giftDate: "desc" },
+                take: 1,
+              },
+              contacts: {
+                orderBy: { contactDate: "desc" },
+                take: 1,
+              },
+            },
+          });
+
+          // Calculate totals for each constituent
+          const giftTotals = await ctx.prisma.gift.groupBy({
+            by: ["constituentId"],
+            where: {
+              organizationId: ctx.session.user.organizationId,
+              constituentId: { in: constituents.map((c) => c.id) },
+            },
+            _sum: { amount: true },
+          });
+
+          const giftTotalMap = new Map(giftTotals.map((g) => [g.constituentId, Number(g._sum.amount) || 0]));
+
+          results = constituents.map((c) => {
+            const lapseRisk = c.lapseRiskScore ? Number(c.lapseRiskScore) : null;
+            return {
+              id: c.id,
+              displayName: [c.firstName, c.lastName].filter(Boolean).join(" ") || "Unknown",
+              email: c.email,
+              totalGiving: giftTotalMap.get(c.id) || 0,
+              lastGiftDate: c.gifts[0]?.giftDate || null,
+              lastContactDate: c.contacts[0]?.contactDate || null,
+              priorityScore: c.priorityScore ? Number(c.priorityScore) : null,
+              lapseRiskLevel: lapseRisk !== null
+                ? lapseRisk > 0.7 ? "high" : lapseRisk > 0.4 ? "medium" : "low"
+                : null,
+            };
+          });
+
+          totalCount = await ctx.prisma.constituent.count({ where: whereClause });
+        }
+      } else if (parsedQuery.success) {
+        // Empty filters - return all constituents with portfolio filter
+        const whereClause = {
+          organizationId: ctx.session.user.organizationId,
+          isActive: true,
+          ...portfolioFilter,
+        };
+
+        const constituents = await ctx.prisma.constituent.findMany({
+          where: whereClause,
+          orderBy: { priorityScore: "desc" },
+          take: parsedQuery.limit || 50,
+          include: {
+            gifts: {
+              orderBy: { giftDate: "desc" },
+              take: 1,
+            },
+            contacts: {
+              orderBy: { contactDate: "desc" },
+              take: 1,
+            },
+          },
+        });
+
+        const giftTotals = await ctx.prisma.gift.groupBy({
+          by: ["constituentId"],
+          where: {
+            organizationId: ctx.session.user.organizationId,
+            constituentId: { in: constituents.map((c) => c.id) },
+          },
+          _sum: { amount: true },
+        });
+
+        const giftTotalMap = new Map(giftTotals.map((g) => [g.constituentId, Number(g._sum.amount) || 0]));
+
+        results = constituents.map((c) => {
+          const lapseRisk = c.lapseRiskScore ? Number(c.lapseRiskScore) : null;
+          return {
+            id: c.id,
+            displayName: [c.firstName, c.lastName].filter(Boolean).join(" ") || "Unknown",
+            email: c.email,
+            totalGiving: giftTotalMap.get(c.id) || 0,
+            lastGiftDate: c.gifts[0]?.giftDate || null,
+            lastContactDate: c.contacts[0]?.contactDate || null,
+            priorityScore: c.priorityScore ? Number(c.priorityScore) : null,
+            lapseRiskLevel: lapseRisk !== null
+              ? lapseRisk > 0.7 ? "high" : lapseRisk > 0.4 ? "medium" : "low"
+              : null,
+          };
+        });
+
+        totalCount = await ctx.prisma.constituent.count({ where: whereClause });
+      }
+
+      // Store the query
       const queryRecord = await ctx.prisma.naturalLanguageQuery.create({
         data: {
           organizationId: ctx.session.user.organizationId,
           userId: ctx.session.user.id,
           queryText: input.query,
-          interpretedQuery: {
+          interpretedQuery: JSON.parse(JSON.stringify({
             raw: input.query,
-            parsed: null,
-            filters: [],
-          },
-          resultCount: 0,
-          resultIds: [],
+            parsed: parsedQuery,
+            filters: parsedQuery.filters,
+          })),
+          resultCount: totalCount,
+          resultIds: results.map((r) => r.id),
         },
       });
 
       return {
         id: queryRecord.id,
-        query: input.query,
-        interpretedAs: "Searching constituents...",
-        results: [],
-        resultCount: 0,
+        success: parsedQuery.success,
+        interpretation: parsedQuery.interpretation || "Searching constituents...",
+        filters: parsedQuery.filters.map((f) => ({
+          field: f.field,
+          operator: f.operator,
+          value: f.value,
+          humanReadable: f.humanReadable,
+        })),
+        results,
+        totalCount,
+        message: parsedQuery.error,
+        suggestions: !parsedQuery.success ? [
+          "Try: 'donors who gave over $10,000'",
+          "Try: 'high risk alumni'",
+          "Try: 'top priority prospects'",
+        ] : undefined,
       };
     }),
 

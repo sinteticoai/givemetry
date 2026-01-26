@@ -395,33 +395,33 @@ Based on plan.md structure:
 
 ### Tests for User Story 6 (TDD - Write First, Verify Fail)
 
-- [ ] T175 [P] [US6] Unit tests for NL query parser in tests/unit/ai/nl-query-parser.test.ts
-- [ ] T176 [P] [US6] Unit tests for query translator in tests/unit/ai/query-translator.test.ts
-- [ ] T177 [US6] Integration tests for NL query procedures in tests/integration/ai-query.test.ts
-- [ ] T178 [US6] NL query corpus validation (20-50 representative queries) in tests/validation/nl-query-corpus.test.ts
+- [X] T175 [P] [US6] Unit tests for NL query parser in tests/unit/ai/nl-query-parser.test.ts
+- [X] T176 [P] [US6] Unit tests for query translator in tests/unit/ai/query-translator.test.ts
+- [X] T177 [US6] Integration tests for NL query procedures in tests/integration/ai-query.test.ts
+- [X] T178 [US6] NL query corpus validation (20-50 representative queries) in tests/validation/nl-query-corpus.test.ts
 
 ### NL Query Service
 
-- [ ] T179 [US6] Create NL query parsing service with Claude function calling in src/server/services/ai/nl-query-parser.ts
-- [ ] T180 [US6] Create query function schema for Claude in src/lib/ai/prompts/query-function.ts
-- [ ] T181 [US6] Implement query to Prisma filter translation in src/server/services/ai/query-translator.ts
-- [ ] T182 [US6] Create saved queries service in src/server/services/ai/saved-queries.ts
+- [X] T179 [US6] Create NL query parsing service with Claude function calling in src/server/services/ai/nl-query-parser.ts
+- [X] T180 [US6] Create query function schema for Claude in src/lib/ai/prompts/query-function.ts
+- [X] T181 [US6] Implement query to Prisma filter translation in src/server/services/ai/query-translator.ts
+- [X] T182 [US6] Create saved queries service in src/server/services/ai/saved-queries.ts
 
 ### AI Router Extensions
 
-- [ ] T183 [US6] Add query procedure to AI router in src/server/routers/ai.ts
-- [ ] T184 [US6] Add saveQuery, getSavedQueries, deleteSavedQuery procedures in src/server/routers/ai.ts
-- [ ] T185 [US6] Add queryFeedback procedure in src/server/routers/ai.ts
+- [X] T183 [US6] Add query procedure to AI router in src/server/routers/ai.ts
+- [X] T184 [US6] Add saveQuery, getSavedQueries, deleteSavedQuery procedures in src/server/routers/ai.ts
+- [X] T185 [US6] Add queryFeedback procedure in src/server/routers/ai.ts
 
 ### Query UI
 
-- [ ] T186 [US6] Create global search bar component in src/components/shared/global-search.tsx
-- [ ] T187 [P] [US6] Create query results display component in src/components/query/query-results.tsx
-- [ ] T188 [P] [US6] Create interpreted query display component in src/components/query/interpreted-query.tsx
-- [ ] T189 [US6] Create save query dialog in src/components/query/save-query-dialog.tsx
-- [ ] T190 [US6] Create saved queries list in src/components/query/saved-queries-list.tsx
-- [ ] T191 [US6] Create query feedback buttons in src/components/query/query-feedback.tsx
-- [ ] T192 [US6] Create missing data explanation component in src/components/query/missing-data-alert.tsx
+- [X] T186 [US6] Create global search bar component in src/components/shared/global-search.tsx
+- [X] T187 [P] [US6] Create query results display component in src/components/query/query-results.tsx
+- [X] T188 [P] [US6] Create interpreted query display component in src/components/query/interpreted-query.tsx
+- [X] T189 [US6] Create save query dialog in src/components/query/save-query-dialog.tsx
+- [X] T190 [US6] Create saved queries list in src/components/query/saved-queries-list.tsx
+- [X] T191 [US6] Create query feedback buttons in src/components/query/query-feedback.tsx
+- [X] T192 [US6] Create missing data explanation component in src/components/query/missing-data-alert.tsx
 
 **Checkpoint**: At this point, User Story 6 should be fully functional - users can ask natural language questions and get relevant results
 
