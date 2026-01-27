@@ -31,8 +31,8 @@ const mockPrisma = prisma as unknown as {
 };
 
 describe("Alert Router Integration", () => {
-  const testOrgId = "org-123";
-  const testUserId = "user-123";
+  const testOrgId = "22222222-2222-4222-a222-222222222222";
+  const testUserId = "33333333-3333-4333-a333-333333333333";
 
   const createTestContext = (role: "admin" | "manager" | "gift_officer" | "viewer" = "admin"): Context => ({
     session: {
@@ -58,9 +58,9 @@ describe("Alert Router Integration", () => {
   });
 
   const mockAlert = {
-    id: "alert-1",
+    id: "77777777-7777-4777-a777-777777777771",
     organizationId: testOrgId,
-    constituentId: "const-1",
+    constituentId: "c1c1c1c1-c1c1-4c1c-ac1c-c1c1c1c1c1c1",
     alertType: "contact_gap",
     severity: "high",
     title: "Test Alert",
@@ -71,7 +71,7 @@ describe("Alert Router Integration", () => {
     actedOnBy: null,
     createdAt: new Date(),
     constituent: {
-      id: "const-1",
+      id: "c1c1c1c1-c1c1-4c1c-ac1c-c1c1c1c1c1c1",
       firstName: "John",
       lastName: "Doe",
       email: "john@example.com",
@@ -86,7 +86,7 @@ describe("Alert Router Integration", () => {
       const result = await caller.alert.list({});
 
       expect(result.items).toHaveLength(1);
-      expect(result.items[0]?.id).toBe("alert-1");
+      expect(result.items[0]?.id).toBe("77777777-7777-4777-a777-777777777771");
       expect(mockPrisma.alert.findMany).toHaveBeenCalled();
     });
 
@@ -124,19 +124,19 @@ describe("Alert Router Integration", () => {
       mockPrisma.alert.findMany.mockResolvedValue([mockAlert]);
 
       const caller = createCaller(createTestContext());
-      await caller.alert.list({ limit: 10, cursor: "prev-alert-id" });
+      await caller.alert.list({ limit: 10, cursor: "12121212-1212-4121-a121-121212121212" });
 
       const callArgs = mockPrisma.alert.findMany.mock.calls[0][0];
       expect(callArgs.take).toBe(11); // limit + 1 for cursor
-      expect(callArgs.cursor).toEqual({ id: "prev-alert-id" });
+      expect(callArgs.cursor).toEqual({ id: "12121212-1212-4121-a121-121212121212" });
       expect(callArgs.skip).toBe(1);
     });
 
     it("returns nextCursor when more results exist", async () => {
       const alerts = [
-        { ...mockAlert, id: "alert-1" },
-        { ...mockAlert, id: "alert-2" },
-        { ...mockAlert, id: "alert-3" },
+        { ...mockAlert, id: "77777777-7777-4777-a777-777777777771" },
+        { ...mockAlert, id: "a2a2a2a2-a2a2-4a2a-aa2a-a2a2a2a2a2a2" },
+        { ...mockAlert, id: "a3a3a3a3-a3a3-4a3a-aa3a-a3a3a3a3a3a3" },
       ];
       mockPrisma.alert.findMany.mockResolvedValue(alerts);
 
@@ -144,7 +144,7 @@ describe("Alert Router Integration", () => {
       const result = await caller.alert.list({ limit: 2 });
 
       expect(result.items).toHaveLength(2);
-      expect(result.nextCursor).toBe("alert-3");
+      expect(result.nextCursor).toBe("a3a3a3a3-a3a3-4a3a-aa3a-a3a3a3a3a3a3");
     });
   });
 
@@ -153,9 +153,9 @@ describe("Alert Router Integration", () => {
       mockPrisma.alert.findFirst.mockResolvedValue(mockAlert);
 
       const caller = createCaller(createTestContext());
-      const result = await caller.alert.get({ id: "alert-1" });
+      const result = await caller.alert.get({ id: "77777777-7777-4777-a777-777777777771" });
 
-      expect(result.id).toBe("alert-1");
+      expect(result.id).toBe("77777777-7777-4777-a777-777777777771");
       expect(result.title).toBe("Test Alert");
     });
 
@@ -164,14 +164,14 @@ describe("Alert Router Integration", () => {
 
       const caller = createCaller(createTestContext());
 
-      await expect(caller.alert.get({ id: "nonexistent" })).rejects.toThrow("NOT_FOUND");
+      await expect(caller.alert.get({ id: "00000000-0000-0000-0000-000000000000" })).rejects.toThrow("Alert not found");
     });
 
     it("enforces organization scope", async () => {
       mockPrisma.alert.findFirst.mockResolvedValue(null);
 
       const caller = createCaller(createTestContext());
-      await caller.alert.get({ id: "alert-1" }).catch(() => {});
+      await caller.alert.get({ id: "77777777-7777-4777-a777-777777777771" }).catch(() => {});
 
       const callArgs = mockPrisma.alert.findFirst.mock.calls[0][0];
       expect(callArgs.where.organizationId).toBe(testOrgId);
@@ -188,11 +188,11 @@ describe("Alert Router Integration", () => {
       });
 
       const caller = createCaller(createTestContext());
-      const result = await caller.alert.dismiss({ id: "alert-1" });
+      const result = await caller.alert.dismiss({ id: "77777777-7777-4777-a777-777777777771" });
 
       expect(result.success).toBe(true);
       expect(mockPrisma.alert.update).toHaveBeenCalledWith({
-        where: { id: "alert-1" },
+        where: { id: "77777777-7777-4777-a777-777777777771" },
         data: expect.objectContaining({
           status: "dismissed",
           actedOnAt: expect.any(Date),
@@ -206,7 +206,7 @@ describe("Alert Router Integration", () => {
 
       const caller = createCaller(createTestContext());
 
-      await expect(caller.alert.dismiss({ id: "nonexistent" })).rejects.toThrow("NOT_FOUND");
+      await expect(caller.alert.dismiss({ id: "00000000-0000-0000-0000-000000000000" })).rejects.toThrow("Alert not found");
     });
   });
 
@@ -221,13 +221,13 @@ describe("Alert Router Integration", () => {
 
       const caller = createCaller(createTestContext());
       const result = await caller.alert.markActed({
-        id: "alert-1",
+        id: "77777777-7777-4777-a777-777777777771",
         notes: "Contacted donor via phone",
       });
 
       expect(result.success).toBe(true);
       expect(mockPrisma.alert.update).toHaveBeenCalledWith({
-        where: { id: "alert-1" },
+        where: { id: "77777777-7777-4777-a777-777777777771" },
         data: expect.objectContaining({
           status: "acted_on",
           actedOnAt: expect.any(Date),
@@ -245,7 +245,7 @@ describe("Alert Router Integration", () => {
       });
 
       const caller = createCaller(createTestContext());
-      const result = await caller.alert.markActed({ id: "alert-1" });
+      const result = await caller.alert.markActed({ id: "77777777-7777-4777-a777-777777777771" });
 
       expect(result.success).toBe(true);
     });

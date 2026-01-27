@@ -106,7 +106,8 @@ Bob,3000`;
       expect(result.data).toHaveLength(3);
       // Should report the error
       expect(result.errors).toHaveLength(1);
-      expect(result.errors[0].row).toBe(3); // 1-indexed, row 3 has extra columns
+      // Row 2 = second data row (Papa Parse returns 0-indexed data rows, we add 1)
+      expect(result.errors[0]?.row).toBe(2);
     });
   });
 
@@ -266,7 +267,8 @@ John,john@example.com,Doe,doe@example.com`;
 
       const columns = await detectColumns(csv);
 
-      expect(columns).toEqual(["Name", "Email", "Name_2", "Email_2"]);
+      // Papa Parse automatically renames duplicates with _1, _2, etc.
+      expect(columns).toEqual(["Name", "Email", "Name_1", "Email_1"]);
     });
   });
 

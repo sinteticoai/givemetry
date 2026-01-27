@@ -47,6 +47,20 @@ export const authConfig: NextAuthConfig = {
           throw new Error("EMAIL_NOT_VERIFIED");
         }
 
+        // T053: Check if organization is suspended or pending deletion
+        if (user.organization.status === "suspended") {
+          throw new Error("ORGANIZATION_SUSPENDED");
+        }
+
+        if (user.organization.status === "pending_deletion") {
+          throw new Error("ORGANIZATION_DELETED");
+        }
+
+        // Check if user is disabled
+        if (user.isDisabled) {
+          throw new Error("USER_DISABLED");
+        }
+
         const isValidPassword = await bcrypt.compare(password, user.passwordHash);
         if (!isValidPassword) {
           return null;

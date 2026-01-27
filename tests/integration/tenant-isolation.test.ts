@@ -36,13 +36,13 @@ describe("Tenant Isolation", () => {
 
   describe("withOrgFilter", () => {
     it("should add organizationId to empty filter", () => {
-      const result = withOrgFilter("org-123");
-      expect(result).toEqual({ organizationId: "org-123" });
+      const result = withOrgFilter("22222222-2222-4222-a222-222222222222");
+      expect(result).toEqual({ organizationId: "22222222-2222-4222-a222-222222222222" });
     });
 
     it("should add organizationId to existing filter", () => {
-      const result = withOrgFilter("org-123", { isActive: true });
-      expect(result).toEqual({ organizationId: "org-123", isActive: true });
+      const result = withOrgFilter("22222222-2222-4222-a222-222222222222", { isActive: true });
+      expect(result).toEqual({ organizationId: "22222222-2222-4222-a222-222222222222", isActive: true });
     });
 
     it("should override existing organizationId", () => {
@@ -53,8 +53,8 @@ describe("Tenant Isolation", () => {
 
   describe("withOrgCreate", () => {
     it("should add organizationId to create data", () => {
-      const result = withOrgCreate("org-123", { name: "Test" });
-      expect(result).toEqual({ name: "Test", organizationId: "org-123" });
+      const result = withOrgCreate("22222222-2222-4222-a222-222222222222", { name: "Test" });
+      expect(result).toEqual({ name: "Test", organizationId: "22222222-2222-4222-a222-222222222222" });
     });
 
     it("should override existing organizationId in create data", () => {
@@ -125,7 +125,7 @@ describe("Tenant Isolation", () => {
     const orgId = "test-org-rbac";
 
     it("admin should have full org access", () => {
-      const ctx = createMockContext("admin", "admin-1", orgId);
+      const ctx = createMockContext("admin", "ad1ad1ad-1ad1-4ad1-aad1-ad1ad1ad1ad1", orgId);
       const filter = getPortfolioFilter(ctx);
 
       // Admin gets org-level filter (no assignedOfficerId restriction)
@@ -134,7 +134,7 @@ describe("Tenant Isolation", () => {
     });
 
     it("manager should have full org access", () => {
-      const ctx = createMockContext("manager", "manager-1", orgId);
+      const ctx = createMockContext("manager", "0a0a0a0a-0a0a-40a0-a0a0-0a0a0a0a0a0a", orgId);
       const filter = getPortfolioFilter(ctx);
 
       // Manager gets org-level filter (no assignedOfficerId restriction)
@@ -143,7 +143,7 @@ describe("Tenant Isolation", () => {
     });
 
     it("gift_officer should only see assigned constituents", () => {
-      const officerId = "officer-1";
+      const officerId = "01010101-0101-4010-a010-010101010101";
       const ctx = createMockContext("gift_officer", officerId, orgId);
       const filter = getPortfolioFilter(ctx);
 

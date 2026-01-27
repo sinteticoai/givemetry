@@ -103,3 +103,10 @@ Before running migrations, ensure you understand impact on shared data.
 - Zod 4 for validation
 - Vitest + Playwright for testing
 - shadcn/ui + Tailwind CSS
+
+## Active Technologies
+- TypeScript 5.x, Node.js 20 LTS + Next.js 14 (App Router), tRPC 11, React Query, Prisma 5, NextAuth v5, Zod 4, shadcn/ui, Tailwind CSS (001-super-admin-dashboard)
+- PostgreSQL (shared remote instance) (001-super-admin-dashboard)
+
+## Recent Changes
+- 001-super-admin-dashboard: Added TypeScript 5.x, Node.js 20 LTS + Next.js 14 (App Router), tRPC 11, React Query, Prisma 5, NextAuth v5, Zod 4, shadcn/ui, Tailwind CSS

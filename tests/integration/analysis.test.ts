@@ -16,13 +16,19 @@ vi.mock("@/lib/prisma/client", () => ({
     gift: {
       count: vi.fn(),
       findMany: vi.fn(),
+      findFirst: vi.fn(),
       aggregate: vi.fn(),
       groupBy: vi.fn(),
     },
     contact: {
       count: vi.fn(),
       findMany: vi.fn(),
+      findFirst: vi.fn(),
       aggregate: vi.fn(),
+      groupBy: vi.fn(),
+    },
+    user: {
+      findMany: vi.fn(),
     },
     upload: {
       findFirst: vi.fn(),
@@ -44,6 +50,7 @@ vi.mock("@/lib/prisma/client", () => ({
         count: vi.fn(),
         findMany: vi.fn(),
         aggregate: vi.fn(),
+        groupBy: vi.fn(),
       },
     })),
   },
@@ -59,13 +66,19 @@ const createMockContext = (overrides: Partial<Context> = {}): Context => {
     gift: {
       count: vi.fn().mockResolvedValue(500),
       findMany: vi.fn().mockResolvedValue([]),
+      findFirst: vi.fn().mockResolvedValue({ giftDate: new Date() }),
       aggregate: vi.fn().mockResolvedValue({ _max: { giftDate: new Date() } }),
       groupBy: vi.fn().mockResolvedValue([]),
     },
     contact: {
       count: vi.fn().mockResolvedValue(200),
       findMany: vi.fn().mockResolvedValue([]),
+      findFirst: vi.fn().mockResolvedValue({ contactDate: new Date() }),
       aggregate: vi.fn().mockResolvedValue({ _max: { contactDate: new Date() } }),
+      groupBy: vi.fn().mockResolvedValue([]),
+    },
+    user: {
+      findMany: vi.fn().mockResolvedValue([]),
     },
     upload: {
       findFirst: vi.fn().mockResolvedValue({ createdAt: new Date() }),
@@ -77,7 +90,7 @@ const createMockContext = (overrides: Partial<Context> = {}): Context => {
       return fn({
         constituent: { count: vi.fn().mockResolvedValue(100), findMany: vi.fn().mockResolvedValue([]) },
         gift: { count: vi.fn().mockResolvedValue(500), aggregate: vi.fn().mockResolvedValue({ _max: { giftDate: new Date() } }) },
-        contact: { count: vi.fn().mockResolvedValue(200), aggregate: vi.fn().mockResolvedValue({ _max: { contactDate: new Date() } }) },
+        contact: { count: vi.fn().mockResolvedValue(200), aggregate: vi.fn().mockResolvedValue({ _max: { contactDate: new Date() } }), groupBy: vi.fn().mockResolvedValue([]) },
       });
     }),
   } as unknown as PrismaClient;
@@ -86,8 +99,8 @@ const createMockContext = (overrides: Partial<Context> = {}): Context => {
     prisma: mockPrisma,
     session: {
       user: {
-        id: "user-123",
-        organizationId: "org-123",
+        id: "33333333-3333-4333-a333-333333333333",
+        organizationId: "22222222-2222-4222-a222-222222222222",
         email: "test@example.com",
         role: "admin" as const,
         name: "Test User",
@@ -282,12 +295,15 @@ describe("Analysis Router Integration Tests", () => {
     });
 
     it("penalizes freshness for stale data", async () => {
-      // Mock old gift and contact dates
-      (ctx.prisma.gift.aggregate as ReturnType<typeof vi.fn>).mockResolvedValue({
-        _max: { giftDate: new Date("2023-01-01") }, // 3 years ago
+      // Mock old gift and contact dates - use findFirst as the router uses that for freshness
+      (ctx.prisma.gift.findFirst as ReturnType<typeof vi.fn>).mockResolvedValue({
+        giftDate: new Date("2023-01-01"), // 3 years ago
       });
-      (ctx.prisma.contact.aggregate as ReturnType<typeof vi.fn>).mockResolvedValue({
-        _max: { contactDate: new Date("2024-01-01") }, // 2 years ago
+      (ctx.prisma.contact.findFirst as ReturnType<typeof vi.fn>).mockResolvedValue({
+        contactDate: new Date("2024-01-01"), // 2 years ago
+      });
+      (ctx.prisma.upload.findFirst as ReturnType<typeof vi.fn>).mockResolvedValue({
+        createdAt: new Date("2023-01-01"), // 3 years ago
       });
 
       const result = await caller.analysis.getHealthScores();

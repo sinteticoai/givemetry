@@ -132,19 +132,19 @@
 
 ### Tests for User Story 2 (TDD - write first, ensure they FAIL)
 
-- [ ] T047 [P] [US2] Unit test for org create/suspend at `tests/unit/admin/organizations.test.ts`
-- [ ] T048 [P] [US2] Integration test for org lifecycle at `tests/integration/admin/organization-crud.test.ts`
+- [X] T047 [P] [US2] Unit test for org create/suspend at `tests/unit/admin/organizations.test.ts`
+- [X] T048 [P] [US2] Integration test for org lifecycle at `tests/integration/admin/organization-crud.test.ts`
 
 ### Implementation for User Story 2
 
-- [ ] T049 [US2] Implement superAdmin.organizations.create procedure at `src/server/routers/superAdmin/organizations.ts`
-- [ ] T050 [US2] Implement initial admin user creation logic (send invitation email) in create procedure
-- [ ] T051 [US2] Implement superAdmin.organizations.suspend procedure at `src/server/routers/superAdmin/organizations.ts`
-- [ ] T052 [US2] Implement superAdmin.organizations.reactivate procedure at `src/server/routers/superAdmin/organizations.ts`
-- [ ] T053 [US2] Modify tenant auth to check organization.status on login at `src/lib/auth/config.ts`
-- [ ] T054 [P] [US2] Create OrganizationForm component at `src/components/admin/organizations/OrganizationForm.tsx`
-- [ ] T055 [US2] Create new organization page at `src/app/admin/organizations/new/page.tsx`
-- [ ] T056 [US2] Add suspend/reactivate actions to organization detail page
+- [X] T049 [US2] Implement superAdmin.organizations.create procedure at `src/server/routers/superAdmin/organizations.ts`
+- [X] T050 [US2] Implement initial admin user creation logic (send invitation email) in create procedure
+- [X] T051 [US2] Implement superAdmin.organizations.suspend procedure at `src/server/routers/superAdmin/organizations.ts`
+- [X] T052 [US2] Implement superAdmin.organizations.reactivate procedure at `src/server/routers/superAdmin/organizations.ts`
+- [X] T053 [US2] Modify tenant auth to check organization.status on login at `src/lib/auth/config.ts`
+- [X] T054 [P] [US2] Create OrganizationForm component at `src/components/admin/organizations/OrganizationForm.tsx`
+- [X] T055 [US2] Create new organization page at `src/app/admin/organizations/new/page.tsx`
+- [X] T056 [US2] Add suspend/reactivate actions to organization detail page
 
 **Checkpoint**: Can create orgs, suspended org users blocked, reactivation restores access
 
@@ -158,23 +158,23 @@
 
 ### Tests for User Story 4 (TDD - write first, ensure they FAIL)
 
-- [ ] T057 [P] [US4] Unit test for users router at `tests/unit/admin/users.test.ts`
-- [ ] T058 [P] [US4] Integration test for user management at `tests/integration/admin/user-management.test.ts`
+- [X] T057 [P] [US4] Unit test for users router at `tests/unit/admin/users.test.ts`
+- [X] T058 [P] [US4] Integration test for user management at `tests/integration/admin/user-management.test.ts`
 
 ### Implementation for User Story 4
 
-- [ ] T059 [US4] Implement superAdmin.users.list procedure at `src/server/routers/superAdmin/users.ts`
-- [ ] T060 [US4] Implement superAdmin.users.get procedure at `src/server/routers/superAdmin/users.ts`
-- [ ] T061 [US4] Implement superAdmin.users.disable procedure at `src/server/routers/superAdmin/users.ts`
-- [ ] T062 [US4] Implement superAdmin.users.enable procedure at `src/server/routers/superAdmin/users.ts`
-- [ ] T063 [US4] Implement superAdmin.users.resetPassword procedure at `src/server/routers/superAdmin/users.ts`
-- [ ] T064 [US4] Implement superAdmin.users.changeRole procedure (super_admin only) at `src/server/routers/superAdmin/users.ts`
-- [ ] T065 [US4] Modify tenant auth to check user.isDisabled on login at `src/lib/auth/config.ts`
-- [ ] T066 [P] [US4] Create UserTable component at `src/components/admin/users/UserTable.tsx`
-- [ ] T067 [P] [US4] Create UserDetailCard component at `src/components/admin/users/UserDetailCard.tsx`
-- [ ] T068 [US4] Create users list page at `src/app/admin/users/page.tsx`
-- [ ] T069 [US4] Create user detail page at `src/app/admin/users/[id]/page.tsx`
-- [ ] T070 [US4] Update superAdmin router composition at `src/server/routers/superAdmin/index.ts`
+- [X] T059 [US4] Implement superAdmin.users.list procedure at `src/server/routers/superAdmin/users.ts`
+- [X] T060 [US4] Implement superAdmin.users.get procedure at `src/server/routers/superAdmin/users.ts`
+- [X] T061 [US4] Implement superAdmin.users.disable procedure at `src/server/routers/superAdmin/users.ts`
+- [X] T062 [US4] Implement superAdmin.users.enable procedure at `src/server/routers/superAdmin/users.ts`
+- [X] T063 [US4] Implement superAdmin.users.resetPassword procedure at `src/server/routers/superAdmin/users.ts`
+- [X] T064 [US4] Implement superAdmin.users.changeRole procedure (super_admin only) at `src/server/routers/superAdmin/users.ts`
+- [X] T065 [US4] Modify tenant auth to check user.isDisabled on login at `src/lib/auth/config.ts`
+- [X] T066 [P] [US4] Create UserTable component at `src/components/admin/users/UserTable.tsx`
+- [X] T067 [P] [US4] Create UserDetailCard component at `src/components/admin/users/UserDetailCard.tsx`
+- [X] T068 [US4] Create users list page at `src/app/admin/users/page.tsx`
+- [X] T069 [US4] Create user detail page at `src/app/admin/users/[id]/page.tsx`
+- [X] T070 [US4] Update superAdmin router composition at `src/server/routers/superAdmin/index.ts`
 
 **Checkpoint**: Can view all users, disable/enable, reset passwords, change roles
 

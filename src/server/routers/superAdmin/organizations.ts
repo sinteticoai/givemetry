@@ -1,9 +1,10 @@
-// T039-T041: Super Admin Organizations Router
+// T039-T041, T049-T052: Super Admin Organizations Router
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { adminRouter, adminProtectedProcedure } from "./auth";
 import prisma from "@/lib/prisma/client";
 import type { OrgStatus, Prisma } from "@prisma/client";
+import { sendInviteEmail } from "@/server/services/email";
 
 // Input schemas
 const paginationSchema = z.object({
@@ -30,6 +31,30 @@ const updateInputSchema = z.object({
   planExpiresAt: z.date().optional(),
   usageLimits: z.record(z.string(), z.number()).optional(),
 });
+
+// T049: Create organization input schema
+const createInputSchema = z.object({
+  name: z.string().min(1).max(255),
+  slug: z.string().min(1).max(100).regex(/^[a-z0-9-]+$/, "Slug must be lowercase alphanumeric with hyphens"),
+  plan: z.string().optional(),
+  initialAdminEmail: z.string().email().optional(),
+});
+
+// T051: Suspend organization input schema
+const suspendInputSchema = z.object({
+  id: z.string().uuid(),
+  reason: z.string().min(1).max(1000),
+});
+
+// T052: Reactivate organization input schema
+const reactivateInputSchema = z.object({
+  id: z.string().uuid(),
+});
+
+// Helper to generate a random token for invitation
+function generateInviteToken(): string {
+  return crypto.randomUUID() + "-" + crypto.randomUUID();
+}
 
 // Helper to build where clause for organization queries
 function buildWhereClause(input: z.infer<typeof listInputSchema>) {
@@ -67,6 +92,303 @@ async function getLastActivityAt(organizationId: string): Promise<Date | null> {
 }
 
 export const organizationsRouter = adminRouter({
+  // T049: Create new organization
+  create: adminProtectedProcedure
+    .input(createInputSchema)
+    .mutation(async ({ ctx, input }) => {
+      // Check if slug already exists
+      const existingOrg = await prisma.organization.findFirst({
+        where: { slug: input.slug },
+      });
+
+      if (existingOrg) {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: `An organization with slug "${input.slug}" already exists`,
+        });
+      }
+
+      // Create the organization
+      const newOrg = await prisma.organization.create({
+        data: {
+          name: input.name,
+          slug: input.slug,
+          plan: input.plan || "trial",
+          status: "active",
+          settings: {},
+          features: {},
+          usageLimits: {},
+        },
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+          plan: true,
+          planExpiresAt: true,
+          status: true,
+          createdAt: true,
+          suspendedAt: true,
+          suspendedReason: true,
+          deletedAt: true,
+          _count: {
+            select: {
+              users: true,
+              constituents: true,
+            },
+          },
+        },
+      });
+
+      // T050: Create initial admin user if email provided
+      if (input.initialAdminEmail) {
+        const inviteToken = generateInviteToken();
+
+        // Create the user with pending verification
+        await prisma.user.create({
+          data: {
+            email: input.initialAdminEmail,
+            organizationId: newOrg.id,
+            role: "admin",
+            // User will set password when accepting invite
+          },
+        });
+
+        // Send invitation email
+        try {
+          await sendInviteEmail({
+            to: input.initialAdminEmail,
+            inviterName: ctx.session.name,
+            organizationName: newOrg.name,
+            token: inviteToken,
+          });
+        } catch (error) {
+          // Log error but don't fail the org creation
+          console.error("Failed to send invite email:", error);
+        }
+      }
+
+      // Log audit action
+      await ctx.logAuditAction({
+        action: "organization.create",
+        targetType: "organization",
+        targetId: newOrg.id,
+        organizationId: newOrg.id,
+        details: {
+          name: newOrg.name,
+          slug: newOrg.slug,
+          plan: newOrg.plan,
+          initialAdminEmail: input.initialAdminEmail || null,
+        },
+      });
+
+      // Get last activity (will be null for new org)
+      const lastActivityAt = await getLastActivityAt(newOrg.id);
+
+      return {
+        id: newOrg.id,
+        name: newOrg.name,
+        slug: newOrg.slug,
+        plan: newOrg.plan,
+        planExpiresAt: newOrg.planExpiresAt,
+        status: newOrg.status,
+        usersCount: newOrg._count.users,
+        constituentsCount: newOrg._count.constituents,
+        lastActivityAt,
+        createdAt: newOrg.createdAt,
+        suspendedAt: newOrg.suspendedAt,
+        suspendedReason: newOrg.suspendedReason,
+        deletedAt: newOrg.deletedAt,
+      };
+    }),
+
+  // T051: Suspend organization
+  suspend: adminProtectedProcedure
+    .input(suspendInputSchema)
+    .mutation(async ({ ctx, input }) => {
+      // Check if organization exists
+      const existingOrg = await prisma.organization.findUnique({
+        where: { id: input.id },
+        select: {
+          id: true,
+          name: true,
+          status: true,
+        },
+      });
+
+      if (!existingOrg) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Organization not found",
+        });
+      }
+
+      // Check if already suspended
+      if (existingOrg.status === "suspended") {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Organization is already suspended",
+        });
+      }
+
+      // Check if pending deletion
+      if (existingOrg.status === "pending_deletion") {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Cannot suspend an organization pending deletion",
+        });
+      }
+
+      // Suspend the organization
+      const suspendedOrg = await prisma.organization.update({
+        where: { id: input.id },
+        data: {
+          status: "suspended",
+          suspendedAt: new Date(),
+          suspendedReason: input.reason,
+        },
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+          plan: true,
+          planExpiresAt: true,
+          status: true,
+          createdAt: true,
+          suspendedAt: true,
+          suspendedReason: true,
+          deletedAt: true,
+          _count: {
+            select: {
+              users: true,
+              constituents: true,
+            },
+          },
+        },
+      });
+
+      // Log audit action
+      await ctx.logAuditAction({
+        action: "organization.suspend",
+        targetType: "organization",
+        targetId: input.id,
+        organizationId: input.id,
+        details: {
+          reason: input.reason,
+          previousStatus: existingOrg.status,
+        },
+      });
+
+      // Get last activity
+      const lastActivityAt = await getLastActivityAt(input.id);
+
+      return {
+        id: suspendedOrg.id,
+        name: suspendedOrg.name,
+        slug: suspendedOrg.slug,
+        plan: suspendedOrg.plan,
+        planExpiresAt: suspendedOrg.planExpiresAt,
+        status: suspendedOrg.status,
+        usersCount: suspendedOrg._count.users,
+        constituentsCount: suspendedOrg._count.constituents,
+        lastActivityAt,
+        createdAt: suspendedOrg.createdAt,
+        suspendedAt: suspendedOrg.suspendedAt,
+        suspendedReason: suspendedOrg.suspendedReason,
+        deletedAt: suspendedOrg.deletedAt,
+      };
+    }),
+
+  // T052: Reactivate organization
+  reactivate: adminProtectedProcedure
+    .input(reactivateInputSchema)
+    .mutation(async ({ ctx, input }) => {
+      // Check if organization exists
+      const existingOrg = await prisma.organization.findUnique({
+        where: { id: input.id },
+        select: {
+          id: true,
+          name: true,
+          status: true,
+          suspendedAt: true,
+          suspendedReason: true,
+        },
+      });
+
+      if (!existingOrg) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Organization not found",
+        });
+      }
+
+      // Check if not suspended
+      if (existingOrg.status !== "suspended") {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Organization is not suspended",
+        });
+      }
+
+      // Reactivate the organization
+      const reactivatedOrg = await prisma.organization.update({
+        where: { id: input.id },
+        data: {
+          status: "active",
+          suspendedAt: null,
+          suspendedReason: null,
+        },
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+          plan: true,
+          planExpiresAt: true,
+          status: true,
+          createdAt: true,
+          suspendedAt: true,
+          suspendedReason: true,
+          deletedAt: true,
+          _count: {
+            select: {
+              users: true,
+              constituents: true,
+            },
+          },
+        },
+      });
+
+      // Log audit action
+      await ctx.logAuditAction({
+        action: "organization.reactivate",
+        targetType: "organization",
+        targetId: input.id,
+        organizationId: input.id,
+        details: {
+          previousSuspendedAt: existingOrg.suspendedAt?.toISOString() || null,
+          previousSuspendedReason: existingOrg.suspendedReason,
+        },
+      });
+
+      // Get last activity
+      const lastActivityAt = await getLastActivityAt(input.id);
+
+      return {
+        id: reactivatedOrg.id,
+        name: reactivatedOrg.name,
+        slug: reactivatedOrg.slug,
+        plan: reactivatedOrg.plan,
+        planExpiresAt: reactivatedOrg.planExpiresAt,
+        status: reactivatedOrg.status,
+        usersCount: reactivatedOrg._count.users,
+        constituentsCount: reactivatedOrg._count.constituents,
+        lastActivityAt,
+        createdAt: reactivatedOrg.createdAt,
+        suspendedAt: reactivatedOrg.suspendedAt,
+        suspendedReason: reactivatedOrg.suspendedReason,
+        deletedAt: reactivatedOrg.deletedAt,
+      };
+    }),
+
   // T039: List all organizations with pagination and filters
   list: adminProtectedProcedure
     .input(listInputSchema)

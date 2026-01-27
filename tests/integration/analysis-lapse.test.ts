@@ -11,7 +11,7 @@ const createCaller = createCallerFactory(appRouter);
 // Mock constituent data with lapse risk scores
 const mockConstituents = [
   {
-    id: "const-1",
+    id: "c1c1c1c1-c1c1-4c1c-ac1c-c1c1c1c1c1c1",
     firstName: "John",
     lastName: "Doe",
     email: "john@example.com",
@@ -20,13 +20,13 @@ const mockConstituents = [
       { name: "recency", value: "24 months since last gift", impact: "high" },
       { name: "frequency", value: "Giving stopped", impact: "high" },
     ],
-    assignedOfficer: { id: "officer-1", name: "Jane Officer" },
+    assignedOfficer: { id: "01010101-0101-4010-a010-010101010101", name: "Jane Officer" },
     gifts: [{ amount: 1000, giftDate: new Date("2024-01-15") }],
     contacts: [],
     _count: { gifts: 3, contacts: 1 },
   },
   {
-    id: "const-2",
+    id: "c2c2c2c2-c2c2-4c2c-ac2c-c2c2c2c2c2c2",
     firstName: "Jane",
     lastName: "Smith",
     email: "jane@example.com",
@@ -35,13 +35,13 @@ const mockConstituents = [
       { name: "recency", value: "14 months since last gift", impact: "medium" },
       { name: "contact", value: "6 months since contact", impact: "medium" },
     ],
-    assignedOfficer: { id: "officer-1", name: "Jane Officer" },
+    assignedOfficer: { id: "01010101-0101-4010-a010-010101010101", name: "Jane Officer" },
     gifts: [{ amount: 500, giftDate: new Date("2024-11-01") }],
     contacts: [{ contactDate: new Date("2025-07-01") }],
     _count: { gifts: 5, contacts: 3 },
   },
   {
-    id: "const-3",
+    id: "c5c5c5c5-c5c5-4c5c-ac5c-c5c5c5c5c5c5",
     firstName: "Bob",
     lastName: "Johnson",
     email: "bob@example.com",
@@ -50,7 +50,7 @@ const mockConstituents = [
       { name: "recency", value: "2 months since last gift", impact: "low" },
       { name: "frequency", value: "Annual giver, stable pattern", impact: "low" },
     ],
-    assignedOfficer: { id: "officer-2", name: "John Manager" },
+    assignedOfficer: { id: "02020202-0202-4020-a020-020202020202", name: "John Manager" },
     gifts: [{ amount: 2000, giftDate: new Date("2025-11-01") }],
     contacts: [{ contactDate: new Date("2025-10-01") }],
     _count: { gifts: 8, contacts: 5 },
@@ -64,8 +64,8 @@ function createMockContext(overrides: Partial<{
   organizationId: string;
 }> = {}): Context {
   const role = overrides.role ?? "admin";
-  const userId = overrides.userId ?? "user-123";
-  const organizationId = overrides.organizationId ?? "org-123";
+  const userId = overrides.userId ?? "33333333-3333-4333-a333-333333333333";
+  const organizationId = overrides.organizationId ?? "22222222-2222-4222-a222-222222222222";
 
   const mockPrisma = {
     constituent: {
@@ -116,10 +116,10 @@ function createMockContext(overrides: Partial<{
       aggregate: vi.fn().mockResolvedValue({ _sum: { amount: 15000 } }),
     },
     alert: {
-      create: vi.fn().mockResolvedValue({ id: "alert-1" }),
+      create: vi.fn().mockResolvedValue({ id: "77777777-7777-4777-a777-777777777771" }),
     },
     auditLog: {
-      create: vi.fn().mockResolvedValue({ id: "log-1" }),
+      create: vi.fn().mockResolvedValue({ id: "10101010-1010-4101-a101-101010101010" }),
     },
   } as unknown as PrismaClient;
 
@@ -207,12 +207,12 @@ describe("Analysis Lapse Risk Procedures", () => {
 
       const result = await caller.analysis.getLapseRiskList({
         limit: 50,
-        assignedOfficerId: "officer-1",
+        assignedOfficerId: "01010101-0101-4010-a010-010101010101",
       });
 
       // All returned items should be assigned to officer-1
       for (const item of result.items) {
-        expect(item.constituent.assignedOfficerId).toBe("officer-1");
+        expect(item.constituent.assignedOfficerId).toBe("01010101-0101-4010-a010-010101010101");
       }
     });
 
@@ -295,7 +295,7 @@ describe("Analysis Lapse Risk Procedures", () => {
       const caller = createCaller(ctx);
 
       const result = await caller.analysis.markLapseAddressed({
-        constituentId: "const-1",
+        constituentId: "c1c1c1c1-c1c1-4c1c-ac1c-c1c1c1c1c1c1",
         action: "addressed",
         notes: "Called donor, left voicemail",
       });
@@ -307,7 +307,7 @@ describe("Analysis Lapse Risk Procedures", () => {
       expect(ctx.prisma.alert.create).toHaveBeenCalledWith(
         expect.objectContaining({
           data: expect.objectContaining({
-            constituentId: "const-1",
+            constituentId: "c1c1c1c1-c1c1-4c1c-ac1c-c1c1c1c1c1c1",
             alertType: "lapse_risk",
             status: "acted_on",
           }),
@@ -320,7 +320,7 @@ describe("Analysis Lapse Risk Procedures", () => {
       const caller = createCaller(ctx);
 
       const result = await caller.analysis.markLapseAddressed({
-        constituentId: "const-1",
+        constituentId: "c1c1c1c1-c1c1-4c1c-ac1c-c1c1c1c1c1c1",
         action: "retained",
         notes: "Donor confirmed continued support",
       });
@@ -334,7 +334,7 @@ describe("Analysis Lapse Risk Procedures", () => {
       const caller = createCaller(ctx);
 
       const result = await caller.analysis.markLapseAddressed({
-        constituentId: "const-1",
+        constituentId: "c1c1c1c1-c1c1-4c1c-ac1c-c1c1c1c1c1c1",
         action: "dismissed",
         notes: "Risk assessment not accurate for this donor",
       });
@@ -357,7 +357,7 @@ describe("Analysis Lapse Risk Procedures", () => {
       const caller = createCaller(ctx);
 
       await caller.analysis.markLapseAddressed({
-        constituentId: "const-1",
+        constituentId: "c1c1c1c1-c1c1-4c1c-ac1c-c1c1c1c1c1c1",
         action: "addressed",
       });
 
@@ -366,7 +366,7 @@ describe("Analysis Lapse Risk Procedures", () => {
           data: expect.objectContaining({
             action: "lapse_risk.addressed",
             resourceType: "constituent",
-            resourceId: "const-1",
+            resourceId: "c1c1c1c1-c1c1-4c1c-ac1c-c1c1c1c1c1c1",
           }),
         })
       );
@@ -381,7 +381,7 @@ describe("Analysis Lapse Risk Procedures", () => {
 
       await expect(
         caller.analysis.markLapseAddressed({
-          constituentId: "non-existent",
+          constituentId: "00000000-0000-0000-0000-000000000000",
           action: "addressed",
         })
       ).rejects.toThrow("Constituent not found");
@@ -392,7 +392,7 @@ describe("Analysis Lapse Risk Procedures", () => {
       const caller = createCaller(ctx);
 
       await caller.analysis.markLapseAddressed({
-        constituentId: "const-1",
+        constituentId: "c1c1c1c1-c1c1-4c1c-ac1c-c1c1c1c1c1c1",
         action: "retained",
         notes: "Test notes",
       });
@@ -413,7 +413,7 @@ describe("Analysis Lapse Risk Procedures", () => {
 
   describe("Role-based Access", () => {
     it("should allow gift officers to view their portfolio lapse risks", async () => {
-      const ctx = createMockContext({ role: "gift_officer", userId: "officer-1" });
+      const ctx = createMockContext({ role: "gift_officer", userId: "01010101-0101-4010-a010-010101010101" });
       const caller = createCaller(ctx);
 
       const result = await caller.analysis.getLapseRiskList({
@@ -451,7 +451,7 @@ describe("Analysis Lapse Risk Procedures", () => {
       const caller = createCaller(ctx);
 
       const result = await caller.analysis.markLapseAddressed({
-        constituentId: "const-1",
+        constituentId: "c1c1c1c1-c1c1-4c1c-ac1c-c1c1c1c1c1c1",
         action: "addressed",
       });
 

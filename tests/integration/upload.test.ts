@@ -63,7 +63,7 @@ function createMockPrisma() {
   return {
     upload: {
       create: vi.fn().mockResolvedValue({
-        id: "upload-id",
+        id: "aaaaaaaa-aaaa-4aaa-aaaa-aaaaaaaaaaaa",
         organizationId: "org-id",
         userId: "user-id",
         filename: "test.csv",
@@ -82,7 +82,7 @@ function createMockPrisma() {
     $transaction: vi.fn().mockImplementation((fn) => fn({
       upload: {
         create: vi.fn().mockResolvedValue({
-          id: "upload-id",
+          id: "aaaaaaaa-aaaa-4aaa-aaaa-aaaaaaaaaaaa",
           organizationId: "org-id",
           userId: "user-id",
           filename: "test.csv",
@@ -219,14 +219,14 @@ describe("Upload Router", () => {
       const caller = createCaller(ctx);
 
       (ctx.prisma.upload.findFirst as ReturnType<typeof vi.fn>).mockResolvedValue({
-        id: "upload-id",
+        id: "aaaaaaaa-aaaa-4aaa-aaaa-aaaaaaaaaaaa",
         organizationId: "org-id",
         status: "queued",
         storagePath: "uploads/org-id/upload-id/test.csv",
       });
 
       const result = await caller.confirmUpload({
-        uploadId: "upload-id",
+        uploadId: "aaaaaaaa-aaaa-4aaa-aaaa-aaaaaaaaaaaa",
         fileHash: "abc123",
       });
 
@@ -249,7 +249,7 @@ describe("Upload Router", () => {
 
       await expect(
         caller.confirmUpload({
-          uploadId: "non-existent-id",
+          uploadId: "00000000-0000-0000-0000-000000000000",
         })
       ).rejects.toThrow("Upload not found or already processed");
     });
@@ -262,7 +262,7 @@ describe("Upload Router", () => {
 
       await expect(
         caller.confirmUpload({
-          uploadId: "upload-id",
+          uploadId: "aaaaaaaa-aaaa-4aaa-aaaa-aaaaaaaaaaaa",
         })
       ).rejects.toThrow(TRPCError);
     });
@@ -276,7 +276,7 @@ describe("Upload Router", () => {
 
       await expect(
         caller.confirmUpload({
-          uploadId: "other-org-upload-id",
+          uploadId: "bbbbbbbb-bbbb-4bbb-abbb-bbbbbbbbbbbb",
         })
       ).rejects.toThrow(TRPCError);
     });
@@ -288,13 +288,13 @@ describe("Upload Router", () => {
       const caller = createCaller(ctx);
 
       (ctx.prisma.upload.findFirst as ReturnType<typeof vi.fn>).mockResolvedValue({
-        id: "upload-id",
+        id: "aaaaaaaa-aaaa-4aaa-aaaa-aaaaaaaaaaaa",
         organizationId: "org-id",
         status: "queued",
       });
 
       const result = await caller.updateFieldMapping({
-        uploadId: "upload-id",
+        uploadId: "aaaaaaaa-aaaa-4aaa-aaaa-aaaaaaaaaaaa",
         fieldMapping: {
           "ID Column": "externalId",
           "Name Column": "lastName",
@@ -304,7 +304,7 @@ describe("Upload Router", () => {
       expect(result.success).toBe(true);
       expect(ctx.prisma.upload.update).toHaveBeenCalledWith(
         expect.objectContaining({
-          where: { id: "upload-id" },
+          where: { id: "aaaaaaaa-aaaa-4aaa-aaaa-aaaaaaaaaaaa" },
           data: expect.objectContaining({
             fieldMapping: expect.any(Object),
           }),
@@ -320,7 +320,7 @@ describe("Upload Router", () => {
 
       await expect(
         caller.updateFieldMapping({
-          uploadId: "upload-id",
+          uploadId: "aaaaaaaa-aaaa-4aaa-aaaa-aaaaaaaaaaaa",
           fieldMapping: {},
         })
       ).rejects.toThrow(TRPCError);
@@ -340,7 +340,7 @@ describe("Upload Router", () => {
           user: { id: "user-id", name: "Test User" },
         },
         {
-          id: "upload-2",
+          id: "21212121-2121-4212-a212-212121212121",
           filename: "gifts.csv",
           status: "processing",
           user: { id: "user-id", name: "Test User" },
@@ -389,11 +389,11 @@ describe("Upload Router", () => {
 
       (ctx.prisma.upload.findMany as ReturnType<typeof vi.fn>).mockResolvedValue(mockUploads);
 
-      await caller.list({ limit: 10, cursor: "upload-2" });
+      await caller.list({ limit: 10, cursor: "21212121-2121-4212-a212-212121212121" });
 
       expect(ctx.prisma.upload.findMany).toHaveBeenCalledWith(
         expect.objectContaining({
-          cursor: { id: "upload-2" },
+          cursor: { id: "21212121-2121-4212-a212-212121212121" },
           skip: 1,
         })
       );
@@ -406,7 +406,7 @@ describe("Upload Router", () => {
       // Return limit + 1 items to indicate more exist
       const mockUploads = [
         { id: "upload-1", filename: "a.csv", user: { id: "user-id", name: "Test" } },
-        { id: "upload-2", filename: "b.csv", user: { id: "user-id", name: "Test" } },
+        { id: "21212121-2121-4212-a212-212121212121", filename: "b.csv", user: { id: "user-id", name: "Test" } },
         { id: "upload-3", filename: "c.csv", user: { id: "user-id", name: "Test" } },
       ];
 
@@ -425,7 +425,7 @@ describe("Upload Router", () => {
       const caller = createCaller(ctx);
 
       const mockUpload = {
-        id: "upload-id",
+        id: "aaaaaaaa-aaaa-4aaa-aaaa-aaaaaaaaaaaa",
         organizationId: "org-id",
         filename: "donors.csv",
         status: "completed",
@@ -437,9 +437,9 @@ describe("Upload Router", () => {
 
       (ctx.prisma.upload.findFirst as ReturnType<typeof vi.fn>).mockResolvedValue(mockUpload);
 
-      const result = await caller.get({ id: "upload-id" });
+      const result = await caller.get({ id: "aaaaaaaa-aaaa-4aaa-aaaa-aaaaaaaaaaaa" });
 
-      expect(result.id).toBe("upload-id");
+      expect(result.id).toBe("aaaaaaaa-aaaa-4aaa-aaaa-aaaaaaaaaaaa");
       expect(result.filename).toBe("donors.csv");
     });
 
@@ -449,7 +449,7 @@ describe("Upload Router", () => {
 
       (ctx.prisma.upload.findFirst as ReturnType<typeof vi.fn>).mockResolvedValue(null);
 
-      await expect(caller.get({ id: "non-existent" })).rejects.toThrow(
+      await expect(caller.get({ id: "00000000-0000-0000-0000-000000000000" })).rejects.toThrow(
         "Upload not found"
       );
     });
@@ -461,17 +461,17 @@ describe("Upload Router", () => {
       const caller = createCaller(ctx);
 
       (ctx.prisma.upload.findFirst as ReturnType<typeof vi.fn>).mockResolvedValue({
-        id: "upload-id",
+        id: "aaaaaaaa-aaaa-4aaa-aaaa-aaaaaaaaaaaa",
         organizationId: "org-id",
         status: "failed",
       });
 
-      const result = await caller.retry({ id: "upload-id" });
+      const result = await caller.retry({ id: "aaaaaaaa-aaaa-4aaa-aaaa-aaaaaaaaaaaa" });
 
       expect(result.success).toBe(true);
       expect(ctx.prisma.upload.update).toHaveBeenCalledWith(
         expect.objectContaining({
-          where: { id: "upload-id" },
+          where: { id: "aaaaaaaa-aaaa-4aaa-aaaa-aaaaaaaaaaaa" },
           data: expect.objectContaining({
             status: "queued",
             progress: 0,
@@ -485,12 +485,12 @@ describe("Upload Router", () => {
       const caller = createCaller(ctx);
 
       (ctx.prisma.upload.findFirst as ReturnType<typeof vi.fn>).mockResolvedValue({
-        id: "upload-id",
+        id: "aaaaaaaa-aaaa-4aaa-aaaa-aaaaaaaaaaaa",
         organizationId: "org-id",
         status: "completed_with_errors",
       });
 
-      const result = await caller.retry({ id: "upload-id" });
+      const result = await caller.retry({ id: "aaaaaaaa-aaaa-4aaa-aaaa-aaaaaaaaaaaa" });
 
       expect(result.success).toBe(true);
     });
@@ -501,7 +501,7 @@ describe("Upload Router", () => {
 
       (ctx.prisma.upload.findFirst as ReturnType<typeof vi.fn>).mockResolvedValue(null);
 
-      await expect(caller.retry({ id: "upload-id" })).rejects.toThrow(
+      await expect(caller.retry({ id: "aaaaaaaa-aaaa-4aaa-aaaa-aaaaaaaaaaaa" })).rejects.toThrow(
         "Upload not found or cannot be retried"
       );
     });
@@ -512,7 +512,7 @@ describe("Upload Router", () => {
 
       (ctx.prisma.upload.findFirst as ReturnType<typeof vi.fn>).mockResolvedValue(null);
 
-      await expect(caller.retry({ id: "upload-id" })).rejects.toThrow(TRPCError);
+      await expect(caller.retry({ id: "aaaaaaaa-aaaa-4aaa-aaaa-aaaaaaaaaaaa" })).rejects.toThrow(TRPCError);
     });
   });
 
@@ -522,16 +522,16 @@ describe("Upload Router", () => {
       const caller = createCaller(ctx);
 
       (ctx.prisma.upload.findFirst as ReturnType<typeof vi.fn>).mockResolvedValue({
-        id: "upload-id",
+        id: "aaaaaaaa-aaaa-4aaa-aaaa-aaaaaaaaaaaa",
         organizationId: "org-id",
         status: "completed",
       });
 
-      const result = await caller.delete({ id: "upload-id" });
+      const result = await caller.delete({ id: "aaaaaaaa-aaaa-4aaa-aaaa-aaaaaaaaaaaa" });
 
       expect(result.success).toBe(true);
       expect(ctx.prisma.upload.delete).toHaveBeenCalledWith({
-        where: { id: "upload-id" },
+        where: { id: "aaaaaaaa-aaaa-4aaa-aaaa-aaaaaaaaaaaa" },
       });
     });
 
@@ -541,7 +541,7 @@ describe("Upload Router", () => {
 
       (ctx.prisma.upload.findFirst as ReturnType<typeof vi.fn>).mockResolvedValue(null);
 
-      await expect(caller.delete({ id: "non-existent" })).rejects.toThrow(
+      await expect(caller.delete({ id: "00000000-0000-0000-0000-000000000000" })).rejects.toThrow(
         "Upload not found"
       );
     });
@@ -550,7 +550,7 @@ describe("Upload Router", () => {
       const ctx = createMockContext({ role: "gift_officer" });
       const caller = createCaller(ctx);
 
-      await expect(caller.delete({ id: "upload-id" })).rejects.toThrow(TRPCError);
+      await expect(caller.delete({ id: "aaaaaaaa-aaaa-4aaa-aaaa-aaaaaaaaaaaa" })).rejects.toThrow(TRPCError);
     });
   });
 
@@ -572,8 +572,8 @@ describe("Upload Router", () => {
         })
       );
 
-      // Test get
-      await expect(caller.get({ id: "any-id" })).rejects.toThrow();
+      // Test get - use valid UUID format
+      await expect(caller.get({ id: "11111111-1111-4111-a111-111111111111" })).rejects.toThrow();
       expect(ctx.prisma.upload.findFirst).toHaveBeenCalledWith(
         expect.objectContaining({
           where: expect.objectContaining({

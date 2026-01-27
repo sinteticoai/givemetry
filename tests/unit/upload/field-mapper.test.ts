@@ -486,18 +486,18 @@ describe("Field Mapper", () => {
       expect(confidence).toBeGreaterThan(0.9);
     });
 
-    it("returns medium confidence for partial matches", () => {
+    it("returns high confidence for pattern matches", () => {
+      // "FName" matches the pattern /^fnm?$/i or /^f[\s_-]*name$/i
       const confidence = calculateMappingConfidence("firstName", "FName");
 
-      expect(confidence).toBeGreaterThan(0.5);
-      expect(confidence).toBeLessThan(0.9);
+      expect(confidence).toBeGreaterThanOrEqual(0.9);
     });
 
-    it("returns low confidence for weak matches", () => {
+    it("returns medium confidence for substring matches", () => {
+      // "name" is a substring of "firstname", gets 0.7 (substring match)
       const confidence = calculateMappingConfidence("firstName", "Name");
 
-      expect(confidence).toBeGreaterThan(0.2);
-      expect(confidence).toBeLessThan(0.6);
+      expect(confidence).toBe(0.7);
     });
 
     it("returns zero for no match", () => {

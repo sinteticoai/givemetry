@@ -25,12 +25,21 @@ vi.mock("@/lib/prisma/client", () => ({
   },
 }));
 
+// Helper to generate mock constituents for portfolio assignments
+const generateMockConstituents = (count: number) =>
+  Array.from({ length: count }, (_, i) => ({
+    id: `const-${i}`,
+    estimatedCapacity: 100000,
+    priorityScore: 0.7,
+    lapseRiskScore: 0.3,
+  }));
+
 const createMockContext = (overrides: Partial<Context> = {}): Context => {
   const mockPrisma = {
     user: {
       findMany: vi.fn().mockResolvedValue([
-        { id: "o1", name: "Officer 1", _count: { assignedConstituents: 50 } },
-        { id: "o2", name: "Officer 2", _count: { assignedConstituents: 45 } },
+        { id: "o1", name: "Officer 1", assignedConstituents: generateMockConstituents(50) },
+        { id: "o2", name: "Officer 2", assignedConstituents: generateMockConstituents(45) },
       ]),
     },
     constituent: {
@@ -56,8 +65,8 @@ const createMockContext = (overrides: Partial<Context> = {}): Context => {
     prisma: mockPrisma,
     session: {
       user: {
-        id: "user-123",
-        organizationId: "org-123",
+        id: "33333333-3333-4333-a333-333333333333",
+        organizationId: "22222222-2222-4222-a222-222222222222",
         email: "test@example.com",
         role: "admin" as const,
         name: "Test User",
@@ -65,10 +74,10 @@ const createMockContext = (overrides: Partial<Context> = {}): Context => {
       expires: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
     },
     withOrgFilter: <T extends { organizationId?: string }>(where?: T) =>
-      ({ ...where, organizationId: "org-123" }) as T & { organizationId: string },
+      ({ ...where, organizationId: "22222222-2222-4222-a222-222222222222" }) as T & { organizationId: string },
     withOrgCreate: <T extends object>(data: T) =>
-      ({ ...data, organizationId: "org-123" }) as T & { organizationId: string },
-    organizationId: "org-123",
+      ({ ...data, organizationId: "22222222-2222-4222-a222-222222222222" }) as T & { organizationId: string },
+    organizationId: "22222222-2222-4222-a222-222222222222",
     ...overrides,
   };
 };
@@ -139,9 +148,9 @@ describe("Portfolio Metrics Integration Tests", () => {
     it("detects imbalances when portfolios vary significantly", async () => {
       // Mock imbalanced portfolios
       (ctx.prisma.user.findMany as ReturnType<typeof vi.fn>).mockResolvedValue([
-        { id: "o1", name: "Heavy Officer", _count: { assignedConstituents: 150 } },
-        { id: "o2", name: "Light Officer", _count: { assignedConstituents: 20 } },
-        { id: "o3", name: "Medium Officer", _count: { assignedConstituents: 50 } },
+        { id: "o1", name: "Heavy Officer", assignedConstituents: generateMockConstituents(150) },
+        { id: "o2", name: "Light Officer", assignedConstituents: generateMockConstituents(20) },
+        { id: "o3", name: "Medium Officer", assignedConstituents: generateMockConstituents(50) },
       ]);
 
       const result = await caller.analysis.getPortfolioMetrics();
@@ -154,9 +163,9 @@ describe("Portfolio Metrics Integration Tests", () => {
     it("returns no imbalances for balanced portfolios", async () => {
       // Mock balanced portfolios
       (ctx.prisma.user.findMany as ReturnType<typeof vi.fn>).mockResolvedValue([
-        { id: "o1", name: "Officer 1", _count: { assignedConstituents: 48 } },
-        { id: "o2", name: "Officer 2", _count: { assignedConstituents: 52 } },
-        { id: "o3", name: "Officer 3", _count: { assignedConstituents: 50 } },
+        { id: "o1", name: "Officer 1", assignedConstituents: generateMockConstituents(48) },
+        { id: "o2", name: "Officer 2", assignedConstituents: generateMockConstituents(52) },
+        { id: "o3", name: "Officer 3", assignedConstituents: generateMockConstituents(50) },
       ]);
 
       const result = await caller.analysis.getPortfolioMetrics();
@@ -186,7 +195,7 @@ describe("Portfolio Metrics Integration Tests", () => {
 
     it("handles single officer", async () => {
       (ctx.prisma.user.findMany as ReturnType<typeof vi.fn>).mockResolvedValue([
-        { id: "o1", name: "Solo Officer", _count: { assignedConstituents: 100 } },
+        { id: "o1", name: "Solo Officer", assignedConstituents: generateMockConstituents(100) },
       ]);
       (ctx.prisma.constituent.count as ReturnType<typeof vi.fn>)
         .mockResolvedValueOnce(100) // total
@@ -202,8 +211,8 @@ describe("Portfolio Metrics Integration Tests", () => {
   describe("Portfolio Metrics Edge Cases", () => {
     it("handles null officer names", async () => {
       (ctx.prisma.user.findMany as ReturnType<typeof vi.fn>).mockResolvedValue([
-        { id: "o1", name: null, _count: { assignedConstituents: 50 } },
-        { id: "o2", name: "Named Officer", _count: { assignedConstituents: 45 } },
+        { id: "o1", name: null, assignedConstituents: generateMockConstituents(50) },
+        { id: "o2", name: "Named Officer", assignedConstituents: generateMockConstituents(45) },
       ]);
 
       const result = await caller.analysis.getPortfolioMetrics();
@@ -214,9 +223,9 @@ describe("Portfolio Metrics Integration Tests", () => {
 
     it("calculates correct average portfolio size", async () => {
       (ctx.prisma.user.findMany as ReturnType<typeof vi.fn>).mockResolvedValue([
-        { id: "o1", name: "Officer 1", _count: { assignedConstituents: 30 } },
-        { id: "o2", name: "Officer 2", _count: { assignedConstituents: 40 } },
-        { id: "o3", name: "Officer 3", _count: { assignedConstituents: 50 } },
+        { id: "o1", name: "Officer 1", assignedConstituents: generateMockConstituents(30) },
+        { id: "o2", name: "Officer 2", assignedConstituents: generateMockConstituents(40) },
+        { id: "o3", name: "Officer 3", assignedConstituents: generateMockConstituents(50) },
       ]);
 
       const result = await caller.analysis.getPortfolioMetrics();
@@ -227,9 +236,9 @@ describe("Portfolio Metrics Integration Tests", () => {
 
     it("calculates min and max portfolio sizes", async () => {
       (ctx.prisma.user.findMany as ReturnType<typeof vi.fn>).mockResolvedValue([
-        { id: "o1", name: "Officer 1", _count: { assignedConstituents: 25 } },
-        { id: "o2", name: "Officer 2", _count: { assignedConstituents: 75 } },
-        { id: "o3", name: "Officer 3", _count: { assignedConstituents: 50 } },
+        { id: "o1", name: "Officer 1", assignedConstituents: generateMockConstituents(25) },
+        { id: "o2", name: "Officer 2", assignedConstituents: generateMockConstituents(75) },
+        { id: "o3", name: "Officer 3", assignedConstituents: generateMockConstituents(50) },
       ]);
 
       const result = await caller.analysis.getPortfolioMetrics();
@@ -240,8 +249,8 @@ describe("Portfolio Metrics Integration Tests", () => {
 
     it("includes suggestions for rebalancing when imbalanced", async () => {
       (ctx.prisma.user.findMany as ReturnType<typeof vi.fn>).mockResolvedValue([
-        { id: "o1", name: "Overloaded Officer", _count: { assignedConstituents: 200 } },
-        { id: "o2", name: "Underloaded Officer", _count: { assignedConstituents: 20 } },
+        { id: "o1", name: "Overloaded Officer", assignedConstituents: generateMockConstituents(200) },
+        { id: "o2", name: "Underloaded Officer", assignedConstituents: generateMockConstituents(20) },
       ]);
 
       const result = await caller.analysis.getPortfolioMetrics();
@@ -256,8 +265,8 @@ describe("Portfolio Metrics Integration Tests", () => {
       ctx = createMockContext({
         session: {
           user: {
-            id: "admin-1",
-            organizationId: "org-123",
+            id: "ad1ad1ad-1ad1-4ad1-aad1-ad1ad1ad1ad1",
+            organizationId: "22222222-2222-4222-a222-222222222222",
             email: "admin@example.com",
             role: "admin",
             name: "Admin User",
@@ -275,8 +284,8 @@ describe("Portfolio Metrics Integration Tests", () => {
       ctx = createMockContext({
         session: {
           user: {
-            id: "manager-1",
-            organizationId: "org-123",
+            id: "0a0a0a0a-0a0a-40a0-a0a0-0a0a0a0a0a0a",
+            organizationId: "22222222-2222-4222-a222-222222222222",
             email: "manager@example.com",
             role: "manager",
             name: "Manager User",
@@ -294,8 +303,8 @@ describe("Portfolio Metrics Integration Tests", () => {
       ctx = createMockContext({
         session: {
           user: {
-            id: "mgo-1",
-            organizationId: "org-123",
+            id: "0b0b0b0b-0b0b-40b0-a0b0-0b0b0b0b0b0b",
+            organizationId: "22222222-2222-4222-a222-222222222222",
             email: "mgo@example.com",
             role: "gift_officer",
             name: "Gift Officer",

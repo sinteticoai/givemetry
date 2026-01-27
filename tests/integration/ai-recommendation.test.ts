@@ -7,8 +7,8 @@ import {
 
 describe("AI Router - Recommendation Procedures", () => {
   const mockConstituentData = {
-    id: "const-123",
-    organizationId: "org-123",
+    id: "c3c3c3c3-c3c3-4c3c-ac3c-c3c3c3c3c3c3",
+    organizationId: "22222222-2222-4222-a222-222222222222",
     externalId: "EXT-001",
     firstName: "John",
     lastName: "Smith",
@@ -19,20 +19,20 @@ describe("AI Router - Recommendation Procedures", () => {
     portfolioTier: "major",
     lapseRiskScore: 0.35,
     priorityScore: 0.75,
-    assignedOfficerId: "user-123",
+    assignedOfficerId: "33333333-3333-4333-a333-333333333333",
     isActive: true,
   };
 
   const mockGifts = [
     {
-      id: "gift-1",
+      id: "55555555-5555-4555-a555-555555555551",
       amount: 5000,
       giftDate: new Date("2025-06-15"),
       giftType: "cash",
       fundName: "Annual Fund",
     },
     {
-      id: "gift-2",
+      id: "55555555-5555-4555-a555-555555555552",
       amount: 10000,
       giftDate: new Date("2024-12-01"),
       giftType: "cash",
@@ -42,7 +42,7 @@ describe("AI Router - Recommendation Procedures", () => {
 
   const mockContacts = [
     {
-      id: "contact-1",
+      id: "66666666-6666-4666-a666-666666666661",
       contactType: "meeting",
       contactDate: new Date("2025-11-15"),
       subject: "Annual Fund discussion",
@@ -51,13 +51,13 @@ describe("AI Router - Recommendation Procedures", () => {
 
   const mockPredictions = [
     {
-      id: "pred-1",
+      id: "cccccccc-cccc-4ccc-accc-cccccccccc01",
       predictionType: "lapse_risk",
       score: 0.35,
       confidence: 0.85,
     },
     {
-      id: "pred-2",
+      id: "cccccccc-cccc-4ccc-accc-cccccccccc02",
       predictionType: "priority",
       score: 0.75,
       confidence: 0.82,
@@ -101,7 +101,7 @@ describe("AI Router - Recommendation Procedures", () => {
         activeCampaigns: ["Annual Fund 2026"],
       });
 
-      expect(context.id).toBe("const-123");
+      expect(context.id).toBe("c3c3c3c3-c3c3-4c3c-ac3c-c3c3c3c3c3c3");
       expect(context.name).toBe("John Smith");
       expect(context.priorityScore).toBe(0.75);
       expect(context.lapseRiskScore).toBe(0.35);
@@ -115,7 +115,7 @@ describe("AI Router - Recommendation Procedures", () => {
     it("should handle missing optional fields", () => {
       const context = buildConstituentContext({
         constituent: {
-          id: "const-456",
+          id: "c4c4c4c4-c4c4-4c4c-ac4c-c4c4c4c4c4c4",
           firstName: null,
           lastName: "Doe",
           constituentType: null,
@@ -213,7 +213,7 @@ describe("AI Router - Recommendation Procedures", () => {
     it("should recommend stewardship for recent gift without follow-up", () => {
       const recentGiftContext = buildConstituentContext({
         constituent: {
-          id: "test-stewardship",
+          id: "11112222-3333-4444-a555-666677778888",
           firstName: "Jane",
           lastName: "Donor",
           constituentType: "alumni",
@@ -241,7 +241,7 @@ describe("AI Router - Recommendation Procedures", () => {
     it("should recommend re-engagement for high lapse risk", () => {
       const highRiskContext = buildConstituentContext({
         constituent: {
-          id: "test-lapse",
+          id: "22223333-4444-4555-a666-777788889999",
           firstName: "At",
           lastName: "Risk",
           constituentType: "alumni",
@@ -271,7 +271,7 @@ describe("AI Router - Recommendation Procedures", () => {
     it("should provide campaign-aligned recommendations when campaigns are active", () => {
       const campaignContext = buildConstituentContext({
         constituent: {
-          id: "test-campaign",
+          id: "33334444-5555-4666-a777-888899990000",
           firstName: "Campaign",
           lastName: "Target",
           constituentType: "alumni",
@@ -307,7 +307,7 @@ describe("AI Router - Recommendation Procedures", () => {
     it("should provide consistent recommendations for same input", () => {
       const context = buildConstituentContext({
         constituent: {
-          id: "consistency-test",
+          id: "44445555-6666-4777-a888-999900001111",
           firstName: "Test",
           lastName: "Consistency",
           constituentType: "alumni",
@@ -333,7 +333,7 @@ describe("AI Router - Recommendation Procedures", () => {
     it("should include all required fields in recommendation", () => {
       const context = buildConstituentContext({
         constituent: {
-          id: "fields-test",
+          id: "55556666-7777-4888-a999-000011112222",
           firstName: "Required",
           lastName: "Fields",
           constituentType: null,

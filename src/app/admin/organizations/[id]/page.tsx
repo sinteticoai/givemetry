@@ -45,8 +45,26 @@ export default function OrganizationDetailPage({ params }: PageProps) {
 
   // Confirm dialogs state
   const [isSuspendOpen, setIsSuspendOpen] = useState(false);
+  const [suspendReason, setSuspendReason] = useState("");
   const [isReactivateOpen, setIsReactivateOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+
+  // T056: Suspend mutation
+  const suspendMutation = adminTrpc.organizations.suspend.useMutation({
+    onSuccess: () => {
+      setIsSuspendOpen(false);
+      setSuspendReason("");
+      refetch();
+    },
+  });
+
+  // T056: Reactivate mutation
+  const reactivateMutation = adminTrpc.organizations.reactivate.useMutation({
+    onSuccess: () => {
+      setIsReactivateOpen(false);
+      refetch();
+    },
+  });
 
   // Fetch organization details
   const {
@@ -239,31 +257,63 @@ export default function OrganizationDetailPage({ params }: PageProps) {
         </DialogContent>
       </Dialog>
 
-      {/* Suspend confirmation */}
-      <ConfirmDialog
-        open={isSuspendOpen}
-        onOpenChange={setIsSuspendOpen}
-        title="Suspend Organization"
-        description={`Are you sure you want to suspend "${organization.name}"? All users will be blocked from logging in.`}
-        confirmLabel="Suspend"
-        variant="warning"
-        onConfirm={() => {
-          // TODO: Implement suspend in Phase 5
-          setIsSuspendOpen(false);
-        }}
-      />
+      {/* T056: Suspend confirmation with reason input */}
+      <Dialog open={isSuspendOpen} onOpenChange={(open) => {
+        setIsSuspendOpen(open);
+        if (!open) setSuspendReason("");
+      }}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Suspend Organization</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to suspend &quot;{organization.name}&quot;? All users will be blocked from logging in.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="suspendReason">Reason for suspension</Label>
+              <Input
+                id="suspendReason"
+                value={suspendReason}
+                onChange={(e) => setSuspendReason(e.target.value)}
+                placeholder="e.g., Non-payment, Terms violation"
+              />
+              <p className="text-sm text-muted-foreground">
+                This reason will be recorded in the audit log and displayed to super admins.
+              </p>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsSuspendOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              className="bg-yellow-600 hover:bg-yellow-700"
+              onClick={() => {
+                suspendMutation.mutate({
+                  id: id,
+                  reason: suspendReason,
+                });
+              }}
+              disabled={suspendMutation.isPending || !suspendReason.trim()}
+            >
+              {suspendMutation.isPending ? "Suspending..." : "Suspend Organization"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
-      {/* Reactivate confirmation */}
+      {/* T056: Reactivate confirmation */}
       <ConfirmDialog
         open={isReactivateOpen}
         onOpenChange={setIsReactivateOpen}
         title="Reactivate Organization"
         description={`Are you sure you want to reactivate "${organization.name}"? Users will be able to log in again.`}
-        confirmLabel="Reactivate"
+        confirmLabel={reactivateMutation.isPending ? "Reactivating..." : "Reactivate"}
         variant="default"
         onConfirm={() => {
-          // TODO: Implement reactivate in Phase 5
-          setIsReactivateOpen(false);
+          reactivateMutation.mutate({ id: id });
         }}
       />
 

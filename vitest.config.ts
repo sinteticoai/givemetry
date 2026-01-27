@@ -22,10 +22,19 @@ export default defineConfig({
       ],
     },
     testTimeout: 10000,
+    server: {
+      deps: {
+        // Inline these packages to allow mocking
+        inline: ['next-auth', '@auth/core'],
+      },
+    },
   },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
+      // Mock next/server and next/headers for next-auth compatibility
+      'next/server': path.resolve(__dirname, './tests/mocks/next-server.ts'),
+      'next/headers': path.resolve(__dirname, './tests/mocks/next-headers.ts'),
     },
   },
 });

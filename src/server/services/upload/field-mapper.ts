@@ -463,6 +463,11 @@ export function calculateMappingConfidence(
   const normalized = normalizeColumnName(sourceColumn);
   const targetNormalized = targetField.toLowerCase();
 
+  // If source column normalizes to empty string, no match possible
+  if (!normalized) {
+    return 0.0;
+  }
+
   // Exact match (after normalization)
   if (normalized === targetNormalized) {
     return 1.0;
@@ -478,10 +483,11 @@ export function calculateMappingConfidence(
     }
   }
 
-  // Substring match
+  // Substring match (only if normalized has meaningful content)
   if (
-    normalized.includes(targetNormalized) ||
-    targetNormalized.includes(normalized)
+    normalized.length >= 2 &&
+    (normalized.includes(targetNormalized) ||
+      targetNormalized.includes(normalized))
   ) {
     return 0.7;
   }
