@@ -309,21 +309,6 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Testimonial / Value Prop */}
-      <section className="pt-0 pb-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="p-12">
-            <blockquote className="text-2xl sm:text-3xl font-medium text-slate-900 dark:text-white mb-8">
-              &ldquo;We have plenty of data. We have wealth screenings from three years ago we haven&apos;t touched.
-              I don&apos;t need more data; I need to know which 5 people my gift officer should call tomorrow.&rdquo;
-            </blockquote>
-            <p className="text-slate-600 dark:text-slate-400">
-              — Director of Research, Private University
-            </p>
-          </div>
-        </div>
-      </section>
-
       {/* Benefits */}
       <section className="py-24 bg-slate-900 text-white px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
