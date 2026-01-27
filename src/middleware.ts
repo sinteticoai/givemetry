@@ -1,5 +1,6 @@
 // T024, T064, T262: Auth middleware with session validation, role-based protection, and security headers
 // T019: Super admin route handling
+// T081: Impersonation timeout handling
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
@@ -10,6 +11,10 @@ import {
   isAdminApiRoute,
   validateAdminAccess,
 } from "@/lib/auth/admin-middleware";
+
+// T081: Impersonation constants
+const IMPERSONATION_COOKIE_NAME = "impersonation-context";
+// Note: IMPERSONATION_TIMEOUT_MS is not needed here as the cookie stores the actual expiresAt
 
 // T262: Security headers configuration
 const securityHeaders = {
@@ -83,6 +88,15 @@ const IDLE_TIMEOUT = 30 * 60 * 1000;
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  // T081: Check for impersonation session and timeout
+  const impersonationCheck = await checkImpersonationTimeout(request);
+  if (impersonationCheck.expired) {
+    // Clear impersonation cookie and redirect to admin
+    const response = NextResponse.redirect(new URL("/admin", request.url));
+    response.cookies.delete(IMPERSONATION_COOKIE_NAME);
+    return response;
+  }
 
   // T019: Handle admin routes separately
   if (isAdminRoute(pathname) || isAdminApiRoute(pathname)) {
@@ -200,6 +214,33 @@ async function handleAdminRoutes(request: NextRequest, pathname: string) {
   }
 
   return response;
+}
+
+/**
+ * T081: Check impersonation session timeout
+ * Returns { expired: true } if the impersonation session has timed out
+ */
+async function checkImpersonationTimeout(request: NextRequest): Promise<{ expired: boolean }> {
+  const impersonationCookie = request.cookies.get(IMPERSONATION_COOKIE_NAME);
+
+  if (!impersonationCookie?.value) {
+    return { expired: false };
+  }
+
+  try {
+    const context = JSON.parse(impersonationCookie.value);
+    const expiresAt = new Date(context.expiresAt);
+
+    if (expiresAt < new Date()) {
+      // Session has expired
+      return { expired: true };
+    }
+
+    return { expired: false };
+  } catch {
+    // Invalid cookie format, treat as expired to clear it
+    return { expired: true };
+  }
 }
 
 export const config = {

@@ -188,21 +188,21 @@
 
 ### Tests for User Story 5 (TDD - write first, ensure they FAIL)
 
-- [ ] T071 [P] [US5] Unit test for impersonation router at `tests/unit/admin/impersonation.test.ts`
-- [ ] T072 [P] [US5] Integration test for impersonation flow at `tests/integration/admin/impersonation.test.ts`
+- [X] T071 [P] [US5] Unit test for impersonation router at `tests/unit/admin/impersonation.test.ts`
+- [X] T072 [P] [US5] Integration test for impersonation flow at `tests/integration/admin/impersonation.test.ts`
 
 ### Implementation for User Story 5
 
-- [ ] T073 [US5] Implement superAdmin.impersonation.start procedure (super_admin only) at `src/server/routers/superAdmin/impersonation.ts`
-- [ ] T074 [US5] Implement superAdmin.impersonation.end procedure at `src/server/routers/superAdmin/impersonation.ts`
-- [ ] T075 [US5] Implement superAdmin.impersonation.current procedure at `src/server/routers/superAdmin/impersonation.ts`
-- [ ] T076 [US5] Implement superAdmin.impersonation.list procedure at `src/server/routers/superAdmin/impersonation.ts`
-- [ ] T077 [US5] Implement impersonation cookie management (set/clear encrypted cookie)
-- [ ] T078 [US5] Create ImpersonationBanner component at `src/components/admin/layout/ImpersonationBanner.tsx`
-- [ ] T079 [US5] Integrate ImpersonationBanner into tenant app layout at `src/app/(dashboard)/layout.tsx`
-- [ ] T080 [US5] Add impersonate button to user detail page (super_admin role only)
-- [ ] T081 [US5] Implement 1-hour impersonation timeout check in middleware
-- [ ] T082 [US5] Update superAdmin router composition at `src/server/routers/superAdmin/index.ts`
+- [X] T073 [US5] Implement superAdmin.impersonation.start procedure (super_admin only) at `src/server/routers/superAdmin/impersonation.ts`
+- [X] T074 [US5] Implement superAdmin.impersonation.end procedure at `src/server/routers/superAdmin/impersonation.ts`
+- [X] T075 [US5] Implement superAdmin.impersonation.current procedure at `src/server/routers/superAdmin/impersonation.ts`
+- [X] T076 [US5] Implement superAdmin.impersonation.list procedure at `src/server/routers/superAdmin/impersonation.ts`
+- [X] T077 [US5] Implement impersonation cookie management (set/clear encrypted cookie)
+- [X] T078 [US5] Create ImpersonationBanner component at `src/components/admin/layout/ImpersonationBanner.tsx`
+- [X] T079 [US5] Integrate ImpersonationBanner into tenant app layout at `src/app/(dashboard)/layout.tsx`
+- [X] T080 [US5] Add impersonate button to user detail page (super_admin role only)
+- [X] T081 [US5] Implement 1-hour impersonation timeout check in middleware
+- [X] T082 [US5] Update superAdmin router composition at `src/server/routers/superAdmin/index.ts`
 
 **Checkpoint**: Can impersonate users, see banner, actions logged with context, session ends properly
 
@@ -216,19 +216,19 @@
 
 ### Tests for User Story 6 (TDD - write first, ensure they FAIL)
 
-- [ ] T083 [P] [US6] Unit test for analytics router at `tests/unit/admin/analytics.test.ts`
+- [X] T083 [P] [US6] Unit test for analytics router at `tests/unit/admin/analytics.test.ts`
 
 ### Implementation for User Story 6
 
-- [ ] T084 [US6] Implement superAdmin.analytics.overview procedure at `src/server/routers/superAdmin/analytics.ts`
-- [ ] T085 [US6] Implement superAdmin.analytics.growth procedure at `src/server/routers/superAdmin/analytics.ts`
-- [ ] T086 [US6] Implement superAdmin.analytics.engagement procedure at `src/server/routers/superAdmin/analytics.ts`
-- [ ] T087 [US6] Implement superAdmin.analytics.health procedure at `src/server/routers/superAdmin/analytics.ts`
-- [ ] T088 [P] [US6] Create MetricCard component at `src/components/admin/analytics/MetricCard.tsx`
-- [ ] T089 [P] [US6] Create GrowthChart component at `src/components/admin/analytics/GrowthChart.tsx`
-- [ ] T090 [P] [US6] Create HealthStatus component at `src/components/admin/analytics/HealthStatus.tsx`
-- [ ] T091 [US6] Create analytics page at `src/app/admin/analytics/page.tsx`
-- [ ] T092 [US6] Update superAdmin router composition at `src/server/routers/superAdmin/index.ts`
+- [X] T084 [US6] Implement superAdmin.analytics.overview procedure at `src/server/routers/superAdmin/analytics.ts`
+- [X] T085 [US6] Implement superAdmin.analytics.growth procedure at `src/server/routers/superAdmin/analytics.ts`
+- [X] T086 [US6] Implement superAdmin.analytics.engagement procedure at `src/server/routers/superAdmin/analytics.ts`
+- [X] T087 [US6] Implement superAdmin.analytics.health procedure at `src/server/routers/superAdmin/analytics.ts`
+- [X] T088 [P] [US6] Create MetricCard component at `src/components/admin/analytics/MetricCard.tsx`
+- [X] T089 [P] [US6] Create GrowthChart component at `src/components/admin/analytics/GrowthChart.tsx`
+- [X] T090 [P] [US6] Create HealthStatus component at `src/components/admin/analytics/HealthStatus.tsx`
+- [X] T091 [US6] Create analytics page at `src/app/admin/analytics/page.tsx`
+- [X] T092 [US6] Update superAdmin router composition at `src/server/routers/superAdmin/index.ts`
 
 **Checkpoint**: Can view platform metrics, growth trends, engagement data, system health
 

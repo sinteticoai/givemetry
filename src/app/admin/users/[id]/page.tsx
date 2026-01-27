@@ -1,4 +1,4 @@
-// T069: User Detail Page
+// T069, T080: User Detail Page with Impersonation
 "use client";
 
 import { use, useState, useCallback } from "react";
@@ -10,7 +10,9 @@ import { ConfirmDialog } from "@/components/admin/shared/ConfirmDialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
   Dialog,
   DialogContent,
@@ -33,6 +35,8 @@ import {
   UserCheck,
   KeyRound,
   Shield,
+  Eye,
+  AlertTriangle,
 } from "lucide-react";
 import type { UserRole } from "@prisma/client";
 
@@ -58,6 +62,9 @@ export default function UserDetailPage({ params }: PageProps) {
   const [isResetPasswordOpen, setIsResetPasswordOpen] = useState(false);
   const [isChangeRoleOpen, setIsChangeRoleOpen] = useState(false);
   const [newRole, setNewRole] = useState<UserRole | "">("");
+  // T080: Impersonation state
+  const [isImpersonateOpen, setIsImpersonateOpen] = useState(false);
+  const [impersonationReason, setImpersonationReason] = useState("");
 
   // Fetch user details
   const {
@@ -96,6 +103,19 @@ export default function UserDetailPage({ params }: PageProps) {
       refetch();
     },
   });
+
+  // T080: Impersonation mutation
+  const impersonateMutation = adminTrpc.impersonation.start.useMutation({
+    onSuccess: () => {
+      setIsImpersonateOpen(false);
+      setImpersonationReason("");
+      // Redirect to tenant dashboard as the impersonated user
+      router.push("/dashboard");
+    },
+  });
+
+  // T080: Check admin session to determine if user has super_admin role
+  const { data: adminSession } = adminTrpc.auth.me.useQuery();
 
   // Handle org click - navigate to org detail
   const handleOrgClick = useCallback(
@@ -201,6 +221,17 @@ export default function UserDetailPage({ params }: PageProps) {
             >
               <UserX className="mr-2 h-4 w-4" />
               Disable
+            </Button>
+          )}
+          {/* T080: Impersonate button - only shown for super_admin role */}
+          {adminSession?.role === "super_admin" && !user.isDisabled && (
+            <Button
+              variant="default"
+              className="bg-purple-600 hover:bg-purple-700"
+              onClick={() => setIsImpersonateOpen(true)}
+            >
+              <Eye className="mr-2 h-4 w-4" />
+              Impersonate
             </Button>
           )}
         </div>
@@ -335,6 +366,83 @@ export default function UserDetailPage({ params }: PageProps) {
               {changeRoleMutation.isPending ? "Saving..." : "Save Changes"}
             </Button>
           </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* T080: Impersonate dialog */}
+      <Dialog
+        open={isImpersonateOpen}
+        onOpenChange={(open) => {
+          setIsImpersonateOpen(open);
+          if (!open) setImpersonationReason("");
+        }}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Eye className="h-5 w-5 text-purple-600" />
+              Impersonate User
+            </DialogTitle>
+            <DialogDescription>
+              You are about to impersonate &quot;{user.name || user.email}&quot;. This will
+              allow you to view the application as this user for support purposes.
+            </DialogDescription>
+          </DialogHeader>
+          <Alert className="border-orange-500 bg-orange-50">
+            <AlertTriangle className="h-4 w-4 text-orange-600" />
+            <AlertDescription className="text-orange-800">
+              All actions taken while impersonating will be logged in the audit trail.
+              The session will automatically expire after 1 hour.
+            </AlertDescription>
+          </Alert>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="impersonationReason">Reason for impersonation</Label>
+              <Textarea
+                id="impersonationReason"
+                value={impersonationReason}
+                onChange={(e) => setImpersonationReason(e.target.value)}
+                placeholder="e.g., Support ticket #12345 - User unable to see their donors"
+                rows={3}
+              />
+              <p className="text-sm text-muted-foreground">
+                This reason will be recorded in the audit log and visible in impersonation history.
+              </p>
+            </div>
+            <div className="rounded-lg border p-3 bg-muted/50">
+              <p className="text-sm font-medium">Session Details:</p>
+              <ul className="text-sm text-muted-foreground mt-1 space-y-1">
+                <li>User: {user.email}</li>
+                <li>Organization: {user.organizationName}</li>
+                <li>Role: {roleOptions.find((r) => r.value === user.role)?.label}</li>
+              </ul>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsImpersonateOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              className="bg-purple-600 hover:bg-purple-700"
+              onClick={() => {
+                impersonateMutation.mutate({
+                  userId: id,
+                  reason: impersonationReason,
+                });
+              }}
+              disabled={impersonateMutation.isPending || !impersonationReason.trim()}
+            >
+              {impersonateMutation.isPending ? "Starting..." : "Start Impersonation"}
+            </Button>
+          </DialogFooter>
+          {impersonateMutation.isError && (
+            <Alert variant="destructive" className="mt-4">
+              <AlertTriangle className="h-4 w-4" />
+              <AlertDescription>
+                {impersonateMutation.error?.message || "Failed to start impersonation session"}
+              </AlertDescription>
+            </Alert>
+          )}
         </DialogContent>
       </Dialog>
     </div>
