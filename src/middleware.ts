@@ -1,7 +1,15 @@
 // T024, T064, T262: Auth middleware with session validation, role-based protection, and security headers
+// T019: Super admin route handling
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
+import {
+  getAdminToken,
+  isAdminRoute,
+  isAdminLoginRoute,
+  isAdminApiRoute,
+  validateAdminAccess,
+} from "@/lib/auth/admin-middleware";
 
 // T262: Security headers configuration
 const securityHeaders = {
@@ -76,6 +84,11 @@ const IDLE_TIMEOUT = 30 * 60 * 1000;
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  // T019: Handle admin routes separately
+  if (isAdminRoute(pathname) || isAdminApiRoute(pathname)) {
+    return handleAdminRoutes(request, pathname);
+  }
+
   // Allow public routes with security headers
   if (publicRoutes.some((route) => pathname.startsWith(route))) {
     const response = NextResponse.next();
@@ -141,6 +154,50 @@ export async function middleware(request: NextRequest) {
   response.headers.set("x-user-id", token.sub || "");
   response.headers.set("x-organization-id", (token.organizationId as string) || "");
   response.headers.set("x-user-role", userRole || "");
+
+  return response;
+}
+
+/**
+ * T019: Handle admin route authentication
+ */
+async function handleAdminRoutes(request: NextRequest, pathname: string) {
+  // Allow admin auth API routes without token check
+  if (pathname.startsWith("/api/admin/auth")) {
+    const response = NextResponse.next();
+    for (const [header, value] of Object.entries(securityHeaders)) {
+      response.headers.set(header, value);
+    }
+    return response;
+  }
+
+  // Allow admin login page without auth
+  if (isAdminLoginRoute(pathname)) {
+    const response = NextResponse.next();
+    for (const [header, value] of Object.entries(securityHeaders)) {
+      response.headers.set(header, value);
+    }
+    return response;
+  }
+
+  // Check admin token
+  const adminToken = await getAdminToken(request);
+  const validation = validateAdminAccess(adminToken, pathname);
+
+  if (!validation.valid && validation.redirect) {
+    return NextResponse.redirect(new URL(validation.redirect, request.url));
+  }
+
+  // Add admin context to response headers
+  const response = NextResponse.next();
+  for (const [header, value] of Object.entries(securityHeaders)) {
+    response.headers.set(header, value);
+  }
+
+  if (adminToken) {
+    response.headers.set("x-admin-id", adminToken.id);
+    response.headers.set("x-admin-role", adminToken.role);
+  }
 
   return response;
 }

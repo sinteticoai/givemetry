@@ -27,20 +27,30 @@ model Organization {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
+  // Super Admin: Status management
+  status          OrgStatus @default(active)
+  suspendedAt     DateTime?
+  suspendedReason String?   @db.Text
+  deletedAt       DateTime? // Soft delete timestamp
+  usageLimits     Json      @default("{}") // { maxUsers: 50, maxConstituents: 10000, ... }
+
   // Relations
-  users                User[]
-  uploads              Upload[]
-  constituents         Constituent[]
-  gifts                Gift[]
-  contacts             Contact[]
-  predictions          Prediction[]
-  alerts               Alert[]
-  briefs               Brief[]
+  users                  User[]
+  uploads                Upload[]
+  constituents           Constituent[]
+  gifts                  Gift[]
+  contacts               Contact[]
+  predictions            Prediction[]
+  alerts                 Alert[]
+  briefs                 Brief[]
   naturalLanguageQueries NaturalLanguageQuery[]
-  auditLogs            AuditLog[]
-  reports              Report[]
+  auditLogs              AuditLog[]
+  reports                Report[]
+  featureFlagOverrides   FeatureFlagOverride[]
+  impersonationSessions  ImpersonationSession[]
 
   @@index([slug])
+  @@index([status])
 }
 
 model User {
@@ -56,6 +66,12 @@ model User {
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
 
+  // Super Admin: Disable functionality
+  isDisabled     Boolean   @default(false)
+  disabledAt     DateTime?
+  disabledReason String?   @db.Text
+  disabledBy     String?   @db.Uuid // SuperAdmin ID who disabled
+
   // Relations
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   uploads      Upload[]
@@ -63,12 +79,14 @@ model User {
   contacts     Contact[]    @relation("ContactUser")
   queries      NaturalLanguageQuery[]
   auditLogs    AuditLog[]
+  impersonationSessions ImpersonationSession[]
 
   // Constituents assigned to this user (gift officer)
   assignedConstituents Constituent[] @relation("AssignedOfficer")
 
   @@index([organizationId])
   @@index([email])
+  @@index([isDisabled])
 }
 
 enum UserRole {
@@ -76,6 +94,21 @@ enum UserRole {
   manager
   gift_officer
   viewer
+}
+
+// ==============================================
+// SUPER ADMIN (Platform-level administration)
+// ==============================================
+
+enum SuperAdminRole {
+  super_admin // Full access: CRUD orgs, users, impersonate, delete
+  support     // Read-only + password reset, disable user (no impersonate/delete)
+}
+
+enum OrgStatus {
+  active
+  suspended
+  pending_deletion
 }
 
 model VerificationToken {
@@ -407,4 +440,103 @@ model AuditLog {
 
   @@index([organizationId, createdAt])
   @@index([action])
+}
+
+// ==============================================
+// SUPER ADMIN MODELS
+// ==============================================
+
+model SuperAdmin {
+  id                  String         @id @default(uuid()) @db.Uuid
+  email               String         @unique @db.VarChar(255)
+  passwordHash        String         @db.VarChar(255)
+  name                String         @db.VarChar(255)
+  role                SuperAdminRole @default(support)
+  isActive            Boolean        @default(true)
+  lastLoginAt         DateTime?
+  failedLoginAttempts Int            @default(0)
+  lockedUntil         DateTime?
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime       @updatedAt
+
+  // Relations
+  auditLogs             SuperAdminAuditLog[]
+  impersonationSessions ImpersonationSession[]
+
+  @@index([email])
+  @@index([isActive])
+}
+
+model SuperAdminAuditLog {
+  id             BigInt   @id @default(autoincrement())
+  superAdminId   String   @db.Uuid
+  action         String   @db.VarChar(100)
+  targetType     String   @db.VarChar(50) // 'organization', 'user', 'feature_flag', 'super_admin'
+  targetId       String?  @db.VarChar(100)
+  organizationId String?  @db.Uuid // If action was on/within an org
+  details        Json? // Additional context (before/after values)
+  ipAddress      String?  @db.VarChar(45) // IPv4 or IPv6
+  userAgent      String?  @db.Text
+  createdAt      DateTime @default(now())
+
+  // Relations
+  superAdmin SuperAdmin @relation(fields: [superAdminId], references: [id])
+
+  @@index([superAdminId])
+  @@index([organizationId])
+  @@index([action])
+  @@index([targetType, targetId])
+  @@index([createdAt])
+}
+
+model ImpersonationSession {
+  id             String    @id @default(uuid()) @db.Uuid
+  superAdminId   String    @db.Uuid
+  userId         String    @db.Uuid
+  organizationId String    @db.Uuid
+  reason         String    @db.Text
+  startedAt      DateTime  @default(now())
+  endedAt        DateTime?
+  endReason      String?   @db.VarChar(50) // 'manual', 'timeout', 'admin_logout'
+
+  // Relations
+  superAdmin   SuperAdmin   @relation(fields: [superAdminId], references: [id])
+  user         User         @relation(fields: [userId], references: [id])
+  organization Organization @relation(fields: [organizationId], references: [id])
+
+  @@index([superAdminId])
+  @@index([userId])
+  @@index([organizationId])
+  @@index([startedAt])
+}
+
+model FeatureFlag {
+  id             String    @id @default(uuid()) @db.Uuid
+  key            String    @unique @db.VarChar(100) // e.g., 'ai_briefings', 'bulk_export'
+  name           String    @db.VarChar(255)
+  description    String?   @db.Text
+  defaultEnabled Boolean   @default(false)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  // Relations
+  overrides FeatureFlagOverride[]
+
+  @@index([key])
+}
+
+model FeatureFlagOverride {
+  id             String   @id @default(uuid()) @db.Uuid
+  featureFlagId  String   @db.Uuid
+  organizationId String   @db.Uuid
+  enabled        Boolean
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  // Relations
+  featureFlag  FeatureFlag  @relation(fields: [featureFlagId], references: [id], onDelete: Cascade)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([featureFlagId, organizationId])
+  @@index([organizationId])
 }
