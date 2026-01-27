@@ -1,4 +1,4 @@
-// T035, T046, T070, T082, T092: Super Admin Router Composition
+// T035, T046, T070, T082, T092, T099: Super Admin Router Composition
 import { initTRPC } from "@trpc/server";
 import superjson from "superjson";
 import type { AdminContext } from "@/server/trpc/admin-context";
@@ -7,6 +7,7 @@ import { organizationsRouter } from "./organizations";
 import { usersRouter } from "./users";
 import { impersonationRouter } from "./impersonation";
 import { analyticsRouter } from "./analytics";
+import { auditRouter } from "./audit";
 
 // Initialize tRPC for admin context
 const t = initTRPC.context<AdminContext>().create({
@@ -20,8 +21,8 @@ export const superAdminRouter = t.router({
   users: usersRouter,
   impersonation: impersonationRouter,
   analytics: analyticsRouter,
+  audit: auditRouter,
   // Future routers will be added here:
-  // audit: auditRouter,
   // featureFlags: featureFlagsRouter,
 });
 

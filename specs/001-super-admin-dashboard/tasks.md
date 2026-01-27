@@ -242,16 +242,16 @@
 
 ### Tests for User Story 7 (TDD - write first, ensure they FAIL)
 
-- [ ] T093 [P] [US7] Unit test for audit router at `tests/unit/admin/audit.test.ts`
+- [X] T093 [P] [US7] Unit test for audit router at `tests/unit/admin/audit.test.ts`
 
 ### Implementation for User Story 7
 
-- [ ] T094 [US7] Implement superAdmin.audit.list procedure at `src/server/routers/superAdmin/audit.ts`
-- [ ] T095 [US7] Implement superAdmin.audit.superAdminLogs procedure at `src/server/routers/superAdmin/audit.ts`
-- [ ] T096 [US7] Implement superAdmin.audit.actionTypes procedure at `src/server/routers/superAdmin/audit.ts`
-- [ ] T097 [US7] Implement superAdmin.audit.export procedure (CSV generation) at `src/server/routers/superAdmin/audit.ts`
-- [ ] T098 [US7] Create audit log viewer page at `src/app/admin/audit/page.tsx` (with tabs for tenant/admin logs)
-- [ ] T099 [US7] Update superAdmin router composition at `src/server/routers/superAdmin/index.ts`
+- [X] T094 [US7] Implement superAdmin.audit.list procedure at `src/server/routers/superAdmin/audit.ts`
+- [X] T095 [US7] Implement superAdmin.audit.superAdminLogs procedure at `src/server/routers/superAdmin/audit.ts`
+- [X] T096 [US7] Implement superAdmin.audit.actionTypes procedure at `src/server/routers/superAdmin/audit.ts`
+- [X] T097 [US7] Implement superAdmin.audit.export procedure (CSV generation) at `src/server/routers/superAdmin/audit.ts`
+- [X] T098 [US7] Create audit log viewer page at `src/app/admin/audit/page.tsx` (with tabs for tenant/admin logs)
+- [X] T099 [US7] Update superAdmin router composition at `src/server/routers/superAdmin/index.ts`
 
 **Checkpoint**: Can view all audit logs, filter, see super admin actions, export to CSV
 
