@@ -6,11 +6,6 @@ import { Button } from "@/components/ui/button";
 import { LandingNavbar } from "@/components/landing/landing-navbar";
 import {
   BarChart3,
-  Brain,
-  FileText,
-  Shield,
-  TrendingUp,
-  Users,
   ArrowRight,
   CheckCircle2,
 } from "lucide-react";
@@ -35,24 +30,43 @@ export default async function HomePage() {
             AI-Powered Advancement Intelligence
           </p>
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-slate-900 dark:text-white mb-6">
-            Know who to call.
-            <br />
-            <span className="text-slate-400 dark:text-slate-500">Know what to say.</span>
+            Just ask.
           </h1>
           <p className="text-xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto mb-10">
-            GiveMetry transforms your donor data into actionable intelligence.
-            Stop guessing. Start prioritizing. Raise more with the team you have.
+            Talk to your donor data in plain English. Get instant answers.<br />
+            No reports. No SQL. No waiting on IT.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+
+          {/* Example Queries */}
+          <div className="max-w-2xl mx-auto mb-10">
+            <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border dark:border-slate-700 p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-3 h-3 rounded-full bg-rose-400"></div>
+                <div className="w-3 h-3 rounded-full bg-amber-400"></div>
+                <div className="w-3 h-3 rounded-full bg-emerald-400"></div>
+              </div>
+              <div className="space-y-3 text-left">
+                <div className="bg-slate-50 dark:bg-slate-900 rounded-lg px-4 py-3">
+                  <p className="text-slate-700 dark:text-slate-300 font-medium">&ldquo;Who should I call this week?&rdquo;</p>
+                </div>
+                <div className="bg-slate-50 dark:bg-slate-900 rounded-lg px-4 py-3">
+                  <p className="text-slate-700 dark:text-slate-300 font-medium">&ldquo;Which donors are at risk of lapsing?&rdquo;</p>
+                </div>
+                <div className="bg-slate-50 dark:bg-slate-900 rounded-lg px-4 py-3">
+                  <p className="text-slate-700 dark:text-slate-300 font-medium">&ldquo;Show me Engineering alumni who gave $10K+ but haven&apos;t been contacted in 6 months&rdquo;</p>
+                </div>
+              </div>
+              <p className="text-sm text-slate-500 dark:text-slate-400 mt-4 text-center">
+                Answers in seconds. Always accurate. Always explainable.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex justify-center">
             <Link href="/signup">
               <Button size="lg" className="text-lg px-8 py-6">
                 Request a Demo
                 <ArrowRight className="ml-2 w-5 h-5" />
-              </Button>
-            </Link>
-            <Link href="#features">
-              <Button size="lg" variant="outline" className="text-lg px-8 py-6">
-                See How It Works
               </Button>
             </Link>
           </div>
@@ -63,30 +77,16 @@ export default async function HomePage() {
       </section>
 
       {/* Problem Statement */}
-      <section className="py-20 bg-slate-900 text-white">
+      <section className="py-16 bg-slate-900 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl mx-auto text-center">
             <h2 className="text-3xl font-bold mb-6">
-              Your data is working against you
+              Your data has answers. You just can&apos;t get to them.
             </h2>
-            <p className="text-lg text-slate-300 mb-12">
-              Gift officers manage 150+ prospects with no systematic way to know who to call.
-              Wealth screenings sit untouched. Opportunities slip away.
+            <p className="text-lg text-slate-300">
+              Gift officers manage 150+ prospects but can&apos;t ask simple questions without
+              waiting days for IT reports. Wealth screenings sit untouched. Opportunities slip away.
             </p>
-          </div>
-          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            <div className="text-center">
-              <div className="text-4xl font-bold text-rose-400 mb-2">46%</div>
-              <p className="text-slate-300">of gift officers plan to leave within 2 years</p>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold text-rose-400 mb-2">40%</div>
-              <p className="text-slate-300">of advancement time spent on manual reports</p>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold text-rose-400 mb-2">62%</div>
-              <p className="text-slate-300">decline in alumni giving since the 1980s</p>
-            </div>
           </div>
         </div>
       </section>
@@ -96,44 +96,37 @@ export default async function HomePage() {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-4">
-              Intelligence that drives results
+              Ask anything about your donors
             </h2>
             <p className="text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
-              GiveMetry answers the question advancement leaders ask daily:
-              &ldquo;Who should we focus on, and what should we do next?&rdquo;
+              Every question gets an instant, accurate answer — powered by AI that understands your data.
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <FeatureCard
-              icon={<TrendingUp className="w-6 h-6" />}
-              title="Lapse Risk Predictions"
-              description="Identify donors at risk of lapsing before it's too late. Intervene proactively with AI-powered alerts."
+            <QueryCard
+              question="Who's at risk of lapsing?"
+              answer="Get a prioritized list of donors showing signs of disengagement, with specific reasons why and recommended actions to retain them."
             />
-            <FeatureCard
-              icon={<Users className="w-6 h-6" />}
-              title="Smart Prioritization"
-              description="Know exactly which 5 donors your gift officers should call tomorrow. No more guesswork."
+            <QueryCard
+              question="Who should I call this week?"
+              answer="Your top 5 priorities based on capacity, engagement, timing, and likelihood to give — updated daily."
             />
-            <FeatureCard
-              icon={<FileText className="w-6 h-6" />}
-              title="AI Donor Briefs"
-              description="Generate comprehensive donor briefs before every meeting. Everything you need to know, instantly."
+            <QueryCard
+              question="Prepare me for my meeting with Dr. Chen"
+              answer="A complete donor brief: giving history, past conversations, interests, connections, and talking points — generated in seconds."
             />
-            <FeatureCard
-              icon={<Brain className="w-6 h-6" />}
-              title="Natural Language Queries"
-              description="Ask questions in plain English. &ldquo;Show me lapsed donors from the class of 2005 who gave over $1,000.&rdquo;"
+            <QueryCard
+              question="Show me Engineering alumni who gave $10K+ but haven't been contacted"
+              answer="Instantly filter and segment your database with plain English. No SQL. No report requests."
             />
-            <FeatureCard
-              icon={<BarChart3 className="w-6 h-6" />}
-              title="Data Health Dashboard"
-              description="See the quality and completeness of your CRM data at a glance. Prioritize cleanup efforts."
+            <QueryCard
+              question="How healthy is our data?"
+              answer="See completeness, freshness, and quality scores across your CRM. Know exactly where to focus cleanup efforts."
             />
-            <FeatureCard
-              icon={<Shield className="w-6 h-6" />}
-              title="Enterprise Security"
-              description="SOC 2 compliant. Role-based access. Your donor data stays safe and private."
+            <QueryCard
+              question="What happened with my portfolio this quarter?"
+              answer="Track meetings, asks, and gifts closed. See what's working and where to adjust — all in one view."
             />
           </div>
         </div>
@@ -144,28 +137,28 @@ export default async function HomePage() {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-4">
-              Get started in minutes
+              From data to answers in minutes
             </h2>
             <p className="text-lg text-slate-600 dark:text-slate-300">
-              No complex integration required. No CRM replacement.
+              No complex integration. No training. Just ask.
             </p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
             <StepCard
               number="1"
-              title="Upload Your Data"
-              description="Export a CSV from your existing CRM. Blackbaud, Salesforce, or any system."
+              title="Connect Your Data"
+              description="From Blackbaud, Salesforce, or any CRM — we connect to your system."
             />
             <StepCard
               number="2"
-              title="Get Your Assessment"
-              description="Within minutes, see your data health score and AI-powered insights."
+              title="Ask Your First Question"
+              description="Type a question in plain English. No training required."
             />
             <StepCard
               number="3"
-              title="Start Prioritizing"
-              description="Know exactly who to call, who's at risk, and where to focus your team."
+              title="Get Instant Answers"
+              description="Prioritized lists, donor briefs, lapse risks — answers in seconds."
             />
           </div>
         </div>
@@ -176,20 +169,21 @@ export default async function HomePage() {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <p className="text-sm font-medium text-slate-600 dark:text-slate-400 mb-3">
-              BUILT ON RESEARCH
+              THE REALITY
             </p>
             <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-4">
-              40 years of advancement data
+              The participation crisis is real
             </h2>
             <p className="text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
-              GiveMetry&apos;s models are trained on industry benchmarks from CASE, RNL, and decades of giving patterns.
+              Giving has collapsed 62% since the 1980s. Your donors are at risk. GiveMetry helps you find them before they&apos;re gone.
             </p>
           </div>
 
           {/* Historical Decline - Before/After Design */}
           <div className="bg-slate-900 dark:bg-slate-800 rounded-2xl p-8 mb-8">
+            <p className="text-slate-400 text-sm text-center mb-2">&ldquo;Why is giving declining?&rdquo;</p>
             <h3 className="text-xl font-semibold text-white text-center mb-6">
-              The Participation Crisis
+              GiveMetry understands the participation crisis
             </h3>
 
             {/* Before / After Comparison */}
@@ -221,7 +215,7 @@ export default async function HomePage() {
             </div>
 
             <p className="text-slate-400 text-sm text-center max-w-lg mx-auto">
-              Alumni giving rates have declined dramatically. Advancement offices need smarter tools to reverse this trend.
+              When you ask about trends, GiveMetry contextualizes your data against 40 years of industry patterns.
             </p>
 
             <p className="text-xs text-slate-400 mt-4 text-center">
@@ -230,6 +224,7 @@ export default async function HomePage() {
           </div>
 
           {/* Participation by School Size */}
+          <p className="text-slate-500 dark:text-slate-400 text-sm text-center mb-4">How do you compare to similar schools?</p>
           <div className="grid md:grid-cols-3 gap-6 mb-8">
             <BenchmarkCard
               size="Small Institutions"
@@ -261,8 +256,9 @@ export default async function HomePage() {
           <div className="bg-[#f8fafc] dark:bg-slate-800 rounded-2xl p-8 border border-slate-200 dark:border-slate-700">
             <div className="flex flex-col md:flex-row gap-8 items-center">
               <div className="md:w-2/3">
+                <p className="text-slate-500 text-sm mb-2">&ldquo;Who&apos;s at risk of lapsing?&rdquo;</p>
                 <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-3">
-                  The &ldquo;Valley&rdquo; Problem
+                  GiveMetry understands the &ldquo;Valley&rdquo; Problem
                 </h3>
                 <p className="text-slate-600 dark:text-slate-300 mb-4">
                   Alumni giving drops to just <strong>6-7%</strong> during years 6-15 after graduation —
@@ -270,8 +266,7 @@ export default async function HomePage() {
                   through this period become your <strong>20x higher-value</strong> major gift prospects at peak giving years (30-50).
                 </p>
                 <p className="text-sm text-slate-500">
-                  GiveMetry identifies at-risk donors before they enter the valley, so you can maintain engagement
-                  through non-monetary touchpoints.
+                  Ask &ldquo;Who&apos;s at risk?&rdquo; and GiveMetry finds donors approaching the valley — before it&apos;s too late.
                 </p>
               </div>
               <div className="md:w-1/3 flex justify-center">
@@ -312,40 +307,20 @@ export default async function HomePage() {
       {/* Benefits */}
       <section className="py-24 bg-slate-900 text-white px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <div>
-              <h2 className="text-3xl sm:text-4xl font-bold mb-6">
-                An intelligence layer, not another platform
-              </h2>
-              <p className="text-lg text-slate-300 mb-8">
-                GiveMetry works alongside your existing CRM. No rip-and-replace.
-                No two-year procurement battle. Just better intelligence from data you already have.
-              </p>
-              <ul className="space-y-4">
-                <BenefitItem text="Works with Blackbaud, Salesforce, and others" />
-                <BenefitItem text="No data migration required" />
-                <BenefitItem text="Up and running in days, not months" />
-                <BenefitItem text="Explainable AI you can trust" />
-              </ul>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="bg-slate-800 rounded-2xl p-6">
-                <div className="text-3xl font-bold text-emerald-400 mb-2">5x</div>
-                <p className="text-slate-300 text-sm">more cost-effective to retain donors than acquire new ones</p>
-              </div>
-              <div className="bg-slate-800 rounded-2xl p-6">
-                <div className="text-3xl font-bold text-emerald-400 mb-2">2 hrs</div>
-                <p className="text-slate-300 text-sm">saved per gift officer per week on meeting prep</p>
-              </div>
-              <div className="bg-slate-800 rounded-2xl p-6">
-                <div className="text-3xl font-bold text-emerald-400 mb-2">34%</div>
-                <p className="text-slate-300 text-sm">improvement in engagement tracking</p>
-              </div>
-              <div className="bg-slate-800 rounded-2xl p-6">
-                <div className="text-3xl font-bold text-emerald-400 mb-2">15min</div>
-                <p className="text-slate-300 text-sm">from upload to first insights</p>
-              </div>
-            </div>
+          <div className="max-w-3xl mx-auto text-center">
+            <h2 className="text-3xl sm:text-4xl font-bold mb-6">
+              Your data. Any CRM. Just ask.
+            </h2>
+            <p className="text-lg text-slate-300 mb-8">
+              Your data lives in Blackbaud. Or Salesforce. Or spreadsheets.
+              It doesn&apos;t matter — just ask, and GiveMetry connects the dots.
+            </p>
+            <ul className="space-y-4 text-left inline-block">
+              <BenefitItem text="Connects to Blackbaud, Salesforce, or any CRM" />
+              <BenefitItem text="Ask questions across all your donor data" />
+              <BenefitItem text="First answers in seconds, not hours" />
+              <BenefitItem text="Every answer is explainable and auditable" />
+            </ul>
           </div>
         </div>
       </section>
@@ -354,11 +329,10 @@ export default async function HomePage() {
       <section className="py-24 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-6">
-            Ready to transform your advancement office?
+            Ready to start asking?
           </h2>
           <p className="text-lg text-slate-600 dark:text-slate-300 mb-10">
-            Start with a data health assessment. See where you stand, who&apos;s at risk,
-            and who to prioritize — in minutes, not months.
+            See what your donor data can tell you — in minutes, not months.
           </p>
           <Link href="/signup">
             <Button size="lg" className="text-lg px-8 py-6">
@@ -430,22 +404,19 @@ export default async function HomePage() {
   );
 }
 
-function FeatureCard({
-  icon,
-  title,
-  description,
+function QueryCard({
+  question,
+  answer,
 }: {
-  icon: React.ReactNode;
-  title: string;
-  description: string;
+  question: string;
+  answer: string;
 }) {
   return (
     <div className="bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-sm border dark:border-slate-700 hover:shadow-md transition-shadow">
-      <div className="w-12 h-12 bg-slate-100 dark:bg-slate-800 rounded-xl flex items-center justify-center text-slate-700 dark:text-slate-300 mb-6">
-        {icon}
-      </div>
-      <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-3">{title}</h3>
-      <p className="text-slate-600 dark:text-slate-300">{description}</p>
+      <p className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
+        &ldquo;{question}&rdquo;
+      </p>
+      <p className="text-slate-600 dark:text-slate-300">{answer}</p>
     </div>
   );
 }
