@@ -1,7 +1,7 @@
 // T039-T041, T049-T052: Super Admin Organizations Router
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
-import { adminRouter, adminProtectedProcedure } from "./auth";
+import { adminRouter, adminProtectedProcedure, superAdminOnlyProcedure } from "./auth";
 import prisma from "@/lib/prisma/client";
 import type { OrgStatus, Prisma } from "@prisma/client";
 import { sendInviteEmail } from "@/server/services/email";
@@ -49,6 +49,18 @@ const suspendInputSchema = z.object({
 // T052: Reactivate organization input schema
 const reactivateInputSchema = z.object({
   id: z.string().uuid(),
+});
+
+// T111: Soft delete organization input schema
+const deleteInputSchema = z.object({
+  id: z.string().uuid(),
+  confirmationName: z.string().min(1, "Confirmation name is required"),
+});
+
+// T112: Hard delete organization input schema
+const hardDeleteInputSchema = z.object({
+  id: z.string().uuid(),
+  confirmationName: z.string().min(1, "Confirmation name is required"),
 });
 
 // Helper to generate a random token for invitation
@@ -672,6 +684,181 @@ export const organizationsRouter = adminRouter({
         suspendedAt: updatedOrg.suspendedAt,
         suspendedReason: updatedOrg.suspendedReason,
         deletedAt: updatedOrg.deletedAt,
+      };
+    }),
+
+  // T111: Soft delete organization (30-day retention period)
+  delete: adminProtectedProcedure
+    .input(deleteInputSchema)
+    .mutation(async ({ ctx, input }) => {
+      // Check if organization exists
+      const existingOrg = await prisma.organization.findUnique({
+        where: { id: input.id },
+        select: {
+          id: true,
+          name: true,
+          status: true,
+          deletedAt: true,
+        },
+      });
+
+      if (!existingOrg) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Organization not found",
+        });
+      }
+
+      // Verify confirmation name matches
+      if (input.confirmationName !== existingOrg.name) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Confirmation name does not match organization name",
+        });
+      }
+
+      // Check if already pending deletion
+      if (existingOrg.status === "pending_deletion") {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Organization is already pending deletion",
+        });
+      }
+
+      // Soft delete the organization
+      const deletedOrg = await prisma.organization.update({
+        where: { id: input.id },
+        data: {
+          status: "pending_deletion",
+          deletedAt: new Date(),
+        },
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+          plan: true,
+          planExpiresAt: true,
+          status: true,
+          createdAt: true,
+          suspendedAt: true,
+          suspendedReason: true,
+          deletedAt: true,
+          _count: {
+            select: {
+              users: true,
+              constituents: true,
+            },
+          },
+        },
+      });
+
+      // T115: Invalidate all user sessions for this organization
+      // This is handled by the auth check in config.ts which checks organization.status
+
+      // Log audit action
+      await ctx.logAuditAction({
+        action: "organization.delete",
+        targetType: "organization",
+        targetId: input.id,
+        organizationId: input.id,
+        details: {
+          name: existingOrg.name,
+          previousStatus: existingOrg.status,
+          retentionDays: 30,
+        },
+      });
+
+      // Get last activity
+      const lastActivityAt = await getLastActivityAt(input.id);
+
+      return {
+        id: deletedOrg.id,
+        name: deletedOrg.name,
+        slug: deletedOrg.slug,
+        plan: deletedOrg.plan,
+        planExpiresAt: deletedOrg.planExpiresAt,
+        status: deletedOrg.status,
+        usersCount: deletedOrg._count.users,
+        constituentsCount: deletedOrg._count.constituents,
+        lastActivityAt,
+        createdAt: deletedOrg.createdAt,
+        suspendedAt: deletedOrg.suspendedAt,
+        suspendedReason: deletedOrg.suspendedReason,
+        deletedAt: deletedOrg.deletedAt,
+      };
+    }),
+
+  // T112: Hard delete organization (super_admin only - permanent deletion)
+  hardDelete: superAdminOnlyProcedure
+    .input(hardDeleteInputSchema)
+    .mutation(async ({ ctx, input }) => {
+      // Check if organization exists
+      const existingOrg = await prisma.organization.findUnique({
+        where: { id: input.id },
+        select: {
+          id: true,
+          name: true,
+          slug: true,
+          status: true,
+          deletedAt: true,
+          _count: {
+            select: {
+              users: true,
+              constituents: true,
+            },
+          },
+        },
+      });
+
+      if (!existingOrg) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Organization not found",
+        });
+      }
+
+      // Verify confirmation name matches
+      if (input.confirmationName !== existingOrg.name) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Confirmation name does not match organization name",
+        });
+      }
+
+      // Require organization to be in pending_deletion status
+      if (existingOrg.status !== "pending_deletion") {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Organization must be in pending_deletion status before hard delete. Soft delete first.",
+        });
+      }
+
+      // Store details for audit log before deletion
+      const deletionDetails = {
+        name: existingOrg.name,
+        slug: existingOrg.slug,
+        usersCount: existingOrg._count.users,
+        constituentsCount: existingOrg._count.constituents,
+        deletedAt: existingOrg.deletedAt?.toISOString(),
+      };
+
+      // Hard delete the organization (cascade deletes related data)
+      await prisma.organization.delete({
+        where: { id: input.id },
+      });
+
+      // Log audit action
+      await ctx.logAuditAction({
+        action: "organization.hard_delete",
+        targetType: "organization",
+        targetId: input.id,
+        organizationId: undefined, // Org no longer exists
+        details: deletionDetails,
+      });
+
+      return {
+        success: true,
+        deletedOrganization: deletionDetails,
       };
     }),
 });

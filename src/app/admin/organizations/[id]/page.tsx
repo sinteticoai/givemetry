@@ -48,6 +48,7 @@ export default function OrganizationDetailPage({ params }: PageProps) {
   const [suspendReason, setSuspendReason] = useState("");
   const [isReactivateOpen, setIsReactivateOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [isHardDeleteOpen, setIsHardDeleteOpen] = useState(false);
 
   // T056: Suspend mutation
   const suspendMutation = adminTrpc.organizations.suspend.useMutation({
@@ -63,6 +64,22 @@ export default function OrganizationDetailPage({ params }: PageProps) {
     onSuccess: () => {
       setIsReactivateOpen(false);
       refetch();
+    },
+  });
+
+  // T113: Delete mutation (soft delete)
+  const deleteMutation = adminTrpc.organizations.delete.useMutation({
+    onSuccess: () => {
+      setIsDeleteOpen(false);
+      refetch();
+    },
+  });
+
+  // T113: Hard delete mutation (super_admin only)
+  const hardDeleteMutation = adminTrpc.organizations.hardDelete.useMutation({
+    onSuccess: () => {
+      setIsHardDeleteOpen(false);
+      router.push("/admin/organizations");
     },
   });
 
@@ -197,14 +214,26 @@ export default function OrganizationDetailPage({ params }: PageProps) {
               Reactivate
             </Button>
           )}
-          <Button
-            variant="outline"
-            className="text-red-600 hover:text-red-700"
-            onClick={() => setIsDeleteOpen(true)}
-          >
-            <Trash2 className="mr-2 h-4 w-4" />
-            Delete
-          </Button>
+          {organization.status !== "pending_deletion" && (
+            <Button
+              variant="outline"
+              className="text-red-600 hover:text-red-700"
+              onClick={() => setIsDeleteOpen(true)}
+            >
+              <Trash2 className="mr-2 h-4 w-4" />
+              Delete
+            </Button>
+          )}
+          {organization.status === "pending_deletion" && (
+            <Button
+              variant="outline"
+              className="text-red-600 hover:text-red-700"
+              onClick={() => setIsHardDeleteOpen(true)}
+            >
+              <Trash2 className="mr-2 h-4 w-4" />
+              Permanently Delete
+            </Button>
+          )}
         </div>
       </div>
 
@@ -317,17 +346,41 @@ export default function OrganizationDetailPage({ params }: PageProps) {
         }}
       />
 
-      {/* Delete confirmation */}
+      {/* T113: Delete confirmation with name typing */}
       <ConfirmDialog
         open={isDeleteOpen}
         onOpenChange={setIsDeleteOpen}
         title="Delete Organization"
-        description={`Are you sure you want to delete "${organization.name}"? This action will soft-delete the organization with a 30-day retention period.`}
-        confirmLabel="Delete"
+        description={`Are you sure you want to delete "${organization.name}"? This action will soft-delete the organization with a 30-day retention period. All users will be immediately blocked from logging in.`}
+        confirmLabel={deleteMutation.isPending ? "Deleting..." : "Delete Organization"}
         variant="destructive"
+        confirmText={organization.name}
+        confirmPlaceholder="Type organization name to confirm"
+        isLoading={deleteMutation.isPending}
         onConfirm={() => {
-          // TODO: Implement delete in Phase 11
-          setIsDeleteOpen(false);
+          deleteMutation.mutate({
+            id: id,
+            confirmationName: organization.name,
+          });
+        }}
+      />
+
+      {/* T113: Hard delete confirmation (super_admin only) */}
+      <ConfirmDialog
+        open={isHardDeleteOpen}
+        onOpenChange={setIsHardDeleteOpen}
+        title="Permanently Delete Organization"
+        description={`WARNING: This action is IRREVERSIBLE. All data associated with "${organization.name}" will be permanently deleted, including all users, constituents, gifts, and other records. This cannot be undone.`}
+        confirmLabel={hardDeleteMutation.isPending ? "Deleting..." : "Permanently Delete"}
+        variant="destructive"
+        confirmText={organization.name}
+        confirmPlaceholder="Type organization name to confirm"
+        isLoading={hardDeleteMutation.isPending}
+        onConfirm={() => {
+          hardDeleteMutation.mutate({
+            id: id,
+            confirmationName: organization.name,
+          });
         }}
       />
     </div>

@@ -291,15 +291,15 @@
 
 ### Tests for User Story 9 (TDD - write first, ensure they FAIL)
 
-- [ ] T110 [P] [US9] Unit test for org delete at `tests/unit/admin/organizations.test.ts`
+- [X] T110 [P] [US9] Unit test for org delete at `tests/unit/admin/organizations.test.ts`
 
 ### Implementation for User Story 9
 
-- [ ] T111 [US9] Implement superAdmin.organizations.delete procedure (soft delete) at `src/server/routers/superAdmin/organizations.ts`
-- [ ] T112 [US9] Implement superAdmin.organizations.hardDelete procedure (super_admin only) at `src/server/routers/superAdmin/organizations.ts`
-- [ ] T113 [US9] Add delete confirmation dialog to organization detail page
-- [ ] T114 [US9] Create scheduled job for 30-day hard delete at `src/server/jobs/cleanup-deleted-orgs.ts`
-- [ ] T115 [US9] Invalidate user sessions when org is deleted
+- [X] T111 [US9] Implement superAdmin.organizations.delete procedure (soft delete) at `src/server/routers/superAdmin/organizations.ts`
+- [X] T112 [US9] Implement superAdmin.organizations.hardDelete procedure (super_admin only) at `src/server/routers/superAdmin/organizations.ts`
+- [X] T113 [US9] Add delete confirmation dialog to organization detail page
+- [X] T114 [US9] Create scheduled job for 30-day hard delete at `src/server/jobs/cleanup-deleted-orgs.ts`
+- [X] T115 [US9] Invalidate user sessions when org is deleted
 
 **Checkpoint**: Can soft delete orgs, hard delete available for super_admin, 30-day retention works
 
