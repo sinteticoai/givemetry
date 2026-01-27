@@ -265,19 +265,19 @@
 
 ### Tests for User Story 8 (TDD - write first, ensure they FAIL)
 
-- [ ] T100 [P] [US8] Unit test for feature flags router at `tests/unit/admin/feature-flags.test.ts`
+- [X] T100 [P] [US8] Unit test for feature flags router at `tests/unit/admin/feature-flags.test.ts`
 
 ### Implementation for User Story 8
 
-- [ ] T101 [US8] Implement superAdmin.featureFlags.list procedure at `src/server/routers/superAdmin/featureFlags.ts`
-- [ ] T102 [US8] Implement superAdmin.featureFlags.get procedure at `src/server/routers/superAdmin/featureFlags.ts`
-- [ ] T103 [US8] Implement superAdmin.featureFlags.create procedure at `src/server/routers/superAdmin/featureFlags.ts`
-- [ ] T104 [US8] Implement superAdmin.featureFlags.update procedure at `src/server/routers/superAdmin/featureFlags.ts`
-- [ ] T105 [US8] Implement superAdmin.featureFlags.setOverride procedure at `src/server/routers/superAdmin/featureFlags.ts`
-- [ ] T106 [US8] Implement superAdmin.featureFlags.removeOverride procedure at `src/server/routers/superAdmin/featureFlags.ts`
-- [ ] T107 [US8] Create helper function to check feature flag for organization at `src/lib/feature-flags.ts`
-- [ ] T108 [US8] Create feature flags management page at `src/app/admin/feature-flags/page.tsx`
-- [ ] T109 [US8] Update superAdmin router composition at `src/server/routers/superAdmin/index.ts`
+- [X] T101 [US8] Implement superAdmin.featureFlags.list procedure at `src/server/routers/superAdmin/featureFlags.ts`
+- [X] T102 [US8] Implement superAdmin.featureFlags.get procedure at `src/server/routers/superAdmin/featureFlags.ts`
+- [X] T103 [US8] Implement superAdmin.featureFlags.create procedure at `src/server/routers/superAdmin/featureFlags.ts`
+- [X] T104 [US8] Implement superAdmin.featureFlags.update procedure at `src/server/routers/superAdmin/featureFlags.ts`
+- [X] T105 [US8] Implement superAdmin.featureFlags.setOverride procedure at `src/server/routers/superAdmin/featureFlags.ts`
+- [X] T106 [US8] Implement superAdmin.featureFlags.removeOverride procedure at `src/server/routers/superAdmin/featureFlags.ts`
+- [X] T107 [US8] Create helper function to check feature flag for organization at `src/lib/feature-flags.ts`
+- [X] T108 [US8] Create feature flags management page at `src/app/admin/feature-flags/page.tsx`
+- [X] T109 [US8] Update superAdmin router composition at `src/server/routers/superAdmin/index.ts`
 
 **Checkpoint**: Can manage feature flags, set overrides, organizations see correct flag states
 
