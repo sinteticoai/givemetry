@@ -1,4 +1,4 @@
-// T017: Root tRPC router
+// T017, T036: Root tRPC router
 import { router } from "../trpc/init";
 import { authRouter } from "./auth";
 import { organizationRouter } from "./organization";
@@ -12,6 +12,7 @@ import { aiRouter } from "./ai";
 import { alertRouter } from "./alert";
 import { reportRouter } from "./report";
 import { auditRouter } from "./audit";
+import { superAdminRouter } from "./superAdmin";
 
 export const appRouter = router({
   auth: authRouter,
@@ -26,6 +27,7 @@ export const appRouter = router({
   alert: alertRouter,
   report: reportRouter,
   audit: auditRouter,
+  superAdmin: superAdminRouter,
 });
 
 export type AppRouter = typeof appRouter;
