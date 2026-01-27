@@ -309,11 +309,11 @@
 
 **Purpose**: Improvements affecting multiple user stories
 
-- [ ] T116 [P] Create scheduled job for 2-year audit log retention at `src/server/jobs/cleanup-old-audit-logs.ts`
-- [ ] T117 [P] Create admin settings page at `src/app/admin/settings/page.tsx`
-- [ ] T118 Run all admin tests: `pnpm test tests/unit/admin && pnpm test tests/integration/admin`
-- [ ] T119 Run quickstart.md validation (manual verification)
-- [ ] T120 Security review: verify all admin routes protected, audit logging complete
+- [X] T116 [P] Create scheduled job for 2-year audit log retention at `src/server/jobs/cleanup-old-audit-logs.ts`
+- [X] T117 [P] Create admin settings page at `src/app/admin/settings/page.tsx`
+- [X] T118 Run all admin tests: `pnpm test tests/unit/admin && pnpm test tests/integration/admin`
+- [X] T119 Run quickstart.md validation (manual verification)
+- [X] T120 Security review: verify all admin routes protected, audit logging complete
 
 ---
 
