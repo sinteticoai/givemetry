@@ -40,9 +40,6 @@ export default async function HomePage() {
               <Link href="/login">
                 <Button variant="ghost">Sign In</Button>
               </Link>
-              <Link href="/signup">
-                <Button>Request a Demo</Button>
-              </Link>
             </div>
           </div>
         </div>
@@ -96,15 +93,15 @@ export default async function HomePage() {
           </div>
           <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
             <div className="text-center">
-              <div className="text-4xl font-bold text-emerald-400 mb-2">46%</div>
+              <div className="text-4xl font-bold text-rose-400 mb-2">46%</div>
               <p className="text-slate-300">of gift officers plan to leave within 2 years</p>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-bold text-emerald-400 mb-2">40%</div>
+              <div className="text-4xl font-bold text-rose-400 mb-2">40%</div>
               <p className="text-slate-300">of advancement time spent on manual reports</p>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-bold text-emerald-400 mb-2">62%</div>
+              <div className="text-4xl font-bold text-rose-400 mb-2">62%</div>
               <p className="text-slate-300">decline in alumni giving since the 1980s</p>
             </div>
           </div>
@@ -273,7 +270,7 @@ export default async function HomePage() {
               rate="5.8%"
               topQuartile="9.2%"
               avgGift="$680"
-              colorClass="red"
+              colorClass="rose"
             />
           </div>
 
@@ -527,7 +524,7 @@ function BenchmarkCard({
   rate: string;
   topQuartile: string;
   avgGift: string;
-  colorClass: "emerald" | "amber" | "red";
+  colorClass: "emerald" | "amber" | "rose";
 }) {
   const colorStyles = {
     emerald: {
@@ -536,8 +533,8 @@ function BenchmarkCard({
     amber: {
       rate: "text-amber-600 dark:text-amber-400",
     },
-    red: {
-      rate: "text-red-600 dark:text-red-400",
+    rose: {
+      rate: "text-rose-400 dark:text-rose-400",
     },
   };
 
