@@ -78,21 +78,21 @@
 
 ### Tests for User Story 3 (TDD - write first, ensure they FAIL)
 
-- [ ] T025 [P] [US3] Unit test for admin auth validation at `tests/unit/admin/auth.test.ts`
-- [ ] T026 [P] [US3] Unit test for login lockout logic at `tests/unit/admin/auth.test.ts`
-- [ ] T027 [P] [US3] Integration test for admin login flow at `tests/integration/admin/auth.test.ts`
+- [X] T025 [P] [US3] Unit test for admin auth validation at `tests/unit/admin/auth.test.ts`
+- [X] T026 [P] [US3] Unit test for login lockout logic at `tests/unit/admin/auth.test.ts`
+- [X] T027 [P] [US3] Integration test for admin login flow at `tests/integration/admin/auth.test.ts`
 
 ### Implementation for User Story 3
 
-- [ ] T028 [US3] Implement superAdmin.auth router at `src/server/routers/superAdmin/auth.ts` (login, logout, me procedures)
-- [ ] T029 [US3] Implement login lockout logic in auth router (5 failures → 15 min lockout per FR-004a)
-- [ ] T030 [US3] Create admin login page at `src/app/admin/login/page.tsx`
-- [ ] T031 [US3] Create admin layout with session check at `src/app/admin/layout.tsx`
-- [ ] T032 [P] [US3] Create AdminHeader component at `src/components/admin/layout/AdminHeader.tsx`
-- [ ] T033 [P] [US3] Create AdminSidebar component at `src/components/admin/layout/AdminSidebar.tsx`
-- [ ] T034 [US3] Create admin dashboard overview page at `src/app/admin/page.tsx`
-- [ ] T035 [US3] Compose superAdmin router with auth at `src/server/routers/superAdmin/index.ts`
-- [ ] T036 [US3] Register superAdmin router in root app router at `src/server/routers/_app.ts`
+- [X] T028 [US3] Implement superAdmin.auth router at `src/server/routers/superAdmin/auth.ts` (login, logout, me procedures)
+- [X] T029 [US3] Implement login lockout logic in auth router (5 failures → 15 min lockout per FR-004a)
+- [X] T030 [US3] Create admin login page at `src/app/admin/login/page.tsx`
+- [X] T031 [US3] Create admin layout with session check at `src/app/admin/layout.tsx`
+- [X] T032 [P] [US3] Create AdminHeader component at `src/components/admin/layout/AdminHeader.tsx`
+- [X] T033 [P] [US3] Create AdminSidebar component at `src/components/admin/layout/AdminSidebar.tsx`
+- [X] T034 [US3] Create admin dashboard overview page at `src/app/admin/page.tsx`
+- [X] T035 [US3] Compose superAdmin router with auth at `src/server/routers/superAdmin/index.ts`
+- [X] T036 [US3] Register superAdmin router in root app router at `src/server/routers/_app.ts`
 
 **Checkpoint**: Super admin can log in, see dashboard, session expires after 8 hours, lockout works
 
@@ -106,19 +106,19 @@
 
 ### Tests for User Story 1 (TDD - write first, ensure they FAIL)
 
-- [ ] T037 [P] [US1] Unit test for organizations router at `tests/unit/admin/organizations.test.ts`
-- [ ] T038 [P] [US1] Integration test for org list/detail at `tests/integration/admin/organization-crud.test.ts`
+- [X] T037 [P] [US1] Unit test for organizations router at `tests/unit/admin/organizations.test.ts`
+- [X] T038 [P] [US1] Integration test for org list/detail at `tests/integration/admin/organization-crud.test.ts`
 
 ### Implementation for User Story 1
 
-- [ ] T039 [US1] Implement superAdmin.organizations.list procedure at `src/server/routers/superAdmin/organizations.ts`
-- [ ] T040 [US1] Implement superAdmin.organizations.get procedure at `src/server/routers/superAdmin/organizations.ts`
-- [ ] T041 [US1] Implement superAdmin.organizations.update procedure at `src/server/routers/superAdmin/organizations.ts`
-- [ ] T042 [P] [US1] Create OrganizationTable component at `src/components/admin/organizations/OrganizationTable.tsx`
-- [ ] T043 [P] [US1] Create OrganizationDetailTabs component at `src/components/admin/organizations/OrganizationDetailTabs.tsx`
-- [ ] T044 [US1] Create organizations list page at `src/app/admin/organizations/page.tsx`
-- [ ] T045 [US1] Create organization detail page at `src/app/admin/organizations/[id]/page.tsx`
-- [ ] T046 [US1] Update superAdmin router composition at `src/server/routers/superAdmin/index.ts`
+- [X] T039 [US1] Implement superAdmin.organizations.list procedure at `src/server/routers/superAdmin/organizations.ts`
+- [X] T040 [US1] Implement superAdmin.organizations.get procedure at `src/server/routers/superAdmin/organizations.ts`
+- [X] T041 [US1] Implement superAdmin.organizations.update procedure at `src/server/routers/superAdmin/organizations.ts`
+- [X] T042 [P] [US1] Create OrganizationTable component at `src/components/admin/organizations/OrganizationTable.tsx`
+- [X] T043 [P] [US1] Create OrganizationDetailTabs component at `src/components/admin/organizations/OrganizationDetailTabs.tsx`
+- [X] T044 [US1] Create organizations list page at `src/app/admin/organizations/page.tsx`
+- [X] T045 [US1] Create organization detail page at `src/app/admin/organizations/[id]/page.tsx`
+- [X] T046 [US1] Update superAdmin router composition at `src/server/routers/superAdmin/index.ts`
 
 **Checkpoint**: Can view org list, search/filter, view org details with tabs, update org settings
 
