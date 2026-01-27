@@ -27,7 +27,15 @@ Create a logo component with the following structure and styling (using Tailwind
 
 - Font: `text-xl font-bold`
 - Color: inherit (dark: `text-white`)
-- Trademark symbol (™): Use `<sup>` with `text-[0.6em] font-normal text-slate-400`
+
+### Trademark Symbol (™)
+
+- Element: `<sup>` (superscript)
+- Size: `text-[0.6em]` (60% of parent text size)
+  - If parent is `text-xl` (20px), ™ is ~12px
+  - If parent is `text-2xl` (24px), ™ is ~14px
+- Weight: `font-normal` (not bold like the app name)
+- Color: `text-slate-400` (muted, same in light/dark mode)
 
 ### AI Badge (or similar product suffix)
 
