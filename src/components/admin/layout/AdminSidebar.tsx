@@ -99,10 +99,10 @@ export function AdminSidebar({ open, onOpenChange, session }: AdminSidebarProps)
         {/* Logo */}
         <div className="flex h-16 items-center justify-between border-b px-4">
           <Link href="/admin" className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold">
-              G
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800">
+              <BarChart3 className="h-5 w-5 text-slate-700 dark:text-slate-300" />
             </div>
-            <span className="font-semibold">GiveMetry Admin</span>
+            <span className="font-semibold">GiveMetry<sup className="text-[0.6em] font-normal text-slate-400">™</sup> Admin</span>
           </Link>
           <Button
             variant="ghost"

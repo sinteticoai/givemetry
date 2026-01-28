@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { BarChart3, Mic } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export const metadata = {
   title: "About | GiveMetry",
@@ -18,18 +19,12 @@ export default function AboutPage() {
             </div>
             <span className="font-bold text-slate-900 dark:text-white">GiveMetry<sup className="text-[0.6em] font-normal text-slate-400">™</sup></span><span className="ml-0.5 inline-flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-xs font-medium text-slate-700 dark:text-slate-300">AI</span>
           </Link>
-          <div className="flex gap-4">
+          <div className="flex items-center gap-4">
             <Link
               href="/login"
-              className="text-sm text-slate-600 dark:text-slate-300 hover:text-emerald-400 dark:hover:text-emerald-400"
+              className="text-sm text-slate-600 dark:text-slate-300 hover:text-foreground px-3 py-2"
             >
               Sign In
-            </Link>
-            <Link
-              href="/signup"
-              className="text-sm bg-emerald-400 text-white px-4 py-2 rounded-lg hover:bg-emerald-500"
-            >
-              Request a Demo
             </Link>
           </div>
         </div>
@@ -76,20 +71,25 @@ export default function AboutPage() {
 
         <div className="grid md:grid-cols-2 gap-8 mb-16">
           <div className="bg-white dark:bg-slate-800 rounded-xl p-8 shadow-sm border dark:border-slate-700">
-            <div className="w-12 h-12 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center mb-4">
-              <BarChart3 className="w-6 h-6 text-slate-700 dark:text-slate-300" />
+            <div className="flex items-center gap-2 mb-4">
+              <div className="w-10 h-10 rounded-lg bg-slate-100 dark:bg-slate-700 flex items-center justify-center">
+                <BarChart3 className="w-5 h-5 text-slate-700 dark:text-slate-300" />
+              </div>
+              <h3 className="text-xl font-semibold text-slate-900 dark:text-white">GiveMetry<sup className="text-[0.6em] font-normal text-slate-400">™</sup></h3>
+              <span className="inline-flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-700 px-2 py-0.5 text-xs font-medium text-slate-700 dark:text-slate-300">AI</span>
             </div>
-            <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">GiveMetry<sup className="text-[0.6em] font-normal text-slate-400">™</sup> <span className="ml-0.5 inline-flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-xs font-medium text-slate-700 dark:text-slate-300">AI</span></h3>
             <p className="text-slate-600 dark:text-slate-400 text-sm">
               AI-powered donor analytics for nonprofit gift officers. Predict lapse risk, prioritize outreach, and generate AI briefings to strengthen donor relationships.
             </p>
           </div>
 
           <div className="bg-white dark:bg-slate-800 rounded-xl p-8 shadow-sm border dark:border-slate-700">
-            <div className="w-12 h-12 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center mb-4">
-              <Mic className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+            <div className="flex items-center gap-2 mb-4">
+              <div className="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                <Mic className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+              </div>
+              <h3 className="text-xl font-semibold text-slate-900 dark:text-white">Converza</h3>
             </div>
-            <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">Converza</h3>
             <p className="text-slate-600 dark:text-slate-400 text-sm">
               AI voice receptionist that handles calls 24/7 for home service businesses. Automatic appointment booking, call transcription, and smart routing.
             </p>
@@ -104,20 +104,9 @@ export default function AboutPage() {
           <p className="text-slate-600 dark:text-slate-400 mb-6">
             Transform your donor relationships with AI-powered analytics.
           </p>
-          <div className="flex gap-4 justify-center">
-            <Link
-              href="/signup"
-              className="bg-emerald-400 text-white px-6 py-3 rounded-lg hover:bg-emerald-500 font-medium"
-            >
-              Contact Us
-            </Link>
-            <a
-              href="mailto:hello@sintetico.ai"
-              className="bg-white dark:bg-slate-700 text-slate-900 dark:text-white px-6 py-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-600 font-medium border dark:border-slate-600"
-            >
-              Contact Us
-            </a>
-          </div>
+          <Button asChild size="lg" className="text-lg px-8 py-6">
+            <Link href="/signup">Request a Demo</Link>
+          </Button>
         </div>
       </main>
 
