@@ -102,7 +102,8 @@ export function AdminSidebar({ open, onOpenChange, session }: AdminSidebarProps)
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800">
               <BarChart3 className="h-5 w-5 text-slate-700 dark:text-slate-300" />
             </div>
-            <span className="font-semibold">GiveMetry<sup className="text-[0.6em] font-normal text-slate-400">™</sup> Admin</span>
+            <span className="text-xl font-bold tracking-tight" style={{ fontFamily: "'Inter', system-ui, sans-serif", letterSpacing: '-0.025em' }}>GiveMetry</span>
+            <span className="text-sm text-muted-foreground">Admin</span>
           </Link>
           <Button
             variant="ghost"

@@ -63,7 +63,7 @@ export function Sidebar({ open, onOpenChange }: SidebarProps) {
             <BarChart3 className="h-5 w-5 text-slate-700 dark:text-slate-300" />
           </div>
           {open && (
-            <><span className="text-lg font-semibold">GiveMetry<sup className="text-[0.6em] font-normal text-slate-400">™</sup></span><span className="ml-px inline-flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 text-[10px] font-medium text-slate-700 dark:text-slate-300">AI</span></>
+            <span className="text-xl font-bold tracking-tight" style={{ fontFamily: "'Inter', system-ui, sans-serif", letterSpacing: '-0.025em' }}>GiveMetry</span>
           )}
         </Link>
       </div>
