@@ -24,7 +24,7 @@ export function LandingNavbar() {
       className={cn(
         "sticky top-0 z-50 transition-all duration-300",
         scrolled
-          ? "bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border-b"
+          ? "bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border-b border-slate-200/50 dark:border-slate-700/50"
           : "bg-transparent dark:bg-transparent border-b border-transparent"
       )}
     >
