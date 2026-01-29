@@ -142,6 +142,7 @@ describe("Upload Router", () => {
         filename: "donors.csv",
         contentType: "text/csv",
         fileSize: 1024 * 1024,
+        dataType: "constituents",
       });
 
       expect(result.uploadId).toBeDefined();
@@ -167,6 +168,7 @@ describe("Upload Router", () => {
         filename: "donors.csv",
         contentType: "text/csv",
         fileSize: 1024,
+        dataType: "constituents",
       });
 
       expect(result.uploadId).toBeDefined();
@@ -182,6 +184,7 @@ describe("Upload Router", () => {
           filename: "huge.csv",
           contentType: "text/csv",
           fileSize: 600 * 1024 * 1024, // 600MB
+          dataType: "constituents",
         })
       ).rejects.toThrow();
     });
@@ -195,6 +198,7 @@ describe("Upload Router", () => {
           filename: "donors.csv",
           contentType: "text/csv",
           fileSize: 1024,
+          dataType: "constituents",
         })
       ).rejects.toThrow(TRPCError);
     });
@@ -208,6 +212,7 @@ describe("Upload Router", () => {
           filename: "donors.csv",
           contentType: "text/csv",
           fileSize: 1024,
+          dataType: "constituents",
         })
       ).rejects.toThrow(TRPCError);
     });
@@ -291,6 +296,8 @@ describe("Upload Router", () => {
         id: "aaaaaaaa-aaaa-4aaa-aaaa-aaaaaaaaaaaa",
         organizationId: "org-id",
         status: "queued",
+        storagePath: "uploads/org-id/upload-id/test.csv",
+        dataType: "constituents",
       });
 
       const result = await caller.updateFieldMapping({
@@ -593,6 +600,7 @@ describe("Upload Router", () => {
         filename: "test.csv",
         contentType: "text/csv",
         fileSize: 1024,
+        dataType: "constituents",
       });
 
       expect(ctx.prisma.upload.create).toHaveBeenCalledWith(
@@ -622,6 +630,7 @@ describe("Upload Processing Flow", () => {
       filename: "donors.csv",
       contentType: "text/csv",
       fileSize: 1024,
+      dataType: "constituents",
     });
 
     expect(createResult.uploadId).toBeDefined();
@@ -631,6 +640,7 @@ describe("Upload Processing Flow", () => {
       id: createResult.uploadId,
       organizationId: "org-id",
       status: "queued",
+      storagePath: "uploads/org-id/upload-id/donors.csv",
     });
 
     const confirmResult = await caller.confirmUpload({
@@ -645,6 +655,8 @@ describe("Upload Processing Flow", () => {
       id: createResult.uploadId,
       organizationId: "org-id",
       status: "queued",
+      storagePath: "uploads/org-id/upload-id/donors.csv",
+      dataType: "constituents",
     });
 
     const mappingResult = await caller.updateFieldMapping({
