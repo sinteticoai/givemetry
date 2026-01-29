@@ -37,6 +37,7 @@ import {
   Shield,
   Eye,
   AlertTriangle,
+  Pencil,
 } from "lucide-react";
 import type { UserRole } from "@prisma/client";
 
@@ -65,6 +66,11 @@ export default function UserDetailPage({ params }: PageProps) {
   // T080: Impersonation state
   const [isImpersonateOpen, setIsImpersonateOpen] = useState(false);
   const [impersonationReason, setImpersonationReason] = useState("");
+  // Edit user state
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [editName, setEditName] = useState("");
+  const [editEmail, setEditEmail] = useState("");
+  const [editRole, setEditRole] = useState<UserRole | "">("");
 
   // Fetch user details
   const {
@@ -99,7 +105,19 @@ export default function UserDetailPage({ params }: PageProps) {
   const changeRoleMutation = adminTrpc.users.changeRole.useMutation({
     onSuccess: () => {
       setIsChangeRoleOpen(false);
+      setIsEditOpen(false);
       setNewRole("");
+      setEditRole("");
+      refetch();
+    },
+  });
+
+  const updateMutation = adminTrpc.users.update.useMutation({
+    onSuccess: () => {
+      setIsEditOpen(false);
+      setEditName("");
+      setEditEmail("");
+      setEditRole("");
       refetch();
     },
   });
@@ -130,6 +148,16 @@ export default function UserDetailPage({ params }: PageProps) {
     if (user) {
       setNewRole(user.role);
       setIsChangeRoleOpen(true);
+    }
+  }, [user]);
+
+  // Handle edit dialog open
+  const handleEditOpen = useCallback(() => {
+    if (user) {
+      setEditName(user.name || "");
+      setEditEmail(user.email);
+      setEditRole(user.role);
+      setIsEditOpen(true);
     }
   }, [user]);
 
@@ -195,6 +223,10 @@ export default function UserDetailPage({ params }: PageProps) {
             <RefreshCw
               className={`h-4 w-4 ${isFetching ? "animate-spin" : ""}`}
             />
+          </Button>
+          <Button variant="outline" onClick={handleEditOpen}>
+            <Pencil className="mr-2 h-4 w-4" />
+            Edit
           </Button>
           <Button variant="outline" onClick={handleChangeRoleOpen}>
             <Shield className="mr-2 h-4 w-4" />
@@ -364,6 +396,123 @@ export default function UserDetailPage({ params }: PageProps) {
               disabled={changeRoleMutation.isPending || !newRole || newRole === user.role}
             >
               {changeRoleMutation.isPending ? "Saving..." : "Save Changes"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit user dialog */}
+      <Dialog
+        open={isEditOpen}
+        onOpenChange={(open) => {
+          setIsEditOpen(open);
+          if (!open) {
+            setEditName("");
+            setEditEmail("");
+            setEditRole("");
+          }
+        }}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Pencil className="h-5 w-5" />
+              Edit User
+            </DialogTitle>
+            <DialogDescription>
+              Update user details for &quot;{user.name || user.email}&quot;.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="editName">Name</Label>
+              <Input
+                id="editName"
+                value={editName}
+                onChange={(e) => setEditName(e.target.value)}
+                placeholder="Enter user's name"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="editEmail">Email</Label>
+              <Input
+                id="editEmail"
+                type="email"
+                value={editEmail}
+                onChange={(e) => setEditEmail(e.target.value)}
+                placeholder="Enter user's email"
+              />
+              {editEmail !== user.email && (
+                <p className="text-sm text-amber-600">
+                  Changing the email will require the user to verify their new email address.
+                </p>
+              )}
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="editRole">Role</Label>
+              <Select
+                value={editRole}
+                onValueChange={(value) => setEditRole(value as UserRole)}
+              >
+                <SelectTrigger id="editRole">
+                  <SelectValue placeholder="Select a role" />
+                </SelectTrigger>
+                <SelectContent>
+                  {roleOptions.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          {(updateMutation.isError || changeRoleMutation.isError) && (
+            <Alert variant="destructive">
+              <AlertTriangle className="h-4 w-4" />
+              <AlertDescription>
+                {updateMutation.error?.message || changeRoleMutation.error?.message || "Failed to update user"}
+              </AlertDescription>
+            </Alert>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsEditOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              onClick={async () => {
+                const hasNameChange = editName !== (user.name || "");
+                const hasEmailChange = editEmail !== user.email;
+                const hasRoleChange = editRole !== user.role;
+
+                // Update name/email if changed
+                if (hasNameChange || hasEmailChange) {
+                  const updates: { id: string; name?: string; email?: string } = { id };
+                  if (hasNameChange) updates.name = editName;
+                  if (hasEmailChange) updates.email = editEmail;
+                  updateMutation.mutate(updates);
+                }
+
+                // Update role if changed (separate API call)
+                if (hasRoleChange && editRole) {
+                  changeRoleMutation.mutate({ id, role: editRole as UserRole });
+                }
+
+                // Close if no changes
+                if (!hasNameChange && !hasEmailChange && !hasRoleChange) {
+                  setIsEditOpen(false);
+                }
+              }}
+              disabled={
+                updateMutation.isPending ||
+                changeRoleMutation.isPending ||
+                !editName.trim() ||
+                !editEmail.trim() ||
+                !editRole ||
+                (editName === (user.name || "") && editEmail === user.email && editRole === user.role)
+              }
+            >
+              {(updateMutation.isPending || changeRoleMutation.isPending) ? "Saving..." : "Save Changes"}
             </Button>
           </DialogFooter>
         </DialogContent>

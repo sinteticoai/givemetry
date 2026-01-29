@@ -134,14 +134,15 @@ model PasswordResetToken {
 // ==============================================
 
 model Upload {
-  id             String       @id @default(uuid()) @db.Uuid
-  organizationId String       @db.Uuid
-  userId         String       @db.Uuid
-  filename       String       @db.VarChar(255)
+  id             String         @id @default(uuid()) @db.Uuid
+  organizationId String         @db.Uuid
+  userId         String         @db.Uuid
+  filename       String         @db.VarChar(255)
   fileSize       Int?
-  fileHash       String?      @db.VarChar(64)
-  storagePath    String?      @db.VarChar(500)
-  status         UploadStatus @default(queued)
+  fileHash       String?        @db.VarChar(64)
+  storagePath    String?        @db.VarChar(500)
+  dataType       UploadDataType @default(constituents)
+  status         UploadStatus   @default(queued)
   rowCount       Int?
   processedCount Int?
   errorCount     Int?
@@ -166,6 +167,12 @@ enum UploadStatus {
   completed
   failed
   completed_with_errors
+}
+
+enum UploadDataType {
+  constituents
+  gifts
+  contacts
 }
 
 // ==============================================

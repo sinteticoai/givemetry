@@ -271,11 +271,15 @@ export const authRouter = router({
       // Hash new password
       const passwordHash = await bcrypt.hash(input.password, 12);
 
-      // Update password and delete token
+      // Update password, verify email, and delete token
+      // If user can reset password via email link, they've proven email ownership
       await ctx.prisma.$transaction(async (tx) => {
         const user = await tx.user.update({
           where: { email: resetToken.email },
-          data: { passwordHash },
+          data: {
+            passwordHash,
+            emailVerified: new Date(), // Verify email on password reset
+          },
         });
 
         await tx.passwordResetToken.delete({

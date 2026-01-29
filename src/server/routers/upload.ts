@@ -1,13 +1,108 @@
-// Upload router - placeholder for Phase 4
+// Upload router - CSV import processing
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
+import type { PrismaClient, UploadDataType } from "@prisma/client";
 import { router, protectedProcedure, managerProcedure } from "../trpc/init";
-import { isS3Storage, createPresignedUploadUrl, generateStorageKey } from "@/lib/storage";
+import { isS3Storage, createPresignedUploadUrl, generateStorageKey, getFileContents } from "@/lib/storage";
+import { parseCSV } from "@/server/services/upload";
+import { processConstituents } from "@/server/services/upload/constituent-processor";
+import { processGifts } from "@/server/services/upload/gift-processor";
+import { processContacts } from "@/server/services/upload/contact-processor";
+
+/**
+ * Process an uploaded CSV file in the background
+ */
+async function processUpload(
+  prisma: PrismaClient,
+  uploadId: string,
+  organizationId: string,
+  storagePath: string,
+  dataType: UploadDataType,
+  fieldMapping: Record<string, string>
+): Promise<void> {
+  try {
+    // Read file from storage
+    const fileContents = await getFileContents(storagePath);
+    if (!fileContents) {
+      throw new Error("Could not read file from storage");
+    }
+
+    // Parse CSV
+    const parseResult = await parseCSV(fileContents);
+    if (parseResult.errors.length > 0) {
+      throw new Error(`CSV parse error: ${parseResult.errors.map((e) => e.message).join(", ")}`);
+    }
+
+    const rows = parseResult.data;
+
+    // Update row count
+    await prisma.upload.update({
+      where: { id: uploadId },
+      data: { rowCount: rows.length },
+    });
+
+    // Process based on data type
+    let result: { created: number; updated: number; skipped: number; errors: Array<{ row: number; message: string }> };
+
+    const progressCallback = async (processed: number, total: number) => {
+      const progress = Math.round((processed / total) * 100);
+      await prisma.upload.update({
+        where: { id: uploadId },
+        data: { progress, processedCount: processed },
+      });
+    };
+
+    switch (dataType) {
+      case "constituents":
+        result = await processConstituents(prisma, organizationId, rows, fieldMapping, {
+          onProgress: progressCallback,
+        });
+        break;
+      case "gifts":
+        result = await processGifts(prisma, organizationId, rows, fieldMapping, {
+          onProgress: progressCallback,
+        });
+        break;
+      case "contacts":
+        result = await processContacts(prisma, organizationId, rows, fieldMapping, {
+          onProgress: progressCallback,
+        });
+        break;
+      default:
+        throw new Error(`Unknown data type: ${dataType}`);
+    }
+
+    // Update upload with results
+    const hasErrors = result.errors.length > 0;
+    await prisma.upload.update({
+      where: { id: uploadId },
+      data: {
+        status: hasErrors ? "completed_with_errors" : "completed",
+        processedCount: result.created + result.updated,
+        errorCount: result.errors.length,
+        errors: result.errors.length > 0 ? result.errors.slice(0, 100) : undefined, // Limit stored errors
+        progress: 100,
+        completedAt: new Date(),
+      },
+    });
+  } catch (error) {
+    // Mark upload as failed
+    await prisma.upload.update({
+      where: { id: uploadId },
+      data: {
+        status: "failed",
+        errors: [{ message: error instanceof Error ? error.message : "Unknown error" }],
+        completedAt: new Date(),
+      },
+    });
+  }
+}
 
 const createPresignedUrlSchema = z.object({
   filename: z.string().min(1),
   contentType: z.string().default("text/csv"),
   fileSize: z.number().max(500 * 1024 * 1024), // 500MB max
+  dataType: z.enum(["constituents", "gifts", "contacts"]),
 });
 
 const confirmUploadSchema = z.object({
@@ -38,6 +133,7 @@ export const uploadRouter = router({
           userId: ctx.session.user.id,
           filename: input.filename,
           fileSize: input.fileSize,
+          dataType: input.dataType,
           status: "queued",
         },
       });
@@ -114,7 +210,7 @@ export const uploadRouter = router({
       return { success: true, uploadId: input.uploadId };
     }),
 
-  // Update field mapping
+  // Update field mapping and start processing
   updateFieldMapping: managerProcedure
     .input(updateFieldMappingSchema)
     .mutation(async ({ ctx, input }) => {
@@ -132,9 +228,34 @@ export const uploadRouter = router({
         });
       }
 
+      if (!upload.storagePath) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Upload file not found in storage",
+        });
+      }
+
+      // Save mapping and set status to processing
       await ctx.prisma.upload.update({
         where: { id: input.uploadId },
-        data: { fieldMapping: input.fieldMapping },
+        data: {
+          fieldMapping: input.fieldMapping,
+          status: "processing",
+          startedAt: new Date(),
+        },
+      });
+
+      // Process the CSV in the background (fire and forget)
+      // In production, this would be a job queue
+      processUpload(
+        ctx.prisma,
+        upload.id,
+        upload.organizationId,
+        upload.storagePath,
+        upload.dataType,
+        input.fieldMapping
+      ).catch((error) => {
+        console.error("Upload processing error:", error);
       });
 
       return { success: true };
@@ -257,6 +378,25 @@ export const uploadRouter = router({
           code: "NOT_FOUND",
           message: "Upload not found",
         });
+      }
+
+      // Prevent deleting while processing
+      if (upload.status === "processing") {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Cannot delete upload while processing",
+        });
+      }
+
+      // Delete the stored file if it exists
+      if (upload.storagePath) {
+        try {
+          const { deleteFile } = await import("@/lib/storage");
+          await deleteFile(upload.storagePath);
+        } catch (error) {
+          console.error("Failed to delete stored file:", error);
+          // Continue with database deletion even if file deletion fails
+        }
       }
 
       await ctx.prisma.upload.delete({

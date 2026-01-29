@@ -2,7 +2,6 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
 import { Sidebar } from "./sidebar";
 import { Header } from "./header";
 import { ImpersonationBanner } from "@/components/admin/layout/ImpersonationBanner";
@@ -26,7 +25,6 @@ export function AppLayout({ children }: AppLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [impersonation, setImpersonation] = useState<ImpersonationData | null>(null);
   const [isEndingSession, setIsEndingSession] = useState(false);
-  const router = useRouter();
 
   // Check for impersonation cookie on mount
   useEffect(() => {
@@ -64,7 +62,7 @@ export function AppLayout({ children }: AppLayoutProps) {
     } finally {
       setIsEndingSession(false);
     }
-  }, [router]);
+  }, []);
 
   const isImpersonating = impersonation?.isImpersonating ?? false;
 

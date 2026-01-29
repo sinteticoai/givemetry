@@ -126,8 +126,7 @@ interface UploadRowProps {
 function UploadRow({ upload, onRetry, onDelete }: UploadRowProps) {
   const canRetry =
     upload.status === "failed" || upload.status === "completed_with_errors";
-  const canDelete =
-    upload.status !== "queued" && upload.status !== "processing";
+  const canDelete = upload.status !== "processing";
 
   return (
     <TableRow data-testid="upload-row">

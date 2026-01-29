@@ -22,7 +22,9 @@
     "db:reset": "prisma migrate reset",
     "db:status": "prisma migrate status",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "validate:csv": "tsx scripts/validate-csv.ts",
+    "validate:sample": "tsx scripts/validate-csv.ts --combined docs/data/lakewood-university-combined.csv"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.71.2",

@@ -61,6 +61,7 @@ function VerifyEmailContent() {
     if (token && status === "loading") {
       verifyMutation.mutate({ token });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- Run once on mount when token exists
   }, [token]);
 
   if (!token) {

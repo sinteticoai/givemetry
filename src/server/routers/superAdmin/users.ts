@@ -4,6 +4,7 @@ import { TRPCError } from "@trpc/server";
 import { adminRouter, adminProtectedProcedure, superAdminOnlyProcedure } from "./auth";
 import prisma from "@/lib/prisma/client";
 import { sendPasswordResetEmail, sendInviteEmail } from "@/server/services/email";
+import { generatePasswordResetToken } from "@/lib/auth/tokens";
 import type { Prisma, UserRole } from "@prisma/client";
 
 // Input schemas
@@ -57,6 +58,13 @@ const inviteInputSchema = z.object({
   role: z.enum(["admin", "manager", "gift_officer", "viewer"]),
 });
 
+// Update user input schema
+const updateInputSchema = z.object({
+  id: z.string().uuid(),
+  name: z.string().min(1).max(255).optional(),
+  email: z.string().email().optional(),
+});
+
 // Helper to build where clause for user queries
 function buildWhereClause(input: z.infer<typeof listInputSchema>) {
   const where: Prisma.UserWhereInput = {};
@@ -89,11 +97,6 @@ function buildWhereClause(input: z.infer<typeof listInputSchema>) {
   }
 
   return where;
-}
-
-// Helper to generate password reset token
-function generateResetToken(): string {
-  return crypto.randomUUID() + "-" + crypto.randomUUID();
 }
 
 // Helper to generate invite token
@@ -239,6 +242,113 @@ export const usersRouter = adminRouter({
           createdAt: action.createdAt,
         })),
         loginHistory,
+      };
+    }),
+
+  // Update user details (name, email)
+  update: adminProtectedProcedure
+    .input(updateInputSchema)
+    .mutation(async ({ ctx, input }) => {
+      const { id, ...updateData } = input;
+
+      // Check if user exists
+      const existingUser = await prisma.user.findUnique({
+        where: { id },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          organizationId: true,
+          organization: { select: { name: true } },
+          role: true,
+          lastLoginAt: true,
+          isDisabled: true,
+          disabledAt: true,
+          disabledReason: true,
+          createdAt: true,
+        },
+      });
+
+      if (!existingUser) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "User not found",
+        });
+      }
+
+      // If email is being changed, check it's not already in use
+      if (updateData.email && updateData.email !== existingUser.email) {
+        const emailExists = await prisma.user.findFirst({
+          where: {
+            email: updateData.email,
+            id: { not: id },
+          },
+        });
+
+        if (emailExists) {
+          throw new TRPCError({
+            code: "CONFLICT",
+            message: "A user with this email already exists",
+          });
+        }
+      }
+
+      // Build update data - only include provided fields
+      const data: Prisma.UserUpdateInput = {};
+      const changes: Record<string, [unknown, unknown]> = {};
+
+      if (updateData.name !== undefined) {
+        data.name = updateData.name;
+        changes.name = [existingUser.name, updateData.name];
+      }
+
+      if (updateData.email !== undefined) {
+        data.email = updateData.email;
+        changes.email = [existingUser.email, updateData.email];
+        // Reset email verification if email changed
+        data.emailVerified = null;
+      }
+
+      // Perform update
+      const updatedUser = await prisma.user.update({
+        where: { id },
+        data,
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          organizationId: true,
+          organization: { select: { name: true } },
+          role: true,
+          lastLoginAt: true,
+          isDisabled: true,
+          disabledAt: true,
+          disabledReason: true,
+          createdAt: true,
+        },
+      });
+
+      // Log audit action
+      await ctx.logAuditAction({
+        action: "user.update",
+        targetType: "user",
+        targetId: id,
+        organizationId: existingUser.organizationId,
+        details: { changes },
+      });
+
+      return {
+        id: updatedUser.id,
+        name: updatedUser.name ?? "",
+        email: updatedUser.email,
+        organizationId: updatedUser.organizationId,
+        organizationName: updatedUser.organization.name,
+        role: updatedUser.role,
+        lastLoginAt: updatedUser.lastLoginAt,
+        isDisabled: updatedUser.isDisabled,
+        disabledAt: updatedUser.disabledAt,
+        disabledReason: updatedUser.disabledReason,
+        createdAt: updatedUser.createdAt,
       };
     }),
 
@@ -435,25 +545,29 @@ export const usersRouter = adminRouter({
         });
       }
 
-      // Generate reset token
-      const token = generateResetToken();
-      const expires = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+      // Generate reset token (returns plain token, hashed token, and expiry)
+      const { token, hashedToken, expires } = generatePasswordResetToken();
 
-      // Store the token
-      await prisma.verificationToken.create({
+      // Delete any existing reset tokens for this email
+      await prisma.passwordResetToken.deleteMany({
+        where: { email: user.email },
+      });
+
+      // Store the hashed token in passwordResetToken table
+      await prisma.passwordResetToken.create({
         data: {
-          identifier: user.email,
-          token,
+          email: user.email,
+          token: hashedToken,
           expires,
         },
       });
 
-      // Send password reset email
+      // Send password reset email with the plain token
       try {
         await sendPasswordResetEmail({
           to: user.email,
           name: user.name ?? "User",
-          token,
+          token, // Send plain token, user will hash it when validating
         });
       } catch (error) {
         console.error("Failed to send password reset email:", error);

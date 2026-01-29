@@ -25,6 +25,156 @@ import FieldMapping, {
 
 type DataType = "constituents" | "gifts" | "contacts";
 
+// Simple CSV line parser that handles quoted values
+function parseCSVLine(line: string): string[] {
+  const result: string[] = [];
+  let current = "";
+  let inQuotes = false;
+
+  for (let i = 0; i < line.length; i++) {
+    const char = line[i];
+    const nextChar = line[i + 1];
+
+    if (char === '"' && !inQuotes) {
+      inQuotes = true;
+    } else if (char === '"' && inQuotes) {
+      if (nextChar === '"') {
+        current += '"';
+        i++; // Skip next quote
+      } else {
+        inQuotes = false;
+      }
+    } else if (char === "," && !inQuotes) {
+      result.push(current.trim());
+      current = "";
+    } else {
+      current += char;
+    }
+  }
+  result.push(current.trim());
+  return result;
+}
+
+// Column name patterns for auto-mapping
+const COLUMN_PATTERNS: Record<string, RegExp[]> = {
+  externalId: [/^(constituent|donor|account|contact)?[_\s-]*(id|number)$/i, /^id$/i],
+  firstName: [/^first[_\s-]*(name)?$/i, /^given[_\s-]*name$/i],
+  lastName: [/^last[_\s-]*(name)?$/i, /^sur[_\s-]*name$/i],
+  middleName: [/^middle[_\s-]*(name)?$/i],
+  prefix: [/^prefix$/i, /^title$/i, /^salutation$/i],
+  suffix: [/^suffix$/i],
+  email: [/^e?mail$/i, /^email[_\s-]*address$/i],
+  phone: [/^phone$/i, /^telephone$/i, /^tel$/i],
+  addressLine1: [/^address[_\s-]*(line)?[_\s-]*1?$/i, /^street$/i],
+  addressLine2: [/^address[_\s-]*(line)?[_\s-]*2$/i, /^apt$/i, /^suite$/i],
+  city: [/^city$/i, /^town$/i],
+  state: [/^state$/i, /^province$/i],
+  postalCode: [/^(postal|zip)[_\s-]*(code)?$/i, /^postcode$/i],
+  country: [/^country$/i],
+  constituentType: [/^(constituent|donor)?[_\s-]*type$/i],
+  classYear: [/^class[_\s-]*(year|of)?$/i, /^(graduation|grad)[_\s-]*year$/i],
+  schoolCollege: [/^school[_\s-]*(college)?$/i, /^college$/i],
+  estimatedCapacity: [/^(estimated[_\s-]*)?(capacity|wealth)$/i],
+  capacitySource: [/^capacity[_\s-]*source$/i],
+  assignedOfficerId: [/^assigned[_\s-]*(officer|gift[_\s-]*officer)?[_\s-]*(id)?$/i],
+  portfolioTier: [/^portfolio[_\s-]*tier$/i, /^tier$/i],
+  // Gift fields
+  constituentExternalId: [/^constituent[_\s-]*(id|number)?$/i],
+  amount: [/^(gift[_\s-]*)?(amount|amt)$/i, /^donation$/i],
+  giftDate: [/^(gift[_\s-]*)?date$/i],
+  giftType: [/^(gift[_\s-]*)?type$/i],
+  fundName: [/^fund[_\s-]*(name)?$/i],
+  fundCode: [/^fund[_\s-]*(code|id)$/i],
+  campaign: [/^campaign$/i],
+  appeal: [/^appeal$/i],
+  recognitionAmount: [/^recognition[_\s-]*(amount)?$/i],
+  isAnonymous: [/^(is[_\s-]*)?anonymous$/i],
+  // Contact fields
+  contactDate: [/^(contact|interaction)[_\s-]*(date)?$/i],
+  contactType: [/^(contact|interaction)[_\s-]*type$/i],
+  subject: [/^subject$/i, /^title$/i],
+  notes: [/^notes?$/i, /^description$/i, /^comments?$/i],
+  outcome: [/^outcome$/i, /^result$/i],
+  nextAction: [/^next[_\s-]*action$/i],
+  nextActionDate: [/^next[_\s-]*action[_\s-]*date$/i],
+};
+
+const FIELD_DEFS: Record<DataType, { required: string[]; optional: string[] }> = {
+  constituents: {
+    required: ["externalId", "lastName"],
+    optional: [
+      "firstName", "middleName", "prefix", "suffix", "email", "phone",
+      "addressLine1", "addressLine2", "city", "state", "postalCode", "country",
+      "constituentType", "classYear", "schoolCollege", "estimatedCapacity",
+      "capacitySource", "assignedOfficerId", "portfolioTier",
+    ],
+  },
+  gifts: {
+    required: ["constituentExternalId", "amount", "giftDate"],
+    optional: [
+      "externalId", "giftType", "fundName", "fundCode", "campaign",
+      "appeal", "recognitionAmount", "isAnonymous",
+    ],
+  },
+  contacts: {
+    required: ["constituentExternalId", "contactDate", "contactType"],
+    optional: ["externalId", "subject", "notes", "outcome", "nextAction", "nextActionDate"],
+  },
+};
+
+function generateMappingSuggestions(
+  columns: string[],
+  dataType: DataType
+): FieldMappingSuggestion {
+  const fields = FIELD_DEFS[dataType];
+  const allFields = [...fields.required, ...fields.optional];
+  const mapping: Record<string, string | null> = {};
+  const confidence: Record<string, number> = {};
+  const usedFields = new Set<string>();
+
+  for (const column of columns) {
+    const normalized = column.toLowerCase().replace(/[^a-z0-9]+/g, "_");
+    let bestMatch: string | null = null;
+    let bestConfidence = 0;
+
+    for (const field of allFields) {
+      if (usedFields.has(field)) continue;
+
+      const patterns = COLUMN_PATTERNS[field];
+      if (patterns) {
+        for (const pattern of patterns) {
+          if (pattern.test(column) || pattern.test(normalized)) {
+            if (0.95 > bestConfidence) {
+              bestMatch = field;
+              bestConfidence = 0.95;
+            }
+          }
+        }
+      }
+
+      // Fallback: exact match on normalized name
+      if (field.toLowerCase() === normalized && bestConfidence < 0.9) {
+        bestMatch = field;
+        bestConfidence = 0.9;
+      }
+    }
+
+    mapping[column] = bestMatch;
+    confidence[column] = bestConfidence;
+    if (bestMatch) usedFields.add(bestMatch);
+  }
+
+  const unmappedColumns = columns.filter((c) => !mapping[c]);
+
+  return {
+    mapping,
+    confidence,
+    unmappedColumns,
+    requiredFields: fields.required,
+    optionalFields: fields.optional,
+  };
+}
+
 export default function UploadsPage() {
   const router = useRouter();
   const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false);
@@ -58,11 +208,12 @@ export default function UploadsPage() {
   const handleFileSelect = useCallback(
     async (file: File) => {
       try {
-        // Create presigned URL
+        // Create presigned URL with selected data type
         const result = await createPresignedUrl.mutateAsync({
           filename: file.name,
           contentType: file.type || "text/csv",
           fileSize: file.size,
+          dataType: selectedDataType,
         });
 
         setCurrentUploadId(result.uploadId);
@@ -88,46 +239,42 @@ export default function UploadsPage() {
           });
         }
 
-        // Confirm upload and get field mapping suggestions
+        // Confirm upload
         await confirmUpload.mutateAsync({
           uploadId: result.uploadId,
         });
 
-        // For now, we'll use mock data - in reality this would come from the server
-        // after parsing the first few rows
-        setDetectedColumns(["ID", "First Name", "Last Name", "Email"]);
-        setMappingSuggestions({
-          mapping: {
-            ID: "externalId",
-            "First Name": "firstName",
-            "Last Name": "lastName",
-            Email: "email",
-          },
-          confidence: {
-            ID: 0.95,
-            "First Name": 0.9,
-            "Last Name": 0.9,
-            Email: 0.99,
-          },
-          unmappedColumns: [],
-          requiredFields: ["externalId", "lastName"],
-          optionalFields: [
-            "firstName",
-            "email",
-            "phone",
-            "addressLine1",
-            "city",
-            "state",
-          ],
-        });
-        setSampleData([]);
+        // Parse CSV to get columns and sample data
+        const text = await file.text();
+        const lines = text.split("\n").filter((line) => line.trim());
+        const headers = lines[0]?.split(",").map((h) => h.trim().replace(/^"|"$/g, "")) ?? [];
+
+        // Get sample data (first 3 rows)
+        const samples: Record<string, string>[] = [];
+        for (let i = 1; i < Math.min(4, lines.length); i++) {
+          const values = parseCSVLine(lines[i] ?? "");
+          const row: Record<string, string> = {};
+          headers.forEach((header, idx) => {
+            row[header] = values[idx] ?? "";
+          });
+          samples.push(row);
+        }
+
+        // Generate field mapping suggestions based on data type
+        const suggestions = generateMappingSuggestions(headers, selectedDataType);
+
+        setDetectedColumns(headers);
+        setMappingSuggestions(suggestions);
+        setSampleData(samples);
+        // Initialize currentMapping with the suggested mapping
+        setCurrentMapping(suggestions.mapping);
 
         setUploadStep("mapping");
       } catch {
         toast.error("Failed to upload file");
       }
     },
-    [createPresignedUrl, confirmUpload]
+    [createPresignedUrl, confirmUpload, selectedDataType]
   );
 
   // Handle mapping confirmation
@@ -222,7 +369,7 @@ export default function UploadsPage() {
               New Upload
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-3xl">
+          <DialogContent className="max-w-3xl max-h-[90vh] flex flex-col">
             <DialogHeader>
               <DialogTitle>
                 {uploadStep === "select"
@@ -273,16 +420,18 @@ export default function UploadsPage() {
                 </p>
               </div>
             ) : mappingSuggestions ? (
-              <FieldMapping
-                columns={detectedColumns}
-                suggestions={mappingSuggestions}
-                sampleData={sampleData}
-                dataType={selectedDataType}
-                onMappingChange={setCurrentMapping}
-                onConfirm={handleMappingConfirm}
-                onCancel={() => setUploadStep("select")}
-                isLoading={updateFieldMapping.isPending}
-              />
+              <div className="overflow-y-auto flex-1 -mx-6 px-6">
+                <FieldMapping
+                  columns={detectedColumns}
+                  suggestions={mappingSuggestions}
+                  sampleData={sampleData}
+                  dataType={selectedDataType}
+                  onMappingChange={setCurrentMapping}
+                  onConfirm={handleMappingConfirm}
+                  onCancel={() => setUploadStep("select")}
+                  isLoading={updateFieldMapping.isPending}
+                />
+              </div>
             ) : null}
           </DialogContent>
         </Dialog>

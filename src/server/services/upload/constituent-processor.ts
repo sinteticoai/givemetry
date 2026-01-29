@@ -267,7 +267,7 @@ function buildCreateData(
     schoolCollege: data.schoolCollege ?? null,
     estimatedCapacity: data.estimatedCapacity ?? null,
     capacitySource: data.capacitySource ?? null,
-    assignedOfficerId: data.assignedOfficerId ?? null,
+    assignedOfficerId: data.assignedOfficerId?.trim() || null, // Empty string → null
     portfolioTier: data.portfolioTier ?? null,
     isActive: true,
   };
@@ -336,8 +336,8 @@ function buildUpdateData(
   if (data.capacitySource !== null && data.capacitySource !== undefined) {
     update.capacitySource = data.capacitySource;
   }
-  if (data.assignedOfficerId !== null && data.assignedOfficerId !== undefined) {
-    update.assignedOfficer = { connect: { id: data.assignedOfficerId } };
+  if (data.assignedOfficerId?.trim()) {
+    update.assignedOfficer = { connect: { id: data.assignedOfficerId.trim() } };
   }
   if (data.portfolioTier !== null && data.portfolioTier !== undefined) {
     update.portfolioTier = data.portfolioTier;

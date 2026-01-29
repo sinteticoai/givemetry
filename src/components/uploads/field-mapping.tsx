@@ -124,7 +124,9 @@ export function FieldMapping({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="flex flex-col h-full">
+      {/* Scrollable content area */}
+      <div className="flex-1 overflow-y-auto space-y-6 min-h-0">
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
@@ -239,8 +241,10 @@ export function FieldMapping({
           </CardContent>
         </Card>
       )}
+      </div>
 
-      <div className="flex justify-end gap-3">
+      {/* Fixed button row */}
+      <div className="flex justify-end gap-3 pt-4 border-t mt-4">
         <Button variant="outline" onClick={onCancel} disabled={isLoading}>
           Cancel
         </Button>
