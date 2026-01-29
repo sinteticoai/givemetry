@@ -52,6 +52,10 @@ pnpm-debug.log*
 
 # Uploads (local storage)
 /uploads/
+/.storage/
+
+# Test/sample data
+/docs/data/
 
 # Logs
 *.log
