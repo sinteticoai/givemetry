@@ -3,7 +3,7 @@ import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { adminRouter, adminProtectedProcedure, superAdminOnlyProcedure } from "./auth";
 import prisma from "@/lib/prisma/client";
-import { sendPasswordResetEmail } from "@/server/services/email";
+import { sendPasswordResetEmail, sendInviteEmail } from "@/server/services/email";
 import type { Prisma, UserRole } from "@prisma/client";
 
 // Input schemas
@@ -49,6 +49,14 @@ const changeRoleInputSchema = z.object({
   role: z.enum(["admin", "manager", "gift_officer", "viewer"]),
 });
 
+// Invite user input schema
+const inviteInputSchema = z.object({
+  organizationId: z.string().uuid(),
+  email: z.string().email(),
+  name: z.string().min(1).max(255),
+  role: z.enum(["admin", "manager", "gift_officer", "viewer"]),
+});
+
 // Helper to build where clause for user queries
 function buildWhereClause(input: z.infer<typeof listInputSchema>) {
   const where: Prisma.UserWhereInput = {};
@@ -85,6 +93,11 @@ function buildWhereClause(input: z.infer<typeof listInputSchema>) {
 
 // Helper to generate password reset token
 function generateResetToken(): string {
+  return crypto.randomUUID() + "-" + crypto.randomUUID();
+}
+
+// Helper to generate invite token
+function generateInviteToken(): string {
   return crypto.randomUUID() + "-" + crypto.randomUUID();
 }
 
@@ -548,6 +561,124 @@ export const usersRouter = adminRouter({
         disabledAt: updatedUser.disabledAt,
         disabledReason: updatedUser.disabledReason,
         createdAt: updatedUser.createdAt,
+      };
+    }),
+
+  // Invite user to organization
+  invite: adminProtectedProcedure
+    .input(inviteInputSchema)
+    .mutation(async ({ ctx, input }) => {
+      // Check if organization exists
+      const organization = await prisma.organization.findUnique({
+        where: { id: input.organizationId },
+        select: { id: true, name: true, status: true },
+      });
+
+      if (!organization) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Organization not found",
+        });
+      }
+
+      if (organization.status !== "active") {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Cannot invite users to a suspended or deleted organization",
+        });
+      }
+
+      // Check if user with this email already exists in this organization
+      const existingUser = await prisma.user.findFirst({
+        where: {
+          email: input.email,
+          organizationId: input.organizationId,
+        },
+      });
+
+      if (existingUser) {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "A user with this email already exists in this organization",
+        });
+      }
+
+      // Generate invite token
+      const inviteToken = generateInviteToken();
+      const inviteExpires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
+
+      // Create user with pending invite status (no password yet)
+      const newUser = await prisma.user.create({
+        data: {
+          email: input.email,
+          name: input.name,
+          role: input.role as UserRole,
+          organizationId: input.organizationId,
+          passwordHash: null, // Will be set when user accepts invite
+          emailVerified: null, // Will be set when user accepts invite
+        },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          organizationId: true,
+          organization: { select: { name: true } },
+          role: true,
+          createdAt: true,
+        },
+      });
+
+      // Store invite token
+      await prisma.verificationToken.create({
+        data: {
+          identifier: input.email,
+          token: inviteToken,
+          expires: inviteExpires,
+        },
+      });
+
+      // Send invite email
+      try {
+        await sendInviteEmail({
+          to: input.email,
+          inviterName: ctx.session.name,
+          organizationName: organization.name,
+          token: inviteToken,
+        });
+      } catch (error) {
+        // If email fails, delete the user and token
+        await prisma.user.delete({ where: { id: newUser.id } });
+        await prisma.verificationToken.delete({
+          where: { identifier_token: { identifier: input.email, token: inviteToken } },
+        });
+        console.error("Failed to send invite email:", error);
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to send invite email",
+        });
+      }
+
+      // Log audit action
+      await ctx.logAuditAction({
+        action: "user.invite",
+        targetType: "user",
+        targetId: newUser.id,
+        organizationId: input.organizationId,
+        details: {
+          email: input.email,
+          name: input.name,
+          role: input.role,
+        },
+      });
+
+      return {
+        id: newUser.id,
+        name: newUser.name ?? "",
+        email: newUser.email,
+        organizationId: newUser.organizationId,
+        organizationName: newUser.organization.name,
+        role: newUser.role,
+        createdAt: newUser.createdAt,
       };
     }),
 });

@@ -28,13 +28,14 @@ export default function UsersPage() {
     isLoading,
     refetch,
     isFetching,
+    error,
   } = adminTrpc.users.list.useQuery(
     {
       limit: pageSize,
       cursor,
       search: searchQuery || undefined,
-      role: roleFilter as "admin" | "manager" | "gift_officer" | "viewer" | undefined,
-      status: statusFilter as "active" | "disabled" | undefined,
+      role: roleFilter ? (roleFilter as "admin" | "manager" | "gift_officer" | "viewer") : undefined,
+      status: statusFilter ? (statusFilter as "active" | "disabled") : undefined,
       organizationId: orgFilter || undefined,
       sort: {
         field: "createdAt",
@@ -104,6 +105,14 @@ export default function UsersPage() {
           </Button>
         </div>
       </div>
+
+      {/* Error display */}
+      {error && (
+        <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-red-700">
+          <p className="font-medium">Error loading users:</p>
+          <p className="text-sm">{error.message}</p>
+        </div>
+      )}
 
       {/* Users table */}
       <UserTable

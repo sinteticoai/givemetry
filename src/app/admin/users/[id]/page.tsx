@@ -1,7 +1,7 @@
 // T069, T080: User Detail Page with Impersonation
 "use client";
 
-import { use, useState, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { adminTrpc } from "@/lib/trpc/admin-client";
 import { UserDetailCard } from "@/components/admin/users/UserDetailCard";
@@ -41,7 +41,7 @@ import {
 import type { UserRole } from "@prisma/client";
 
 interface PageProps {
-  params: Promise<{ id: string }>;
+  params: { id: string };
 }
 
 const roleOptions: { value: UserRole; label: string }[] = [
@@ -52,7 +52,7 @@ const roleOptions: { value: UserRole; label: string }[] = [
 ];
 
 export default function UserDetailPage({ params }: PageProps) {
-  const { id } = use(params);
+  const { id } = params;
   const router = useRouter();
 
   // Dialog states

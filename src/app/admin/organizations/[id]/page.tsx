@@ -1,10 +1,11 @@
 // T045: Organization Detail Page
 "use client";
 
-import { use, useState, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { adminTrpc } from "@/lib/trpc/admin-client";
 import { OrganizationDetailTabs } from "@/components/admin/organizations/OrganizationDetailTabs";
+import { InviteUserModal } from "@/components/admin/organizations/InviteUserModal";
 import { StatusBadge } from "@/components/admin/shared/StatusBadge";
 import { ConfirmDialog } from "@/components/admin/shared/ConfirmDialog";
 import { Button } from "@/components/ui/button";
@@ -28,20 +29,24 @@ import {
   Pause,
   Play,
   Trash2,
+  UserPlus,
 } from "lucide-react";
 
 interface PageProps {
-  params: Promise<{ id: string }>;
+  params: { id: string };
 }
 
 export default function OrganizationDetailPage({ params }: PageProps) {
-  const { id } = use(params);
+  const { id } = params;
   const router = useRouter();
 
   // Edit dialog state
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [editName, setEditName] = useState("");
   const [editPlan, setEditPlan] = useState("");
+
+  // Invite user modal state
+  const [isInviteOpen, setIsInviteOpen] = useState(false);
 
   // Confirm dialogs state
   const [isSuspendOpen, setIsSuspendOpen] = useState(false);
@@ -194,6 +199,12 @@ export default function OrganizationDetailPage({ params }: PageProps) {
             <Pencil className="mr-2 h-4 w-4" />
             Edit
           </Button>
+          {organization.status === "active" && (
+            <Button variant="outline" onClick={() => setIsInviteOpen(true)}>
+              <UserPlus className="mr-2 h-4 w-4" />
+              Invite User
+            </Button>
+          )}
           {organization.status === "active" && (
             <Button
               variant="outline"
@@ -382,6 +393,15 @@ export default function OrganizationDetailPage({ params }: PageProps) {
             confirmationName: organization.name,
           });
         }}
+      />
+
+      {/* Invite user modal */}
+      <InviteUserModal
+        open={isInviteOpen}
+        onOpenChange={setIsInviteOpen}
+        organizationId={id}
+        organizationName={organization.name}
+        onSuccess={() => refetch()}
       />
     </div>
   );

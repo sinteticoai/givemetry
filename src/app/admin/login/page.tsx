@@ -2,7 +2,6 @@
 "use client";
 
 import { useState } from "react";
-import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,7 +14,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Shield, AlertCircle, Loader2 } from "lucide-react";
+import { Shield, AlertCircle, Loader2, Eye, EyeOff } from "lucide-react";
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -25,6 +24,7 @@ export default function AdminLoginPage() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(
     error === "CredentialsSignin"
@@ -40,15 +40,28 @@ export default function AdminLoginPage() {
     setErrorMessage(null);
 
     try {
-      const result = await signIn("admin-credentials", {
-        email,
-        password,
-        redirect: false,
-        callbackUrl,
+      // Get CSRF token for admin auth endpoint
+      const csrfRes = await fetch("/api/admin/auth/csrf");
+      const { csrfToken } = await csrfRes.json();
+
+      // Call admin-specific auth endpoint (not /api/auth)
+      const res = await fetch("/api/admin/auth/callback/credentials", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({
+          csrfToken,
+          email,
+          password,
+          callbackUrl,
+        }),
       });
 
-      if (result?.error) {
-        if (result.error === "ACCOUNT_LOCKED") {
+      const url = new URL(res.url);
+
+      // Check for error in redirect URL
+      if (url.searchParams.get("error")) {
+        const error = url.searchParams.get("error");
+        if (error === "ACCOUNT_LOCKED") {
           setErrorMessage("Account temporarily locked. Try again in 15 minutes.");
         } else {
           setErrorMessage("Invalid credentials");
@@ -57,9 +70,9 @@ export default function AdminLoginPage() {
         return;
       }
 
-      if (result?.ok) {
-        router.push(callbackUrl);
-      }
+      // Success - redirect to admin dashboard
+      router.push(callbackUrl);
+      router.refresh();
     } catch {
       setErrorMessage("An error occurred. Please try again.");
       setIsLoading(false);
@@ -92,7 +105,7 @@ export default function AdminLoginPage() {
               <Input
                 id="email"
                 type="email"
-                placeholder="admin@givemetry.com"
+                placeholder="control@givemetry.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -103,16 +116,31 @@ export default function AdminLoginPage() {
 
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="Enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                disabled={isLoading}
-                autoComplete="current-password"
-              />
+              <div className="relative">
+                <Input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Enter your password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  disabled={isLoading}
+                  autoComplete="current-password"
+                  className="pr-10"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                  tabIndex={-1}
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-4 w-4" />
+                  ) : (
+                    <Eye className="h-4 w-4" />
+                  )}
+                </button>
+              </div>
             </div>
 
             <Button type="submit" className="w-full" disabled={isLoading}>

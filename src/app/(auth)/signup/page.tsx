@@ -74,8 +74,8 @@ export default function ContactPage() {
         <CardContent className="space-y-4">
           <p className="text-sm text-muted-foreground">
             A member of our team will reach out to{" "}
-            <span className="font-medium">{formData.email}</span> within 1-2
-            business days.
+            <span className="font-medium">{formData.email}</span> to schedule an
+            appointment.
           </p>
         </CardContent>
         <CardFooter>

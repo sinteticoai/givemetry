@@ -34,7 +34,7 @@ export async function POST(request: Request) {
           },
           body: JSON.stringify({
             from: process.env.RESEND_FROM_EMAIL || "noreply@givemetry.com",
-            to: "hello@sintetico.ai",
+            to: "info@givemetry.com",
             subject: `GiveMetry Contact: ${organizationName}`,
             html: `
               <h2>New Contact Form Submission</h2>

@@ -66,7 +66,7 @@ export async function sendInviteEmail({
   organizationName,
   token,
 }: SendInviteEmailParams) {
-  const inviteUrl = `${APP_URL}/signup?token=${token}`;
+  const inviteUrl = `${APP_URL}/accept-invite?token=${token}`;
 
   const html = `
     <!DOCTYPE html>

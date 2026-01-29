@@ -56,8 +56,8 @@ export function AppLayout({ children }: AppLayoutProps) {
 
       if (response.ok) {
         setImpersonation(null);
-        // Redirect back to admin dashboard
-        router.push("/admin");
+        // Hard redirect back to admin dashboard (router.push doesn't work across auth contexts)
+        window.location.href = "/admin";
       }
     } catch (error) {
       console.error("Failed to end impersonation:", error);

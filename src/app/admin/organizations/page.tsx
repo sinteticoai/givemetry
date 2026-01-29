@@ -30,12 +30,13 @@ export default function OrganizationsPage() {
     isLoading,
     refetch,
     isFetching,
+    error,
   } = adminTrpc.organizations.list.useQuery(
     {
       limit: pageSize,
       cursor,
       search: searchQuery || undefined,
-      status: statusFilter as "active" | "suspended" | "pending_deletion" | undefined,
+      status: statusFilter ? (statusFilter as "active" | "suspended" | "pending_deletion") : undefined,
       plan: planFilter || undefined,
       sort: {
         field: "createdAt",
@@ -109,6 +110,14 @@ export default function OrganizationsPage() {
           </Button>
         </div>
       </div>
+
+      {/* Error display */}
+      {error && (
+        <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-red-700">
+          <p className="font-medium">Error loading organizations:</p>
+          <p className="text-sm">{error.message}</p>
+        </div>
+      )}
 
       {/* Organizations table */}
       <OrganizationTable

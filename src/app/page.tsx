@@ -375,7 +375,7 @@ export default async function HomePage() {
               <h4 className="font-semibold text-slate-900 dark:text-white mb-4">Company</h4>
               <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-400">
                 <li><Link href="/about" className="hover:text-emerald-400 dark:hover:text-emerald-400">About</Link></li>
-                <li><a href="mailto:hello@sintetico.ai" className="hover:text-emerald-400 dark:hover:text-emerald-400">Contact Us</a></li>
+                <li><Link href="/signup" className="hover:text-emerald-400 dark:hover:text-emerald-400">Contact Us</Link></li>
               </ul>
             </div>
 

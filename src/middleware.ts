@@ -188,6 +188,8 @@ async function handleAdminRoutes(request: NextRequest, pathname: string) {
   // Allow admin login page without auth
   if (isAdminLoginRoute(pathname)) {
     const response = NextResponse.next();
+    // Set pathname header for layout to detect login page
+    response.headers.set("x-pathname", pathname);
     for (const [header, value] of Object.entries(securityHeaders)) {
       response.headers.set(header, value);
     }
